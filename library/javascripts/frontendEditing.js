@@ -339,7 +339,7 @@ window.addEvent('domready',function(){
         var page = $(e.target);
         
         //alert(MooRTE.Elements.linkPop.visible);
-        if(page != null && MooRTE.Elements.linkPop.visible === false) {
+        if(page != null && MooRTE.Elements.linkPop && MooRTE.Elements.linkPop.visible === false) {
           if(page.hasClass('feindura_editPage'))
             savePage(page,'content');
           else if(page.hasClass('feindura_editTitle'))
