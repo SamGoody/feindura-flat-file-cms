@@ -334,17 +334,17 @@ window.addEvent('domready',function(){
       // STORE page IDS in the elements storage
       setPageIds(pageBlock);
       
-      // save on blur
-      pageBlock.addEvent('blur', function(e) {
-        var page = $(e.target);
-        // if (page != null && ((MooRTE.Elements.linkPop && MooRTE.Elements.linkPop.visible === false) || MooRTE.Elements.linkPop == null )) {  
-		if (page && (!MooRTE.Elements.linkPop || MooRTE.Elements.linkPop && !MooRTE.Elements.linkPop.visible)){
+	// save on blur
+	pageBlock.addEvent('blur', function(e) {
+		var page = $(e.target)
+		  , pop = MooRTE.Elements.linkPop;
+
+		if (page && (!pop || pop.visible))
 			if (page.hasClass('feindura_editPage'))
 				savePage(page, 'content');
 			else if (page.hasClass('feindura_editTitle'))
 				savePage(page, 'title');
-        }
-      });    
+	});    
       // on focus
       pageBlock.addEvent('focus', function() {
         pageContent = pageBlock.get('html');
