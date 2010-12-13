@@ -339,11 +339,11 @@ window.addEvent('domready',function(){
 		var page = $(e.target)
 		  , pop = MooRTE.Elements.linkPop;
 
-		if (page && (!pop || pop.visible))
-			if (page.hasClass('feindura_editPage'))
-				savePage(page, 'content');
-			else if (page.hasClass('feindura_editTitle'))
-				savePage(page, 'title');
+		if (!page || pop && !pop.visible) return;
+		if (page.hasClass('feindura_editPage'))
+			savePage(page, 'content');
+		else if (page.hasClass('feindura_editTitle'))
+			savePage(page, 'title');
 	});    
       // on focus
       pageBlock.addEvent('focus', function() {
