@@ -337,13 +337,12 @@ window.addEvent('domready',function(){
       // save on blur
       pageBlock.addEvent('blur', function(e) {
         var page = $(e.target);
-        
-        //alert(MooRTE.Elements.linkPop.visible);
-        if(page != null && MooRTE.Elements.linkPop && MooRTE.Elements.linkPop.visible === false) {
-          if(page.hasClass('feindura_editPage'))
-            savePage(page,'content');
-          else if(page.hasClass('feindura_editTitle'))
-            savePage(page,'title');   
+        // if (page != null && ((MooRTE.Elements.linkPop && MooRTE.Elements.linkPop.visible === false) || MooRTE.Elements.linkPop == null )) {  
+		if (page && (!MooRTE.Elements.linkPop || MooRTE.Elements.linkPop && !MooRTE.Elements.linkPop.visible)){
+			if (page.hasClass('feindura_editPage'))
+				savePage(page, 'content');
+			else if (page.hasClass('feindura_editTitle'))
+				savePage(page, 'title');
         }
       });    
       // on focus
@@ -419,10 +418,10 @@ window.addEvent('domready',function(){
     
     // -> add save button
    
-    Object.extend(MooRTE.Elements, {
+    Object.append(MooRTE.Elements, {
       save : { img:27, onClick: function() {
-          $$('div.feindura_editPage, span.feindura_editTitle').each(function(page) {                                     
-              if(MooRTE.activeField == page) {
+		   $$('div.feindura_editPage, span.feindura_editTitle').each(function(page) {
+			  if(MooRTE.activeField == page) {
                 pageSaved = false;
                 if(page.hasClass('feindura_editPage'))
                   savePage(page,'content');
