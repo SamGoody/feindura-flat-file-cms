@@ -191,7 +191,7 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
       </colgroup>  
       
       <tr><td class="left checkboxes">
-      <input type="checkbox" id="cfg_pageCreatePages" name="cfg_pageCreatePages" value="true" class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check2'].'::'.$langFile['pageSetup_pageConfig_check2_tip']; ?>"<?php if($adminConfig['pages']['createdelete']) echo ' checked="checked"'; ?> /><br />
+      <input type="checkbox" id="cfg_pageCreatePages" name="cfg_pageCreatePages" value="true" class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check2'].'::'.$langFile['pageSetup_pageConfig_check2_tip']; ?>"<?php if($adminConfig['pages']['createDelete']) echo ' checked="checked"'; ?> /><br />
       </td><td class="right checkboxes">
       <label for="cfg_pageCreatePages"><span class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check2'].'::'.$langFile['pageSetup_pageConfig_check2_tip']; ?>"><?php echo $langFile['pageSetup_pageConfig_check2']; ?></span></label><br />
       </td></tr>
@@ -209,7 +209,7 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
       </td></tr>
       
       <tr><td class="left checkboxes">
-      <input type="checkbox" id="cfg_pageTags" name="cfg_pageTags" value="true" class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check4'].'::'.$langFile['pageSetup_pageConfig_check4_tip']; ?>"<?php if($adminConfig['pages']['showtags']) echo ' checked="checked"'; ?> />
+      <input type="checkbox" id="cfg_pageTags" name="cfg_pageTags" value="true" class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check4'].'::'.$langFile['pageSetup_pageConfig_check4_tip']; ?>"<?php if($adminConfig['pages']['showTags']) echo ' checked="checked"'; ?> />
       </td><td class="right checkboxes">
       <label for="cfg_pageTags"><span class="toolTip" title="<?php echo $langFile['pageSetup_pageConfig_check4'].'::'.$langFile['pageSetup_pageConfig_check4_tip']; ?>"><?php echo $langFile['pageSetup_pageConfig_check4']; ?></span></label>
       </td></tr> 
@@ -272,19 +272,19 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
           // checks the category settings
           $checked[1] = ($category['public']) ? 'checked="checked"' : '';
 
-          $checked[2] = ($category['createdelete']) ? 'checked="checked"' : '';
+          $checked[2] = ($category['createDelete']) ? 'checked="checked"' : '';
             
           $checked[3] = ($category['thumbnail']) ? 'checked="checked"' : '';
             
           $checked[11] = ($category['plugins']) ? 'checked="checked"' : '';
           
-          $checked[4] = ($category['showtags']) ? 'checked="checked"' : ''; 
+          $checked[4] = ($category['showTags']) ? 'checked="checked"' : ''; 
           
-          $checked[5] = ($category['showpagedate']) ? 'checked="checked"' : '';
+          $checked[5] = ($category['showPageDate']) ? 'checked="checked"' : '';
             
-          $checked[6] = ($category['sortbypagedate']) ? 'checked="checked"' : '';
+          $checked[6] = ($category['sortByPageDate']) ? 'checked="checked"' : '';
           
-          $checked[7] = ($category['sortascending']) ? 'checked="checked"' : '';
+          $checked[7] = ($category['sortAscending']) ? 'checked="checked"' : '';
             
           $checked[8] = ($category['thumbRatio']) ? 'checked="checked"' : '';
             
@@ -365,9 +365,9 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
           echo '<tr><td class="spacer checkboxes"></td><td></td></tr>';
                 
           echo '<tr><td class="left checkboxes">
-                <input type="checkbox" id="categories'.$category['id'].'createdelete" name="categories['.$category['id'].'][createdelete]" value="true" '.$checked[2].' class="toolTip" title="'.$langFile['pageSetup_check2'].'::'.$langFile['pageSetup_check2_tip'].'" /><br />
+                <input type="checkbox" id="categories'.$category['id'].'createDelete" name="categories['.$category['id'].'][createDelete]" value="true" '.$checked[2].' class="toolTip" title="'.$langFile['pageSetup_check2'].'::'.$langFile['pageSetup_check2_tip'].'" /><br />
                 </td><td class="right checkboxes">
-                <label for="categories'.$category['id'].'createdelete"><span class="toolTip" title="'.$langFile['pageSetup_check2'].'::'.$langFile['pageSetup_check2_tip'].'">'.$langFile['pageSetup_check2'].'</span></label>
+                <label for="categories'.$category['id'].'createDelete"><span class="toolTip" title="'.$langFile['pageSetup_check2'].'::'.$langFile['pageSetup_check2_tip'].'">'.$langFile['pageSetup_check2'].'</span></label>
                 </td></tr>';          
           
           echo '<tr><td class="left checkboxes">
@@ -385,17 +385,17 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
                 </td></tr>';
           
           echo '<tr><td class="left checkboxes">
-                <input type="checkbox" id="categories'.$category['id'].'showtags" name="categories['.$category['id'].'][showtags]" value="true" '.$checked[4].' class="toolTip" title="'.$langFile['pageSetup_check4'].'::'.$langFile['pageSetup_check4_tip'].'" /><br />
+                <input type="checkbox" id="categories'.$category['id'].'showTags" name="categories['.$category['id'].'][showTags]" value="true" '.$checked[4].' class="toolTip" title="'.$langFile['pageSetup_check4'].'::'.$langFile['pageSetup_check4_tip'].'" /><br />
                 </td><td class="right checkboxes">
-                <label for="categories'.$category['id'].'showtags"><span class="toolTip" title="'.$langFile['pageSetup_check4'].'::'.$langFile['pageSetup_check4_tip'].'">'.$langFile['pageSetup_check4'].'</span></label>
+                <label for="categories'.$category['id'].'showTags"><span class="toolTip" title="'.$langFile['pageSetup_check4'].'::'.$langFile['pageSetup_check4_tip'].'">'.$langFile['pageSetup_check4'].'</span></label>
                 </td></tr>';
                 
           echo '<tr><td class="spacer checkboxes"></td><td></td></tr>';
 
           echo '<tr><td class="left checkboxes">
-                <input type="checkbox" id="categories'.$category['id'].'showpagedate" name="categories['.$category['id'].'][showpagedate]" value="true" '.$checked[5].' class="toolTip" title="'.$langFile['pageSetup_check5'].'::'.$langFile['pageSetup_check5_tip'].'" /><br />
+                <input type="checkbox" id="categories'.$category['id'].'showPageDate" name="categories['.$category['id'].'][showPageDate]" value="true" '.$checked[5].' class="toolTip" title="'.$langFile['pageSetup_check5'].'::'.$langFile['pageSetup_check5_tip'].'" /><br />
                 </td><td class="right checkboxes">
-                <label for="categories'.$category['id'].'showpagedate"><span class="toolTip" title="'.$langFile['pageSetup_check5'].'::'.$langFile['pageSetup_check5_tip'].'">'.$langFile['pageSetup_check5'].'</span></label>
+                <label for="categories'.$category['id'].'showPageDate"><span class="toolTip" title="'.$langFile['pageSetup_check5'].'::'.$langFile['pageSetup_check5_tip'].'">'.$langFile['pageSetup_check5'].'</span></label>
                 </td></tr>';
                 
           echo '<tr><td class="left checkboxes">
@@ -407,9 +407,9 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
           echo '<tr><td class="spacer checkboxes"></td><td></td></tr>';
           
           echo '<tr><td class="left checkboxes">
-                <input type="checkbox" id="categories'.$category['id'].'sortascending" name="categories['.$category['id'].'][sortascending]" value="true" '.$checked[7].' class="toolTip" title="'.$langFile['pageSetup_check7'].'::'.$langFile['pageSetup_check7_tip'].'" />
+                <input type="checkbox" id="categories'.$category['id'].'sortAscending" name="categories['.$category['id'].'][sortAscending]" value="true" '.$checked[7].' class="toolTip" title="'.$langFile['pageSetup_check7'].'::'.$langFile['pageSetup_check7_tip'].'" />
                 </td><td class="right checkboxes">
-                <label for="categories'.$category['id'].'sortascending"><span class="toolTip" title="'.$langFile['pageSetup_check7'].'::'.$langFile['pageSetup_check7_tip'].'">'.$langFile['pageSetup_check7'].'</span></label>          
+                <label for="categories'.$category['id'].'sortAscending"><span class="toolTip" title="'.$langFile['pageSetup_check7'].'::'.$langFile['pageSetup_check7_tip'].'">'.$langFile['pageSetup_check7'].'</span></label>          
                 </td></tr>';
           
           echo '<tr><td class="left checkboxes"></td>
@@ -437,7 +437,7 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
                 <div id="categoryStyleFilesInputs'.$category['id'].'" class="inputToolTip" title="'.$langFile['PATHS_TOOLTIP_ABSOLUTE'].'::[span class=hint]'.$langFile['pageSetup_stylesheet_ifempty'].'[/span]">
                 <span class="hint" style="float:right;width:190px;">'.$langFile['STYLESHEETS_EXAMPLE_STYLEFILE'].'</span>';
                 
-          echo showStyleFileInputs($generalFunctions->getStylesByPriority($category['styleFile'],'styleFile',$pageContent['category']),'categories['.$category['id'].'][styleFile]');
+          echo showStyleFileInputs(generalFunctions::getStylesByPriority($category['styleFile'],'styleFile',$pageContent['category']),'categories['.$category['id'].'][styleFile]');
 
           echo '</div>
                 <a href="#" class="addStyleFilePath toolTip" title="'.$langFile['STYLESHEETS_TOOLTIP_ADDSTYLEFILE'].'::"></a>              
@@ -447,14 +447,14 @@ $hidden = ($savedForm !== false && $savedForm != 'nonCategoryPages') ? ' hidden'
                 <label for="categories'.$category['id'].'styleId"><span class="toolTip" title="'.$langFile['STYLESHEETS_TEXT_ID'].'::'.$langFile['STYLESHEETS_TOOLTIP_ID'].'[br /][br /][span class=hint]'.$langFile['pageSetup_stylesheet_ifempty'].'[/span]">
                 '.$langFile['STYLESHEETS_TEXT_ID'].'</span></label>
                 </td><td class="right">
-                <input id="categories'.$category['id'].'styleId" name="categories['.$category['id'].'][styleId]" value="'.$generalFunctions->getStylesByPriority($category['styleId'],'styleId',$category['id']).'" class="inputToolTip" title="'.$langFile['pageSetup_stylesheet_ifempty'].'" />
+                <input id="categories'.$category['id'].'styleId" name="categories['.$category['id'].'][styleId]" value="'.generalFunctions::getStylesByPriority($category['styleId'],'styleId',$category['id']).'" class="inputToolTip" title="'.$langFile['pageSetup_stylesheet_ifempty'].'" />
                 </td></tr>';
                 
           echo '<tr><td class="left">
                 <label for="categories'.$category['id'].'styleClass"><span class="toolTip" title="'.$langFile['STYLESHEETS_TEXT_CLASS'].'::'.$langFile['STYLESHEETS_TOOLTIP_CLASS'].'[br /][br /][span class=hint]'.$langFile['pageSetup_stylesheet_ifempty'].'[/span]">
                 '.$langFile['STYLESHEETS_TEXT_CLASS'].'</span></label>
                 </td><td class="right">
-                <input id="categories'.$category['id'].'styleClass" name="categories['.$category['id'].'][styleClass]" value="'.$generalFunctions->getStylesByPriority($category['styleClass'],'styleClass',$category['id']).'" class="inputToolTip" title="'.$langFile['pageSetup_stylesheet_ifempty'].'" />
+                <input id="categories'.$category['id'].'styleClass" name="categories['.$category['id'].'][styleClass]" value="'.generalFunctions::getStylesByPriority($category['styleClass'],'styleClass',$category['id']).'" class="inputToolTip" title="'.$langFile['pageSetup_stylesheet_ifempty'].'" />
                 </td></tr>';
           
           echo '<tr><td class="spacer"></td><td></td></tr>';

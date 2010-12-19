@@ -49,7 +49,8 @@ if(empty($_GET['site']) && empty($_GET['category']) && empty($_GET['page']))
   
   <title>feindura: <?php echo $websiteConfig['title']; ?></title>
   
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <meta name="siteinfo" content="<?= dirname($_SERVER['PHP_SELF']).'/'; ?>robots.txt" />
   <meta name="robots" content="no-index,nofollow" />
@@ -69,19 +70,20 @@ if(empty($_GET['site']) && empty($_GET['category']) && empty($_GET['page']))
   <!-- ************************************************************************************************************ -->
   <!-- STYLESHEETS -->
   
-  <link rel="stylesheet" type="text/css" href="library/styles/reset.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/layout.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/menus.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/sidebars.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/content.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/setup.css" media="all" />  
-  <link rel="stylesheet" type="text/css" href="library/styles/windowBox.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="library/styles/shared.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="library/styles/reset.css" />
+  <link rel="stylesheet" type="text/css" href="library/styles/layout.css" />
+  <link rel="stylesheet" type="text/css" href="library/styles/menus.css" />
+  <link rel="stylesheet" type="text/css" href="library/styles/sidebars.css" />
+  <link rel="stylesheet" type="text/css" href="library/styles/content.css" />   
+  <link rel="stylesheet" type="text/css" href="library/styles/setup.css" />  
+  <link rel="stylesheet" type="text/css" href="library/styles/windowBox.css" />
+  <link rel="stylesheet" type="text/css" href="library/styles/shared.css" />
+  
   
 <?php
 if($_GET['site'] == 'addons') {
   echo "  <!-- addons stylesheets -->\n";
-  echo $generalFunctions->createStyleTags($adminConfig['basePath'].'addons/');
+  echo generalFunctions::createStyleTags($adminConfig['basePath'].'addons/');
 }
 ?>
   
@@ -113,14 +115,14 @@ if($_GET['site'] == 'addons') {
   <script type="text/javascript" src="library/thirdparty/javascripts/StaticScroller.js"></script>
   
   <!-- thirdparty/CountDown (needs MooTools) -->
-  <script type="text/javascript" src="library/thirdparty/javascripts/CountDown/PeriodicalExecuter.js"></script>
-  <script type="text/javascript" src="library/thirdparty/javascripts/CountDown/CountDown.js"></script>
+  <script type="text/javascript" src="library/thirdparty/CountDown/PeriodicalExecuter.js"></script>
+  <script type="text/javascript" src="library/thirdparty/CountDown/CountDown.js"></script>
 	
 	<!-- thirdparty/Raphael -->
   <script type="text/javascript" src="library/thirdparty/javascripts/raphael-1.5.2.js"></script>
 	
   <!-- thirdparty/CodeMirror -->
-  <script type="text/javascript" src="library/thirdparty/javascripts/CodeMirror/js/codemirror.js"></script>
+  <script type="text/javascript" src="library/thirdparty/CodeMirror/js/codemirror.js"></script>
   
   <!-- thirdparty/CustomFormElements 
   <script type="text/javascript" src="library/thirdparty/customformelements/cfe/base/cfe.base.js"></script>
@@ -141,35 +143,33 @@ if($_GET['site'] == 'addons') {
   
   <!-- starts the session counter -->
   <script type="text/javascript">
-  /* <![CDATA[ */  
-  
+  /* <![CDATA[ */
   window.addEvent('domready', function () {
-					
-			var div = $('sessionTimer'),
-				coundown = new CountDown({
-			
-					//initialized 30s from now
-					date: new Date(new Date().getTime() + <?= ini_get('session.gc_maxlifetime').'000'; ?>),
-					//update every 100ms
-					frequency: 100,
-					//update the div#counter
-					onChange: function(counter) {					
-						var text = '';						
-						if(counter.hours < 1 && counter.minutes < 10) {
-              div.removeClass('blue');						
-              div.addClass('red');
-            }
-						text += (counter.hours > 9 ? '' : '0') + counter.hours + ':';
-						text += (counter.minutes > 9 ? '' : '0') + counter.minutes + ':';
-						text += (counter.second > 9 ? '' : '0') + counter.second;			
-						div.set('text', text);
-					},
-					//complete
-					onComplete: function () {					
-						window.location = 'index.php?logout';
-					}
-				})
-	})
+
+      var div = $('sessionTimer'),
+      coundown = new CountDown({      
+        //initialized 30s from now
+        date: new Date(new Date().getTime() + <?= ini_get('session.gc_maxlifetime').'000'; ?>),
+        //update every 100ms
+        frequency: 100,
+        //update the div#counter
+        onChange: function(counter) {
+          var text = '';
+          if(counter.hours < 1 && counter.minutes < 10) {
+            div.removeClass('blue');
+            div.addClass('red');
+          }
+          text += (counter.hours > 9 ? '' : '0') + counter.hours + ':';
+          text += (counter.minutes > 9 ? '' : '0') + counter.minutes + ':';
+          text += (counter.second > 9 ? '' : '0') + counter.second;
+          div.set('text', text);
+        },
+        //complete
+        onComplete: function () {
+          window.location = 'index.php?logout';
+        }
+      })
+  })
   /* ]]> */
   </script>
   
@@ -177,7 +177,7 @@ if($_GET['site'] == 'addons') {
 <body>
   <div id="dimmContainer">
   </div>
-  
+
   <!-- loadingBox -->
   <div id="loadingBox">
     <div class="top"></div>
@@ -221,7 +221,7 @@ if($_GET['site'] == 'addons') {
           <td><a href="?site=pages" class="pages<?php if($_GET['site'] == 'pages' || !empty($_GET['page'])) echo ' active'; ?>" title="<?php echo $langFile['BUTTON_PAGES']; ?>"><span><?php echo $langFile['BUTTON_PAGES']; ?></span></a></td>
           <?php
           // CHECKS if the addons/ folder is empty
-          if(!$generalFunctions->folderIsEmpty($adminConfig['basePath'].'addons/')) { ?>
+          if(!generalFunctions::folderIsEmpty($adminConfig['basePath'].'addons/')) { ?>
           <td><a href="?site=addons" class="addons<?php if($_GET['site'] == 'addons') echo ' active'; ?>" title="<?php echo $langFile['BUTTON_ADDONS']; ?>"><span><?php echo $langFile['BUTTON_ADDONS']; ?></span></a></td>
           <?php } ?>
           <td><a href="?site=websiteSetup" class="websiteSetup<?php if($_GET['site'] == 'websiteSetup') echo ' active'; ?>" title="<?php echo $langFile['BUTTON_WEBSITESETTINGS']; ?>"><span><?php echo $langFile['BUTTON_WEBSITESETTINGS']; ?></span></a></td>
@@ -249,15 +249,15 @@ if($_GET['site'] == 'addons') {
           <td><a href="?site=statisticSetup" class="statisticSetup<?php if($_GET['site'] == 'statisticSetup') echo ' active'; ?>" title="<?php  echo $langFile['BUTTON_STATISTICSETUP']; ?>"><span><?php echo $langFile['BUTTON_STATISTICSETUP']; ?></span></a></td>
           <?php
           // CHECKS if one of the plugins/ or modules/ folders is empty
-          if(!$generalFunctions->folderIsEmpty($adminConfig['basePath'].'plugins/') || !$generalFunctions->folderIsEmpty($adminConfig['basePath'].'modules/')) { ?>
+          if(!generalFunctions::folderIsEmpty($adminConfig['basePath'].'plugins/') || !generalFunctions::folderIsEmpty($adminConfig['basePath'].'modules/')) { ?>
           <?php
           // CHECKS if the plugins/ folder is empty
-          if(!$generalFunctions->folderIsEmpty($adminConfig['basePath'].'plugins/')) { ?>
+          if(!generalFunctions::folderIsEmpty($adminConfig['basePath'].'plugins/')) { ?>
           <td><a href="?site=pluginSetup" class="pluginSetup<?php if($_GET['site'] == 'pluginSetup') echo ' active'; ?>" title="<?php  echo $langFile['BUTTON_PLUGINSETUP']; ?>"><span><?php echo $langFile['BUTTON_PLUGINSETUP']; ?></span></a></td>
           </tr>
           <?php }
           // CHECKS if the modlues/ folder is empty
-          if(!$generalFunctions->folderIsEmpty($adminConfig['basePath'].'modules/')) { ?>
+          if(!generalFunctions::folderIsEmpty($adminConfig['basePath'].'modules/')) { ?>
           <tr>
           <td><a href="?site=modulSetup" class="modulSetup<?php if($_GET['site'] == 'modulSetup') echo ' active'; ?>" title="<?php  echo $langFile['btn_modulSetup']; ?>"><span><?php echo $langFile['btn_modulSetup']; ?></span></a></td>
           <td</td>
@@ -299,20 +299,22 @@ if($_GET['site'] == 'addons') {
     // -> CHECK if show createPage
     $generallyCreatePages = false;
     // check if non-category can create pages
-    if($adminConfig['pages']['createdelete'])
+    if($adminConfig['pages']['createDelete'])
       $generallyCreatePages = true;
     // if not check if one category can create pages
     else {
       foreach($categoryConfig as $category) {
-        if($category['createdelete'])
+        if($category['createDelete'])
           $generallyCreatePages = true;
       }
     }
     
     $showCreatePage = ($generallyCreatePages && $_GET['site'] == 'pages' ||
                        (!empty($_GET['page']) &&
-                       ($_GET['category'] === '0' && $adminConfig['pages']['createdelete']) ||
-                       ($_GET['category'] !== '0' && $categoryConfig[$_GET['category']]['createdelete']))) ? true : false;
+                       ($_GET['category'] === '0' && $adminConfig['pages']['createDelete']) ||
+                       ($_GET['category'] !== '0' && $categoryConfig[$_GET['category']]['createDelete']))) ? true : false;
+    
+    $showEditPage = ($_GET['site'] == 'pages') ? false : true;
     
     // -> CHECK if show pageThumbnailUpload
     $showPageThumbnailUpload = (!$newPage &&
@@ -359,19 +361,6 @@ if($_GET['site'] == 'addons') {
             <?php
             $showSpacer = false;
             
-            // file manager
-            if($adminConfig['user']['fileManager']) { ?>
-              <li><a href="?site=fileManager" onclick="openWindowBox('library/sites/windowBox/fileManager.php','<?php echo $langFile['BUTTON_FILEMANAGER']; ?>',true);return false;" class="fileManager toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_FILEMANAGER']; ?>::">&nbsp;</a></li>
-            <?php
-              $showSpacer = true;
-            }
-            
-            if($showSpacer && ($showPageThumbnailUpload || $showCreatePage)) { ?>
-              <li class="spacer">&nbsp;</li>
-            <?php 
-              $showSpacer = false;
-            } 
-            
             // create new page
             if($showCreatePage) { ?>
               <li><a href="<?php echo '?category='.$_GET['category'].'&amp;page=new'; ?>" class="createPage toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_CREATEPAGE']; ?>::">&nbsp;</a></li>
@@ -381,6 +370,12 @@ if($_GET['site'] == 'addons') {
               <li><a <?php echo 'href="?site=deletePage&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'" onclick="openWindowBox(\'library/sites/windowBox/deletePage.php?category='.$_GET['category'].'&amp;page='.$_GET['page'].'\',\''.$langFile['BUTTON_DELETEPAGE'].'\',true);return false;" title="'.$langFile['BUTTON_TOOLTIP_DELETEPAGE'].'::"'; ?> class="deletePage toolTip">&nbsp;</a></li>
             <?php }          
               $showSpacer = true;
+            }
+            // editPage
+            if($showEditPage) { ?>
+              <li><a <?php echo 'href="'.$adminConfig['url'].$adminConfig['websitePath'].'?'.$adminConfig['varName']['category'].'='.$_GET['category'].'&amp;'.$adminConfig['varName']['page'].'='.$_GET['page'].'" title="'.$langFile['BUTTON_TOOLTIP_FRONTENDEDITPAGE'].'::"'; ?> class="editPage toolTip">&nbsp;</a></li>
+            <?php
+            $showSpacer = true;
             }
             
             if($showSpacer && $showPageThumbnailUpload) { ?>
@@ -398,7 +393,20 @@ if($_GET['site'] == 'addons') {
               <li><a <?php echo 'href="?site=pageThumbnailDelete&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'" onclick="openWindowBox(\'library/sites/windowBox/pageThumbnailDelete.php?site='.$_GET['site'].'&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'\',\''.$langFile['BUTTON_THUMBNAIL_DELETE'].'\',true);return false;" title="'.$langFile['BUTTON_TOOLTIP_THUMBNAIL_DELETE'].'::"'; ?> class="pageThumbnailDelete toolTip">&nbsp;</a></li>
             <?php }          
               $showSpacer = true;
-            }           
+            }
+            
+            if($showSpacer && ($showPageThumbnailUpload || $showCreatePage)) { ?>
+              <li class="spacer">&nbsp;</li>
+            <?php 
+              $showSpacer = false;
+            } 
+            
+            // file manager
+            if($adminConfig['user']['fileManager']) { ?>
+              <li><a href="?site=fileManager" onclick="openWindowBox('library/sites/windowBox/fileManager.php','<?php echo $langFile['BUTTON_FILEMANAGER']; ?>',true);return false;" class="fileManager toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_FILEMANAGER']; ?>::">&nbsp;</a></li>
+            <?php
+              $showSpacer = true;
+            }
             ?>          
           </ul>
         </div>        
@@ -433,20 +441,7 @@ if($_GET['site'] == 'addons') {
         <ul class="horizontalButtons">
           <?php
           $showSpacer = false;
-          
-          // file manager
-          if($adminConfig['user']['fileManager']) { ?>
-            <li><a href="?site=fileManager" onclick="openWindowBox('library/sites/windowBox/fileManager.php','<?php echo $langFile['BUTTON_FILEMANAGER']; ?>');return false;" class="fileManager toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_FILEMANAGER']; ?>::"><span><?php echo $langFile['BUTTON_FILEMANAGER']; ?></span></a></li>
-          <?php
-            $showSpacer = true;
-          }
-          
-          if($showSpacer && ($showPageThumbnailUpload || $showCreatePage)) { ?>
-            <li class="spacer">&nbsp;</li>
-          <?php 
-            $showSpacer = false;
-          }
-          
+
           // create new page
           if($showCreatePage) { ?>
             <li><a href="<?php echo '?category='.$_GET['category'].'&amp;page=new'; ?>" class="createPage toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_CREATEPAGE']; ?>::"><span><?php echo $langFile['BUTTON_CREATEPAGE']; ?></span></a></li>
@@ -457,7 +452,12 @@ if($_GET['site'] == 'addons') {
           <?php }
           $showSpacer = true;
           }
-          
+          // editPage
+          if($showEditPage) { ?>
+            <li><a <?php echo 'href="'.$adminConfig['url'].$adminConfig['websitePath'].'?'.$adminConfig['varName']['category'].'='.$_GET['category'].'&amp;'.$adminConfig['varName']['page'].'='.$_GET['page'].'" title="'.$langFile['BUTTON_TOOLTIP_FRONTENDEDITPAGE'].'::"'; ?> class="editPage toolTip"><span><?php echo $langFile['BUTTON_FRONTENDEDITPAGE']; ?></span></a></li>
+          <?php
+          $showSpacer = true;
+          }          
           
           if($showSpacer && $showPageThumbnailUpload) { ?>
             <li class="spacer">&nbsp;</li>
@@ -475,7 +475,20 @@ if($_GET['site'] == 'addons') {
             <li><a <?php echo 'href="?site=pageThumbnailDelete&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'" onclick="openWindowBox(\'library/sites/windowBox/pageThumbnailDelete.php?site='.$_GET['site'].'&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'\',\''.$langFile['BUTTON_THUMBNAIL_DELETE'].'\');return false;" title="'.$langFile['BUTTON_TOOLTIP_THUMBNAIL_DELETE'].'::"'; ?> class="pageThumbnailDelete toolTip"><span><?php echo $langFile['BUTTON_THUMBNAIL_DELETE']; ?></span></a></li>
           <?php }          
             $showSpacer = true;
-          }           
+          }
+          
+          if($showSpacer && ($showPageThumbnailUpload || $showCreatePage)) { ?>
+            <li class="spacer">&nbsp;</li>
+          <?php 
+            $showSpacer = false;
+          }
+          
+          // file manager
+          if($adminConfig['user']['fileManager']) { ?>
+            <li><a href="?site=fileManager" onclick="openWindowBox('library/sites/windowBox/fileManager.php','<?php echo $langFile['BUTTON_FILEMANAGER']; ?>');return false;" class="fileManager toolTip" title="<?php echo $langFile['BUTTON_TOOLTIP_FILEMANAGER']; ?>::"><span><?php echo $langFile['BUTTON_FILEMANAGER']; ?></span></a></li>
+          <?php
+            $showSpacer = true;
+          }         
           ?>          
         </ul>
         <?php } ?>

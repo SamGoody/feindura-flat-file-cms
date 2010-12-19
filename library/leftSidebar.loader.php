@@ -41,7 +41,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
     <div class="content brown">
       <ul class="verticalButtons">';
             
-      if($pages = $generalFunctions->loadPages(0,true)) {
+      if($pages = generalFunctions::loadPages(0,true)) {
           
         foreach($pages as $page) {
           if($_GET['page'] == $page['id'])
@@ -101,7 +101,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
     <div class="content white">
       <ul class="verticalButtons">';      
       
-      if($pages = $generalFunctions->loadPages($_GET['category'],true)) { 
+      if($pages = generalFunctions::loadPages($_GET['category'],true)) { 
   
         foreach($pages as $page) {
           if($_GET['page'] == $page['id'])
@@ -158,7 +158,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
           unset($sessions,$sessionLister);
           
           // crreate an instance of sessionLister
-          if(include(dirname(__FILE__).'/thirdparty/sessionLister.php'))
+          if(include(dirname(__FILE__).'/thirdparty/php/sessionLister.php'))
             $sessionLister = new sessionLister();         
 
           // list user
@@ -223,7 +223,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
     case 'pageSetup':
       
       // -> CATEGORY ANCHOR LINKS
-      echo '<div id="sidebarSelection">';
+      echo '<div id="sidebarSelection" class="staticScroller">';
       
       echo '<a href="?site=pageSetup&amp;status=createCategory#category'.getNewCatgoryId().'" class="createCategory toolTip" style="float:none; margin:10px 0px 0px 15px;" title="'.$langFile['pageSetup_createCategory'].'::"></a>'; 
       
@@ -248,7 +248,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
     case 'userSetup':
       
       // -> USER ANCHOR LINKS
-      echo '<div id="sidebarSelection">';
+      echo '<div id="sidebarSelection" class="staticScroller">';
       
       echo '<a href="?site=userSetup&amp;status=createUser#userId'.getNewUserId().'" class="createUser toolTip" style="float:none; margin:10px 0px 0px 15px;" title="'.$langFile['userSetup_createUser'].'::"></a>'; 
       
@@ -277,7 +277,7 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
       echo '<div class="sidebarInfo"><div class="content">';
       
       // link the backup files
-      $backups = $generalFunctions->readFolder($adminConfig['basePath'].'backups/');      
+      $backups = generalFunctions::readFolder($adminConfig['basePath'].'backups/');      
       if(!empty($backups['files'])) {
         $lastBackups = '<ul>';
         natsort($backups['files']);
@@ -285,9 +285,13 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
         foreach($backups['files'] as $backupFile) {
           $backupTime = filemtime(DOCUMENTROOT.$backupFile);
           
+          $lastBackups .= '<span class="deleteIcon" style="width:100%;">';
+          $lastBackups .= '<a href="?site=backup&amp;status=deleteBackup&amp;file='.$backupFile.'" onclick="openWindowBox(\'library/sites/windowBox/deleteBackup.php?status=deleteBackup&amp;file='.$backupFile.'\',\''.$langFile['BACKUP_TITLE_BACKUP'].'\');return false;" class="deleteIcon toolTip" title="'.$langFile['BACKUP_TOOLTIP_DELETE'].'::" style="top:14px;"></a>';
           $lastBackups .= (strpos($backupFile,'restore') === false)
-            ? '<li><a href="'.$backupFile.'" class="standardLink">'.$langFile['BACKUP_TITLE_BACKUP'].'<br />'.$statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($backupTime)).' '.$statisticFunctions->formatTime($backupTime).'</a></li>'."\n"
-            : '<li><a href="'.$backupFile.'" class="standardLink">'.$langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'].'<br />'.$statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($backupTime)).' '.$statisticFunctions->formatTime($backupTime).'</a></li>'."\n";
+            ? '<li class="backupLink"><a href="'.$backupFile.'">'.$langFile['BACKUP_TITLE_BACKUP'].'<br />'.statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($backupTime)).' '.statisticFunctions::formatTime($backupTime).'</a></li>'."\n"
+            : '<li class="backupLink"><a href="'.$backupFile.'">'.$langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'].'<br />'.statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($backupTime)).' '.statisticFunctions::formatTime($backupTime).'</a></li>'."\n";
+          
+          $lastBackups .= '</span>';
         }
         $lastBackups .= '</ul>';   
       } else
@@ -301,7 +305,6 @@ if((!empty($_GET['page']) && empty($_GET['site'])) || $_GET['site'] == 'pages') 
       
       break;   
   } //switch END
-
 }
 
 ?>

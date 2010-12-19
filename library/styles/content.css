@@ -104,8 +104,8 @@ content.css version 0.21 */
 
 #content .block.open {
     z-index: 0;
-    margin-bottom: 0px !important;
-    padding-bottom: 0px !important;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
     background: url("../images/bg/content_block_open.png") no-repeat !important; 
     }
 
@@ -423,13 +423,39 @@ a.standardLink:active, .block a:active, #windowBox a:active {
     text-decoration: none;
     }
 
+/* image links */
+a.image {  
+  display: inline-block;
+  padding-left: 0px;
+  background: none;
+}
+
 /* anchor targets*/
 a.anchorTarget {
-    visibility: hidden;
-    padding-left: 0px;
-    height: 0px;
-    background: none;
-    }
+  visibility: hidden;
+  padding-left: 0px;
+  height: 0px;
+  background: none;
+}
+
+/* DELETE ICON */
+span.deleteIcon { /* this is the outer box, around a link with an delete corner */
+  position: relative;
+  display: inline-block;
+}
+a.deleteIcon {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  width: 18px;
+  height: 17px;
+  padding-left: 0px;
+  background: url("../images/key/content_deleteIcon.png") no-repeat;
+}
+a.deleteIcon:hover {
+  background-position: 0px -16px;
+}
 
 /* --- LISTPAGES ------------------------------------------------------------------------------------------------------------------- */
 
@@ -788,6 +814,12 @@ span.info strong {
 /**********************/	
 /* - BACKUP / RESTORE */
 
+
+li.backupLink {
+  padding-left: 20px !important;
+  background: url("../images/key/backup_download_small.png") no-repeat left center;
+}
+
 a.downloadBackup {
   display: inline-block;
   height: 48px; /* org: 78px */
@@ -893,7 +925,46 @@ table.coloredList td {
 .coloredList .dark {  
     background-color: #D4E0E0;
     }
-    
+
+/* --- SEARCH ------------------------------------------------------------------------------------------------------------------- */
+
+.block.open.search {
+  margin-bottom: -23px !important;
+  padding-bottom: 20px !important;
+}
+
+.search h1 {
+  z-index: 0;
+  position: absolute !important;
+  width: 100%;
+}
+
+.search .resultHeadline {
+  z-index: 1;
+  position: relative;
+  top: -5px;
+  font-size: 18px;
+}
+
+.search .matchingID {
+  font-weight: bold;
+}
+
+.search .keywords {
+  position: relative;
+  top: -5px;
+  font-size: 15px;
+}
+
+.search .category {  
+  color: #999;
+}
+
+.search .description {
+  display: block;
+  font-style: italic;
+}
+
 /* --------------------- */
 /* -------> TAG CLOUD */
 

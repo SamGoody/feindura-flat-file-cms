@@ -39,10 +39,10 @@ function sortCurrentVisitorsByTime($a, $b) {     // (Array) $a = current; $b = f
 // sort an Array with the pageContent Array by SORTORDER
 // -------------------------------------------------------------------------------------
 function sortBySortOrder($a, $b) {     // (Array) $a = current; $b = follwing value
-  if ($a['sortorder'] == $b['sortorder']) {
+  if ($a['sortOrder'] == $b['sortOrder']) {
     return 0;
   }
-  return ($a['sortorder'] > $b['sortorder']) ? -1 : 1;
+  return ($a['sortOrder'] > $b['sortOrder']) ? -1 : 1;
 }
 // ---- sortBySortOrder is used by the sortPages() ------------------------------
 
@@ -51,9 +51,9 @@ function sortBySortOrder($a, $b) {     // (Array) $a = current; $b = follwing va
 // -------------------------------------------------------------------------------------
 function sortByDate($a, $b) {     // (Array) $a = current; $b = follwing value
   
-  if ($a['pagedate']['date'] == $b['pagedate']['date'])
+  if ($a['pageDate']['date'] == $b['pageDate']['date'])
     return 0;
-  return ($a['pagedate']['date'] > $b['pagedate']['date']) ? -1 : 1;
+  return ($a['pageDate']['date'] > $b['pageDate']['date']) ? -1 : 1;
 }
 // ---- sortByDate is used by the sortPages() -----------------------------------
 
@@ -62,9 +62,9 @@ function sortByDate($a, $b) {     // (Array) $a = current; $b = follwing value
 // -------------------------------------------------------------------------------------
 function sortByLastSaveDate($a, $b) {     // (Array) $a = current; $b = follwing value
     
-  if ($a['lastsavedate'] == $b['lastsavedate'])
+  if ($a['lastSaveDate'] == $b['lastSaveDate'])
     return 0;
-  return ($a['lastsavedate'] > $b['lastsavedate']) ? -1 : 1;
+  return ($a['lastSaveDate'] > $b['lastSaveDate']) ? -1 : 1;
 }
 // ---- sortByLastSaveDate is used by the sortPages() -----------------------------------
 
@@ -97,9 +97,9 @@ function sortByCategory($a, $b) {     // (Array) $a = current; $b = following va
 // sort an Array with the pageContent Array by VISIT COUNT
 // -------------------------------------------------------------------------------------
 function sortByVisitCount($a, $b) {     // (Array) $a = current; $b = follwing value
-  if ($a['log_visitorcount'] == $b['log_visitorcount'])
+  if ($a['log_visitorCount'] == $b['log_visitorCount'])
     return 0;
-  return ($a['log_visitorcount'] > $b['log_visitorcount']) ? -1 : 1;
+  return ($a['log_visitorCount'] > $b['log_visitorCount']) ? -1 : 1;
 }
 
 // ** -- sortByVisitTimeMax ***************************************************************
@@ -116,6 +116,18 @@ function sortByVisitTimeMax($a, $b) {     // (Array) $a = current; $b = follwing
   return ($aMaxVisitTime[0] > $bMaxVisitTime[0]) ? -1 : 1;
 }
 
+// ** -- sortByPriority ***************************************************************
+// sort an Array with the searchresults from {@link search::searchPages()} by PRIORITY
+// -------------------------------------------------------------------------------------
+function sortByPriority($a, $b) {     // (Array) $a = current; $b = follwing value
+
+  $aPriority = $a['priority'];
+  $bPriority = $b['priority'];
+  
+  if($aPriority == $bPriority)
+    return 0;
+  return ($aPriority > $bPriority) ? -1 : 1;
+}
 
 // * -- sortDataString ----------------------------------------------------------------------------------
 // sorts the dataString array, with data with the highest number the beginning
@@ -125,6 +137,6 @@ function sortDataString($a, $b) {
     return 0;
   return ($a['number'] > $b['number']) ? -1 : 1;
 }
-// ---- sortDataString is used by addDataToDataString() -------------------------------
+// ---- sortDataString is used by sortDataString() -------------------------------
 
 ?>

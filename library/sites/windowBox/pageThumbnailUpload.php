@@ -22,15 +22,15 @@
  */
 require_once(dirname(__FILE__)."/../../includes/secure.include.php");
 
+echo ' '; // hack for safari, otherwise it throws an error that he could not find htmlentities like &ouml;
+
 $error = false;
 $response = false;
 $site = $_GET['site'];
 $page = $_GET['page'];
 $category = $_GET['category'];
 
-echo ' '; // hack for safari, otherwise it throws an error that he could not find htmlentities like &ouml;
-
-$pageContent = $generalFunctions->readPage($page,$category);
+$pageContent = generalFunctions::readPage($page,$category);
 
 $categoryRatio = false;
 $thumbRatioX = false;
@@ -186,8 +186,11 @@ if($categoryRatio) {
     else
       $thumbnailWidth = ' width="250"';
     
+    // generates a random number to put on the end of the image, to prevent caching
+    $randomImage = '?'.md5(uniqid(rand(),1));
+    
     echo '<div style="z-index:0; position:relative; width: 280px; margin-bottom: 10px; float:right; text-align: center;">';
-    echo '<img src="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'" class="thumbnailPreview toolTip"'.$thumbnailWidth.' alt="thumbnail" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::'.$langFile['THUMBNAIL_TOOLTIP_PREVIEW'].'" />';
+    echo '<img src="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].$randomImage.'" class="thumbnailPreview toolTip"'.$thumbnailWidth.' alt="thumbnail" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::" />';
     echo '</div>';
   }
   ?>

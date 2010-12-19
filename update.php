@@ -19,7 +19,7 @@
  * for updating from 
  * 1.0 rc -> 1.1
  *
- * @version 0.12
+ * @version 0.14
  */
 
 /**
@@ -38,7 +38,7 @@ $version[2] = trim($version[2]);
 $version[3] = trim($version[3]);
 
 $oldVersion = '1.0 rc';
-$newVersion = '1.1 beta';
+$newVersion = '1.1 beta2';
 
 ?>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -155,17 +155,19 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
     // changeToSerializedDataString
     function changeToSerializedDataString($oldDataString,$separator) {
       $dataArray = explode($separator,$oldDataString);
-      $newDataArry = array();    
+      $newDataArry = array();
       
       foreach($dataArray as $data) {
-        $dataExploded = explode(',',$data);
-        $newDataArry[] = array('data' => $dataExploded[0], 'number' => $dataExploded[1]);
+        if(!empty($data)) {
+          $dataExploded = explode(',',$data);
+          $newDataArry[] = array('data' => $dataExploded[0], 'number' => $dataExploded[1]);
+        }
       }    
       return serialize($newDataArry);
     }
     
     function changeToSerializedData($oldDataString,$separator) {
-      $dataArray = explode($separator,$oldDataString);   
+      $dataArray = explode($separator,$oldDataString);
       return serialize($dataArray);
     }
     
@@ -240,17 +242,27 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
     }
     
     // ->> FIX PAGES
-    $pages = $generalFunctions->loadPages(true);
+    $pages = generalFunctions::loadPages(true);
     
     //print_r($pages);
     foreach($pages as $pageContent) {
       
+      // renaming of some values
+      $pageContent['sortOrder'] = (isset($pageContent['sortorder'])) ? $pageContent['sortorder'] : $pageContent['sortOrder'];
+      $pageContent['lastSaveDate'] = (isset($pageContent['lastsavedate'])) ? $pageContent['lastsavedate'] : $pageContent['lastSaveDate'];
+      $pageContent['lastSaveAuthor'] = (isset($pageContent['lastsaveauthor'])) ? $pageContent['lastsaveauthor'] : $pageContent['lastSaveAuthor'];
+      $pageContent['pageDate']['before'] = (isset($pageContent['pagedate']['before'])) ? $pageContent['pagedate']['before'] : $pageContent['pageDate']['before'];
+      $pageContent['pageDate']['date'] = (isset($pageContent['pagedate']['date'])) ? $pageContent['pagedate']['date'] : $pageContent['pageDate']['date'];
+      $pageContent['pageDate']['after'] = (isset($pageContent['pagedate']['after'])) ? $pageContent['pagedate']['after'] : $pageContent['pageDate']['after'];
+      $pageContent['log_visitorCount'] = (isset($pageContent['log_visitorcount'])) ? $pageContent['log_visitorcount'] : $pageContent['log_visitorCount'];
+      $pageContent['log_searchWords'] = (isset($pageContent['log_searchwords'])) ? $pageContent['log_searchwords'] : $pageContent['log_searchWords'];
+      
       // -> change such a date: 2010-03-20 17:50:27 to unix timestamp
       // mktime(hour,minute,seconds,month,day,year)
       
-      $time = $pageContent['lastsavedate'];
+      $time = $pageContent['lastSaveDate'];
       if(substr($time,4,1) == '-')
-        $pageContent['lastsavedate'] = mktime(substr($time,11,2),substr($time,14,2),substr($time,-2),substr($time,5,2),substr($time,8,2),substr($time,0,4));
+        $pageContent['lastSaveDate'] = mktime(substr($time,11,2),substr($time,14,2),substr($time,-2),substr($time,5,2),substr($time,8,2),substr($time,0,4));
 
       $time = $pageContent['log_firstVisit'];
       if(substr($time,4,1) == '-')
@@ -260,9 +272,9 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
       if(substr($time,4,1) == '-')
         $pageContent['log_lastVisit'] = mktime(substr($time,11,2),substr($time,14,2),substr($time,-2),substr($time,5,2),substr($time,8,2),substr($time,0,4));
       
-      $time = $pageContent['pagedate']['date'];
+      $time = $pageContent['pageDate']['date'];
       if(substr($time,4,1) == '-')
-        $pageContent['pagedate']['date'] = mktime(substr($time,11,2),substr($time,14,2),substr($time,-2),substr($time,5,2),substr($time,8,2),substr($time,0,4));
+        $pageContent['pageDate']['date'] = mktime(substr($time,11,2),substr($time,14,2),substr($time,-2),substr($time,5,2),substr($time,8,2),substr($time,0,4));
 
       // -> change dataString separator
       $data = $pageContent['log_visitTime_min'];
@@ -282,15 +294,15 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
           $pageContent['log_visitTime_max'] = changeVisitTime($data,' ');
           
       
-      $data = $pageContent['log_searchwords'];
+      $data = $pageContent['log_searchWords'];
         if(strpos($data,'|#|') !== false)
-          $pageContent['log_searchwords'] = changeToSerializedDataString($data,'|#|');
+          $pageContent['log_searchWords'] = changeToSerializedDataString($data,'|#|');
         elseif(strpos($data,'|') !== false)
-          $pageContent['log_searchwords'] = changeToSerializedDataString($data,'|');
+          $pageContent['log_searchWords'] = changeToSerializedDataString($data,'|');
         elseif(!empty($data) && substr($data,0,2) != 'a:')
-          $pageContent['log_searchwords'] = changeToSerializedDataString($data,' ');
-      
-      $pagesSuccesfullUpdated = ($generalFunctions->savePage($pageContent)) ? true : false;
+          $pageContent['log_searchWords'] = changeToSerializedDataString($data,' ');
+
+      $pagesSuccesfullUpdated = (generalFunctions::savePage($pageContent)) ? true : false;
     }
     if($pagesSuccesfullUpdated)
       echo 'pages <span class="succesfull">succesfully updated</span><br />';
@@ -302,6 +314,14 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
     // ->> SAVE NEW categoryConfig
     $newCategoryConfig = array();
     foreach($categoryConfig as $key => $category) {
+      
+      // rename
+      $category['showTags'] = (isset($category['showtags'])) ? $category['showtags'] : $category['showTags'];
+      $category['showPageDate'] = (isset($category['showpagedate'])) ? $category['showpagedate'] : $category['showPageDate'];
+      $category['sortByPageDate'] = (isset($category['sortbypagedate'])) ? $category['sortbypagedate'] : $category['sortByPageDate'];
+      $category['sortAscending'] = (isset($category['sortascending'])) ? $category['sortascending'] : $category['sortAscending'];
+      $category['createDelete'] = (isset($category['createdelete'])) ? $category['createdelete'] : $category['createDelete'];
+      
       $data = $category['styleFile'];
         if(strpos($data,'|#|') !== false)
           $category['styleFile'] = changeToSerializedData($data,'|#|');
@@ -312,7 +332,7 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
       $newKey = intval($newKey);
       
       $newCategoryConfig[$newKey] = $category;
-    }    
+    }
     if(saveCategories($newCategoryConfig))
       echo 'categoryConfig <span class="succesfull">succesfully updated</span><br />';
     else {
@@ -329,6 +349,12 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
     }
     
     // ->> SAVE NEW adminConfig
+    // rename
+    $adminConfig['websiteFilesPath'] = (isset($adminConfig['websitefilesPath'])) ? $adminConfig['websitefilesPath'] : $adminConfig['websiteFilesPath'];
+    $adminConfig['pages']['showTags'] = (isset($adminConfig['pages']['showtags'])) ? $adminConfig['pages']['showtags'] : $adminConfig['pages']['showTags'];
+    $adminConfig['pages']['createDelete'] = (isset($adminConfig['pages']['createdelete'])) ? $adminConfig['pages']['createdelete'] : $adminConfig['pages']['createDelete'];
+    $adminConfig['user']['editStyleSheets'] = (isset($adminConfig['user']['editStylesheets'])) ? $adminConfig['user']['editStylesheets'] : $adminConfig['user']['editStyleSheets'];
+    
     $data = $adminConfig['editor']['styleFile'];
       if(strpos($data,'|#|') !== false)
         $adminConfig['editor']['styleFile'] = changeToSerializedData($data,'|#|');
@@ -337,10 +363,10 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
       elseif(!empty($data) && substr($data,0,2) != 'a:')
         $adminConfig['editor']['styleFile'] = changeToSerializedData($data,' ');
     
-    $adminConfig['websitePath'] = '/';
+    $adminConfig['websitePath'] = (isset($adminConfig['websitePath'])) ? $adminConfig['websitePath'] : '/';
     
     if(saveAdminConfig($adminConfig))
-      echo 'adminConfig <span class="succesfull">succesfully updated</span><br />';
+      echo 'adminConfig <span class="succesfull">succesfully updated</span> (if you had SPEAKING URLS activated, you must delete the mod_rewrite code from your .htaccess file, in the root of your webserver and save the administrator settings to create a new one!)<br />';
     else {
       echo 'adminConfig <span class="notSuccesfull">could not be updated</span><br />';
       $succesfullUpdate = false;
@@ -353,7 +379,7 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
       // set documentSaved status
       $documentSaved = true;
       $messageBoxText .= '&rArr; '.$langFile['LOG_CLEARSTATISTICS_ACTIVITYLOG'].'<br />';
-      $statisticFunctions->saveTaskLog(24); // <- SAVE the task in a LOG FILE
+      statisticFunctions::saveTaskLog(24); // <- SAVE the task in a LOG FILE
       
       echo 'activity log <span class="succesfull">reset</span><br />';
     } else {
@@ -470,13 +496,15 @@ Good, your current version is <b><?= $version[2]; ?></b>, but your content isn't
     if(!unlink(DOCUMENTROOT.$adminConfig['basePath'].'library/process/download.php') &&
       is_file(DOCUMENTROOT.$adminConfig['basePath'].'library/process/download.php'))
       $checkFiles[] = $adminConfig['basePath'].'library/process/download.php';
-      
+     if(!unlink(DOCUMENTROOT.$adminConfig['basePath'].'library/includes/frontend.include.php') &&
+      is_file(DOCUMENTROOT.$adminConfig['basePath'].'library/includes/frontend.include.php'))
+      $checkFiles[] = $adminConfig['basePath'].'library/includes/frontend.include.php';      
       
     if(empty($checkFiles))
       echo 'removed <span class="succesfull">old files and folders</span><br />';
     else {
       echo 'could not remove <span class="notSuccesfull">old files and folders,<br />
-      please check these folders, and remove them manually:<br />';
+      please check these files and folders, and remove them manually:<br />';
       foreach($checkFiles as $checkFile) {
           echo $checkFile.'<br />';
       }

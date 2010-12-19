@@ -327,6 +327,7 @@ window.addEvent('domready',function(){
       link.inject($(document.body),'top');
     });
     $(document.body).setStyle('padding-top','60px');
+    $(document.body).setStyle('background-position','0px 60px');
     
     // ->> GO TROUGH ALL EDITABLE BLOCK
     $$('div.feindura_editPage, span.feindura_editTitle').each(function(pageBlock) {
@@ -345,6 +346,7 @@ window.addEvent('domready',function(){
 		else if (page.hasClass('feindura_editTitle'))
 			savePage(page, 'title');
 	});    
+
       // on focus
       pageBlock.addEvent('focus', function() {
         pageContent = pageBlock.get('html');
@@ -415,9 +417,7 @@ window.addEvent('domready',function(){
     
     // ->> ADD EDITOR
     // **************
-    
-    // -> add save button
-   
+	// -> add SAVE BUTTON
     Object.append(MooRTE.Elements, {
       save : { img:27, onClick: function() {
 		   $$('div.feindura_editPage, span.feindura_editTitle').each(function(page) {
@@ -434,15 +434,14 @@ window.addEvent('domready',function(){
   
     // -> set up toolbar  
     var MooRTEButtons = {Toolbar:['save.saveBtn','undo','redo','removeformat', // 'Html/Text'
-                                          'bold','italic','underline','strikethrough',
-                                          'justifyleft','justifycenter','justifyright','justifyfull',
-                                          'outdent','indent','superscript','subscript',
-                                          'insertorderedlist','insertunorderedlist','blockquote','inserthorizontalrule',
-                                          'decreasefontsize','increasefontsize'//,'hyperlink'
-                                          ]};
+                                  'bold','italic','underline','strikethrough',
+                                  'justifyleft','justifycenter','justifyright','justifyfull',
+                                  'outdent','indent','superscript','subscript',
+                                  'insertorderedlist','insertunorderedlist','blockquote','inserthorizontalrule',
+                                  'decreasefontsize','increasefontsize'//,'hyperlink'
+                                  ]};
                                           
     // -> create editor instance to edit all divs which have the class "feindura_editPage"
-    //new MooRTE('div.feindura_editPage, span.feindura_editTitle', {skin:'rteFeinduraSkin', defaults: MooRTEButtons, location:'pageTop'});
     new MooRTE({elements:'div.feindura_editPage, span.feindura_editTitle',skin:'rteFeinduraSkin', buttons: MooRTEButtons,location:'pageTop'});
   
   });

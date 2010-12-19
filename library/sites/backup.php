@@ -52,7 +52,7 @@ if($unwriteableList && checkBasePath()) {
   <h1><?= $langFile['BACKUP_TITLE_BACKUP']; ?></h1>
   <div class="content" style="text-align: center;">
   
-  <a href="index.php?site=backup&amp;downloadBackup" target="_blank" class="downloadBackup" onclick="(function() {window.location = 'index.php?site=backup'}).delay(2000);"><?= $langFile['BACKUP_BUTTON_DOWNLOAD']; ?></a>
+  <a href="index.php?site=backup&amp;downloadBackup" target="_blank" class="downloadBackup" onclick="(function() {requestLeftSidebar('backup')}).delay(3000);"><?= $langFile['BACKUP_BUTTON_DOWNLOAD']; ?></a><!-- (function() {window.location = 'index.php?site=backup'}).delay(3000); -->
   
   </div>
   <div class="bottom"></div>
@@ -80,7 +80,7 @@ $hidden = ($savedForm != 'restorBackup') ? ' hidden' : '';
     <br />
     <?php
     
-    $backups = $generalFunctions->readFolder($backupFolder);
+    $backups = generalFunctions::readFolder($backupFolder);
     if(!empty($backups['files'])) {
       
       echo '<h3>'.$langFile['BACKUP_TITLE_RESTORE_FROMFILES'].'</h3>';
@@ -98,7 +98,7 @@ $hidden = ($savedForm != 'restorBackup') ? ' hidden' : '';
       $backups['files'] = array_reverse($backups['files']);
       foreach($backups['files'] as $backupFile) {
         $backupTime = filemtime(DOCUMENTROOT.$backupFile);
-        $backupTime = $statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($backupTime)).' '.$statisticFunctions->formatTime($backupTime);
+        $backupTime = statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($backupTime)).' '.statisticFunctions::formatTime($backupTime);
         
         echo '<tr><td class="left">';
         echo '<input type="radio" name="restoreBackupFile" class="restoreBackupFiles" id="backupFile'.$backupFile.'" value="'.$backupFile.'">';

@@ -50,7 +50,7 @@ if(isset($_GET['downloadBackup'])) {
     } else {
       
       if(@file_exists($backupFile)) {
-        $statisticFunctions->saveTaskLog(29); // <- SAVE the task in a LOG FILE
+        statisticFunctions::saveTaskLog(29); // <- SAVE the task in a LOG FILE
          
         header("Content-Type: application/octet-stream");
         header('Content-Disposition: attachment; filename="'.basename($backupFile).'"');
@@ -65,6 +65,13 @@ if(isset($_GET['downloadBackup'])) {
     $errorWindow .= $unwriteableList;
 }
 
+// ------------>> DELETE BACKUP
+if(isset($_GET['status']) && $_GET['status'] == 'deleteBackup') {
+  if(!empty($_GET['file']) && unlink(DOCUMENTROOT.$_GET['file'])) {
+    statisticFunctions::saveTaskLog(31); // <- SAVE the task in a LOG FILE
+  } else
+    $errorWindow .= $langFile['BACKUP_ERROR_DELETE'];
+}
 
 // ------------>> RESTORE THE BACKUP
 if(isset($_POST['send']) && $_POST['send'] == 'restore') {
@@ -112,7 +119,7 @@ if(isset($_POST['send']) && $_POST['send'] == 'restore') {
     // only proceed when the backup was succesfully created
     if($errorWindow === false) {
       // -> extracting the backup file
-      require_once(dirname(__FILE__).'/../thirdparty/pclzip.lib.php');
+      require_once(dirname(__FILE__).'/../thirdparty/php/pclzip.lib.php');
       $archive = new PclZip($backupFile);
       // -> extract CONFIG
       if($archive->extract(PCLZIP_OPT_PATH, DOCUMENTROOT.$adminConfig['basePath'],
@@ -150,7 +157,7 @@ if(isset($_POST['send']) && $_POST['send'] == 'restore') {
     if($errorWindow === false) {
       // set documentSaved status
       $documentSaved = true;
-      $statisticFunctions->saveTaskLog(30); // <- SAVE the task in a LOG FILE
+      statisticFunctions::saveTaskLog(30); // <- SAVE the task in a LOG FILE
     }
   }
   

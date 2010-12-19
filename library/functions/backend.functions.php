@@ -157,7 +157,7 @@ function isAdmin() {
 function getNewPageId() {
   
   // loads the file list in an array
-  $pages = $GLOBALS['generalFunctions']->getStoredPageIds();
+  $pages = generalFunctions::getStoredPageIds();
   
   $highestId = 0;
   
@@ -238,6 +238,58 @@ function getNewUserId() {
 }
 
 /**
+ * <b>Name</b> addSlashToPathsEnd()<br />
+ * 
+ * Esures that the the post vars with a 'Path' in the key value, ending with a slash.
+ * 
+ * 
+ * @version 1.0
+ * <br />
+ * <b>ChangeLog</b><br />
+ *    - 1.0 initial release
+ * 
+ */
+function addSlashToPathsEnd($postData) {
+  foreach($postData as $postKey => $post) {
+    
+    if(strstr($postKey,'Path')) {
+      if(!empty($post) && substr($post,-1) !== '/') {
+        $post = $post.'/';        
+      }
+      $post = preg_replace("#/+#",'/',$post);
+      
+      $_POST[$postKey] = $post;
+    
+    } elseif(is_array($post))
+      addSlashToPathsEnd($post);
+  }
+}
+
+/**
+ * <b>Name</b> createBasicFolders()<br />
+ * 
+ * Check if the config, pages and statistic folders exist, if not try to create these.
+ * 
+ * 
+ * @version 1.0
+ * <br />
+ * <b>ChangeLog</b><br />
+ *    - 1.0 initial release
+ * 
+ */
+function createBasicFolders() {  
+  // config folder
+  if(!is_dir(dirname(__FILE__).'/../../config'))
+    mkdir(dirname(__FILE__).'/../../config',PERMISSIONS);    
+  // pages folder
+  if(!is_dir(dirname(__FILE__).'/../../pages'))
+    mkdir(dirname(__FILE__).'/../../pages',PERMISSIONS);  
+  // statistic folder
+  if(!is_dir(dirname(__FILE__).'/../../statistic'))
+    mkdir(dirname(__FILE__).'/../../statistic',PERMISSIONS);
+}
+
+/**
  * <b>Name</b> saveCategories()<br />
  * 
  * Saves the category-settings config array to the "config/category.config.php" file.
@@ -263,6 +315,8 @@ function getNewUserId() {
  */
 function saveCategories($newCategories) {
   
+  createBasicFolders();
+  
   // öffnet die category.config.php zum schreiben
   if($file = fopen(dirname(__FILE__)."/../../config/category.config.php","w")) {
 
@@ -275,20 +329,20 @@ function saveCategories($newCategories) {
 
         // CHECK BOOL VALUES and change to FALSE
         $category['public'] = (isset($category['public']) && $category['public']) ? 'true' : 'false';
-        $category['createdelete'] = (isset($category['createdelete']) && $category['createdelete']) ? 'true' : 'false';
+        $category['createDelete'] = (isset($category['createDelete']) && $category['createDelete']) ? 'true' : 'false';
         $category['thumbnail'] = (isset($category['thumbnail']) && $category['thumbnail']) ? 'true' : 'false';
         $category['plugins'] = (isset($category['plugins']) && $category['plugins']) ? 'true' : 'false';
-        $category['showtags'] = (isset($category['showtags']) && $category['showtags']) ? 'true' : 'false';
-        $category['showpagedate'] = (isset($category['showpagedate']) && $category['showpagedate']) ? 'true' : 'false';
-        $category['sortbypagedate'] = (isset($category['sortbypagedate']) && $category['sortbypagedate']) ? 'true' : 'false';
-        $category['sortascending'] = (isset($category['sortascending']) && $category['sortascending']) ? 'true' : 'false';
+        $category['showTags'] = (isset($category['showTags']) && $category['showTags']) ? 'true' : 'false';
+        $category['showPageDate'] = (isset($category['showPageDate']) && $category['showPageDate']) ? 'true' : 'false';
+        $category['sortByPageDate'] = (isset($category['sortByPageDate']) && $category['sortByPageDate']) ? 'true' : 'false';
+        $category['sortAscending'] = (isset($category['sortAscending']) && $category['sortAscending']) ? 'true' : 'false';
         
         // -> CHECK depency of PAGEDATE
-        if($category['showpagedate'] == 'false')
-          $category['sortbypagedate'] = 'false';
+        if($category['showPageDate'] == 'false')
+          $category['sortByPageDate'] = 'false';
         
-        if($category['sortbypagedate'] == 'true')
-          $category['showpagedate'] = 'true';
+        if($category['sortByPageDate'] == 'true')
+          $category['showPageDate'] = 'true';
         
         // -> CHECK if the THUMBNAIL HEIGHT/WIDTH is empty, and add the previous ones
         if(!isset($category['thumbWidth']))
@@ -297,7 +351,7 @@ function saveCategories($newCategories) {
           $category['thumbHeight'] = $GLOBALS['categoryConfig'][$category['id']]['thumbHeight'];
         
         // escape single quotes
-        $category = $GLOBALS['generalFunctions']->escapeQuotesRecursive($category);
+        $category = generalFunctions::escapeQuotesRecursive($category);
         
         // -> CLEAN all " out of the strings
         foreach($category as $postKey => $post) {
@@ -309,28 +363,28 @@ function saveCategories($newCategories) {
       
         // bubbles through the page, category and adminConfig to see if it should save the styleheet-file path, id or class-attribute
         $category['styleFile'] = setStylesByPriority($category['styleFile'],'styleFile',true);
-        $category['styleId'] = setStylesByPriority($GLOBALS['xssFilter']->string($category['styleId']),'styleId',true);
-        $category['styleClass'] = setStylesByPriority($GLOBALS['xssFilter']->string($category['styleClass']),'styleClass',true);        
+        $category['styleId'] = setStylesByPriority(xssFilter::string($category['styleId']),'styleId',true);
+        $category['styleClass'] = setStylesByPriority(xssFilter::string($category['styleClass']),'styleClass',true);        
         
         // WRITE
         fwrite($file,"\$categoryConfig[".$category['id']."]['id'] =              ".$category['id'].";\n");
         fwrite($file,"\$categoryConfig[".$category['id']."]['name'] =            '".$category['name']."';\n");
         
         fwrite($file,"\$categoryConfig[".$category['id']."]['public'] =          ".$category['public'].";\n");        
-        fwrite($file,"\$categoryConfig[".$category['id']."]['createdelete'] =    ".$category['createdelete'].";\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['createDelete'] =    ".$category['createDelete'].";\n");
         fwrite($file,"\$categoryConfig[".$category['id']."]['thumbnail'] =       ".$category['thumbnail'].";\n");        
         fwrite($file,"\$categoryConfig[".$category['id']."]['plugins'] =         ".$category['plugins'].";\n");
-        fwrite($file,"\$categoryConfig[".$category['id']."]['showtags'] =        ".$category['showtags'].";\n");
-        fwrite($file,"\$categoryConfig[".$category['id']."]['showpagedate'] =    ".$category['showpagedate'].";\n");
-        fwrite($file,"\$categoryConfig[".$category['id']."]['sortbypagedate'] =  ".$category['sortbypagedate'].";\n");
-        fwrite($file,"\$categoryConfig[".$category['id']."]['sortascending'] =   ".$category['sortascending'].";\n\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['showTags'] =        ".$category['showTags'].";\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['showPageDate'] =    ".$category['showPageDate'].";\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['sortByPageDate'] =  ".$category['sortByPageDate'].";\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['sortAscending'] =   ".$category['sortAscending'].";\n\n");
         
         fwrite($file,"\$categoryConfig[".$category['id']."]['styleFile'] =       '".$category['styleFile']."';\n");
         fwrite($file,"\$categoryConfig[".$category['id']."]['styleId'] =         '".$category['styleId']."';\n");
         fwrite($file,"\$categoryConfig[".$category['id']."]['styleClass'] =      '".$category['styleClass']."';\n\n");
         
-        fwrite($file,"\$categoryConfig[".$category['id']."]['thumbWidth'] =      '".$GLOBALS['xssFilter']->int($category['thumbWidth'])."';\n");
-        fwrite($file,"\$categoryConfig[".$category['id']."]['thumbHeight'] =     '".$GLOBALS['xssFilter']->int($category['thumbHeight'])."';\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['thumbWidth'] =      '".xssFilter::int($category['thumbWidth'])."';\n");
+        fwrite($file,"\$categoryConfig[".$category['id']."]['thumbHeight'] =     '".xssFilter::int($category['thumbHeight'])."';\n");
         fwrite($file,"\$categoryConfig[".$category['id']."]['thumbRatio'] =      '".$category['thumbRatio']."';\n\n\n");
         
       }    
@@ -341,7 +395,7 @@ function saveCategories($newCategories) {
     fclose($file);
     
     // reset the stored page ids
-    $GLOBALS['generalFunctions']->storedPagesIds = null;
+    generalFunctions::$storedPageIds = null;
     
     return true;
   } else
@@ -502,27 +556,32 @@ function moveCategories(&$categoryConfig, $category, $direction, $position = fal
  * 
  * @return bool TRUE if the page was succesfull moved, otherwise FALSE
  * 
- * @version 1.0
+ * @version 1.01
  * <br />
  * <b>ChangeLog</b><br />
+ *    - 1.01 add create category folder, if not exiting
  *    - 1.0 initial release
  * 
  */
 function movePage($page, $fromCategory, $toCategory) {
   
   // if there are pages not in a category set the category to empty
-  if($fromCategory === false || $fromCategory == 0)
-    $fromCategory = '';
-  if($toCategory === false || $toCategory == 0)
-    $toCategory = '';
-    
+  $fromCategory = ($fromCategory === false || $fromCategory == 0)
+    ? '' : $fromCategory.'/';
+  $toCategory = ($toCategory === false || $toCategory == 0)
+    ? '' : $toCategory.'/';
+  
+  // create category folder if its not exist
+  if(!empty($toCategory) && !is_dir(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$toCategory))
+    mkdir(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$toCategory,PERMISSIONS);
+  
   // MOVE categories
-  if(copy(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$fromCategory.'/'.$page.'.php',
-    DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$toCategory.'/'.$page.'.php') &&
-    unlink(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$fromCategory.'/'.$page.'.php')) {
+  if(copy(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$fromCategory.$page.'.php',
+    DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$toCategory.$page.'.php') &&
+    unlink(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'.$fromCategory.$page.'.php')) {
     // reset the stored page ids
-    $GLOBALS['generalFunctions']->storedPagess = null;
-    $GLOBALS['generalFunctions']->storedPagesIds = null;
+    generalFunctions::$storedPages = null;
+    generalFunctions::$storedPageIds = null;
     
     return true;
   } else
@@ -560,52 +619,52 @@ function saveAdminConfig($adminConfig) {
     $adminConfig['speakingUrl'] = (isset($adminConfig['speakingUrl']) && $adminConfig['speakingUrl']) ? 'true' : 'false';
     $adminConfig['user']['fileManager'] = (isset($adminConfig['user']['fileManager']) && $adminConfig['user']['fileManager']) ? 'true' : 'false';
     $adminConfig['user']['editWebsiteFiles'] = (isset($adminConfig['user']['editWebsiteFiles']) && $adminConfig['user']['editWebsiteFiles']) ? 'true' : 'false';
-    $adminConfig['user']['editStylesheets'] = (isset($adminConfig['user']['editStylesheets']) && $adminConfig['user']['editStylesheets']) ? 'true' : 'false';
+    $adminConfig['user']['editStyleSheets'] = (isset($adminConfig['user']['editStyleSheets']) && $adminConfig['user']['editStyleSheets']) ? 'true' : 'false';
     $adminConfig['setStartPage'] = (isset($adminConfig['setStartPage']) && $adminConfig['setStartPage']) ? 'true' : 'false';
-    $adminConfig['pages']['createdelete'] = (isset($adminConfig['pages']['createdelete']) && $adminConfig['pages']['createdelete']) ? 'true' : 'false';
+    $adminConfig['pages']['createDelete'] = (isset($adminConfig['pages']['createDelete']) && $adminConfig['pages']['createDelete']) ? 'true' : 'false';
     $adminConfig['pages']['thumbnails'] = (isset($adminConfig['pages']['thumbnails']) && $adminConfig['pages']['thumbnails']) ? 'true' : 'false';
     $adminConfig['pages']['plugins'] = (isset($adminConfig['pages']['plugins']) && $adminConfig['pages']['plugins']) ? 'true' : 'false';
-    $adminConfig['pages']['showtags'] = (isset($adminConfig['pages']['showtags']) && $adminConfig['pages']['showtags']) ? 'true' : 'false';
+    $adminConfig['pages']['showTags'] = (isset($adminConfig['pages']['showTags']) && $adminConfig['pages']['showTags']) ? 'true' : 'false';
     
     // escape single quotes
-    $adminConfig = $GLOBALS['generalFunctions']->escapeQuotesRecursive($adminConfig);
+    $adminConfig = generalFunctions::escapeQuotesRecursive($adminConfig);
     
     flock($file,2); // LOCK_EX
     fwrite($file,PHPSTARTTAG); // < ?php
     
     fwrite($file,"\$adminConfig['url'] =              '".$adminConfig['url']."';\n");
     fwrite($file,"\$adminConfig['basePath'] =         '".$adminConfig['basePath']."';\n");
-    fwrite($file,"\$adminConfig['websitePath'] =      '".$GLOBALS['xssFilter']->path($adminConfig['websitePath'])."';\n");
-    fwrite($file,"\$adminConfig['uploadPath'] =       '".$GLOBALS['xssFilter']->path($adminConfig['uploadPath'])."';\n");  
-    fwrite($file,"\$adminConfig['websitefilesPath'] = '".$GLOBALS['xssFilter']->path($adminConfig['websitefilesPath'])."';\n");
-    fwrite($file,"\$adminConfig['stylesheetPath'] =   '".$GLOBALS['xssFilter']->path($adminConfig['stylesheetPath'])."';\n");    
+    fwrite($file,"\$adminConfig['websitePath'] =      '".xssFilter::path($adminConfig['websitePath'])."';\n");
+    fwrite($file,"\$adminConfig['uploadPath'] =       '".xssFilter::path($adminConfig['uploadPath'])."';\n");  
+    fwrite($file,"\$adminConfig['websiteFilesPath'] = '".xssFilter::path($adminConfig['websiteFilesPath'])."';\n");
+    fwrite($file,"\$adminConfig['stylesheetPath'] =   '".xssFilter::path($adminConfig['stylesheetPath'])."';\n");    
     fwrite($file,"\$adminConfig['dateFormat'] =       '".$adminConfig['dateFormat']."';\n");
     fwrite($file,"\$adminConfig['speakingUrl'] =      ".$adminConfig['speakingUrl'].";\n\n");
     
-    fwrite($file,"\$adminConfig['varName']['page'] =     '".$GLOBALS['xssFilter']->alphaNumeric($adminConfig['varName']['page'])."';\n");  
-    fwrite($file,"\$adminConfig['varName']['category'] = '".$GLOBALS['xssFilter']->alphaNumeric($adminConfig['varName']['category'])."';\n");  
-    fwrite($file,"\$adminConfig['varName']['modul'] =    '".$GLOBALS['xssFilter']->alphaNumeric($adminConfig['varName']['modul'])."';\n\n");
+    fwrite($file,"\$adminConfig['varName']['page'] =     '".xssFilter::alphaNumeric($adminConfig['varName']['page'])."';\n");  
+    fwrite($file,"\$adminConfig['varName']['category'] = '".xssFilter::alphaNumeric($adminConfig['varName']['category'])."';\n");  
+    fwrite($file,"\$adminConfig['varName']['modul'] =    '".xssFilter::alphaNumeric($adminConfig['varName']['modul'])."';\n\n");
     
     fwrite($file,"\$adminConfig['user']['fileManager'] =      ".$adminConfig['user']['fileManager'].";\n");
     fwrite($file,"\$adminConfig['user']['editWebsiteFiles'] = ".$adminConfig['user']['editWebsiteFiles'].";\n");
-    fwrite($file,"\$adminConfig['user']['editStylesheets'] =  ".$adminConfig['user']['editStylesheets'].";\n");  
+    fwrite($file,"\$adminConfig['user']['editStyleSheets'] =  ".$adminConfig['user']['editStyleSheets'].";\n");  
     fwrite($file,"\$adminConfig['user']['info'] =             '".$adminConfig['user']['info']."';\n\n");
     
     fwrite($file,"\$adminConfig['setStartPage'] =          ".$adminConfig['setStartPage'].";\n");
-    fwrite($file,"\$adminConfig['pages']['createdelete'] = ".$adminConfig['pages']['createdelete'].";\n");
+    fwrite($file,"\$adminConfig['pages']['createDelete'] = ".$adminConfig['pages']['createDelete'].";\n");
     fwrite($file,"\$adminConfig['pages']['thumbnails'] =   ".$adminConfig['pages']['thumbnails'].";\n");    
     fwrite($file,"\$adminConfig['pages']['plugins'] =      ".$adminConfig['pages']['plugins'].";\n");
-    fwrite($file,"\$adminConfig['pages']['showtags'] =     ".$adminConfig['pages']['showtags'].";\n\n");
+    fwrite($file,"\$adminConfig['pages']['showTags'] =     ".$adminConfig['pages']['showTags'].";\n\n");
     
     fwrite($file,"\$adminConfig['editor']['enterMode'] =  '".$adminConfig['editor']['enterMode']."';\n");
     fwrite($file,"\$adminConfig['editor']['styleFile'] =  '".$adminConfig['editor']['styleFile']."';\n");
-    fwrite($file,"\$adminConfig['editor']['styleId'] =    '".$GLOBALS['xssFilter']->string($adminConfig['editor']['styleId'])."';\n");  
-    fwrite($file,"\$adminConfig['editor']['styleClass'] = '".$GLOBALS['xssFilter']->string($adminConfig['editor']['styleClass'])."';\n\n");  
+    fwrite($file,"\$adminConfig['editor']['styleId'] =    '".xssFilter::string($adminConfig['editor']['styleId'])."';\n");  
+    fwrite($file,"\$adminConfig['editor']['styleClass'] = '".xssFilter::string($adminConfig['editor']['styleClass'])."';\n\n");  
   
-    fwrite($file,"\$adminConfig['pageThumbnail']['width'] =  '".$GLOBALS['xssFilter']->int($adminConfig['pageThumbnail']['width'])."';\n");
-    fwrite($file,"\$adminConfig['pageThumbnail']['height'] = '".$GLOBALS['xssFilter']->int($adminConfig['pageThumbnail']['height'])."';\n");
+    fwrite($file,"\$adminConfig['pageThumbnail']['width'] =  '".xssFilter::int($adminConfig['pageThumbnail']['width'])."';\n");
+    fwrite($file,"\$adminConfig['pageThumbnail']['height'] = '".xssFilter::int($adminConfig['pageThumbnail']['height'])."';\n");
     fwrite($file,"\$adminConfig['pageThumbnail']['ratio'] =  '".$adminConfig['pageThumbnail']['ratio']."';\n");
-    fwrite($file,"\$adminConfig['pageThumbnail']['path'] =   '".$GLOBALS['xssFilter']->path($adminConfig['pageThumbnail']['path'])."';\n\n");
+    fwrite($file,"\$adminConfig['pageThumbnail']['path'] =   '".xssFilter::path($adminConfig['pageThumbnail']['path'])."';\n\n");
     
     fwrite($file,"return \$adminConfig;");
        
@@ -655,7 +714,7 @@ function saveUserConfig($userConfig) {
       foreach($userConfig as $user => $configs) {
         
         // escape single quotes
-        $configs = $GLOBALS['generalFunctions']->escapeQuotesRecursive($configs);
+        $configs = generalFunctions::escapeQuotesRecursive($configs);
       
         // CHECK BOOL VALUES and change to FALSE
         $userConfig[$user]['admin'] = (isset($userConfig[$user]['admin']) && $userConfig[$user]['admin']) ? 'true' : 'false';
@@ -718,14 +777,14 @@ function saveWebsiteConfig($websiteConfig) {
     $websiteConfig['keywords'] = $keywords;
     
     // format all other strings
-    $websiteConfig['title'] = $GLOBALS['generalFunctions']->prepareStringInput($websiteConfig['title']);
-    $websiteConfig['publisher'] = $GLOBALS['generalFunctions']->prepareStringInput($websiteConfig['publisher']);
-    $websiteConfig['copyright'] = $GLOBALS['generalFunctions']->prepareStringInput($websiteConfig['copyright']);
-    $websiteConfig['keywords'] = $GLOBALS['generalFunctions']->prepareStringInput($websiteConfig['keywords']);
-    $websiteConfig['description'] = $GLOBALS['generalFunctions']->prepareStringInput($websiteConfig['description']);
+    $websiteConfig['title'] = generalFunctions::prepareStringInput($websiteConfig['title']);
+    $websiteConfig['publisher'] = generalFunctions::prepareStringInput($websiteConfig['publisher']);
+    $websiteConfig['copyright'] = generalFunctions::prepareStringInput($websiteConfig['copyright']);
+    $websiteConfig['keywords'] = generalFunctions::prepareStringInput($websiteConfig['keywords']);
+    $websiteConfig['description'] = generalFunctions::prepareStringInput($websiteConfig['description']);
     
     // escape single quotes
-    $websiteConfig = $GLOBALS['generalFunctions']->escapeQuotesRecursive($websiteConfig);
+    $websiteConfig = generalFunctions::escapeQuotesRecursive($websiteConfig);
     
     // *** write
     flock($file,2); //LOCK_EX
@@ -778,18 +837,18 @@ function saveStatisticConfig($statisticConfig) {
   if($file = fopen("config/statistic.config.php","w")) {
         
     // escape single quotes
-    $websiteConfig = $GLOBALS['generalFunctions']->escapeQuotesRecursive($websiteConfig);
+    $websiteConfig = generalFunctions::escapeQuotesRecursive($websiteConfig);
     
     // WRITE
     flock($file,2); //LOCK_EX
       fwrite($file,PHPSTARTTAG); //< ?php
   
-      fwrite($file,"\$statisticConfig['number']['mostVisitedPages']        = '".$GLOBALS['xssFilter']->int($statisticConfig['number']['mostVisitedPages'])."';\n");
-      fwrite($file,"\$statisticConfig['number']['longestVisitedPages']     = '".$GLOBALS['xssFilter']->int($statisticConfig['number']['longestVisitedPages'])."';\n");
-      fwrite($file,"\$statisticConfig['number']['lastEditedPages']         = '".$GLOBALS['xssFilter']->int($statisticConfig['number']['lastEditedPages'])."';\n\n");
+      fwrite($file,"\$statisticConfig['number']['mostVisitedPages']        = '".xssFilter::int($statisticConfig['number']['mostVisitedPages'])."';\n");
+      fwrite($file,"\$statisticConfig['number']['longestVisitedPages']     = '".xssFilter::int($statisticConfig['number']['longestVisitedPages'])."';\n");
+      fwrite($file,"\$statisticConfig['number']['lastEditedPages']         = '".xssFilter::int($statisticConfig['number']['lastEditedPages'])."';\n\n");
       
-      fwrite($file,"\$statisticConfig['number']['refererLog']    = '".$GLOBALS['xssFilter']->int($statisticConfig['number']['refererLog'])."';\n");
-      fwrite($file,"\$statisticConfig['number']['taskLog']       = '".$GLOBALS['xssFilter']->int($statisticConfig['number']['taskLog'])."';\n\n");
+      fwrite($file,"\$statisticConfig['number']['refererLog']    = '".xssFilter::int($statisticConfig['number']['refererLog'])."';\n");
+      fwrite($file,"\$statisticConfig['number']['taskLog']       = '".xssFilter::int($statisticConfig['number']['taskLog'])."';\n\n");
       
       
       fwrite($file,"return \$statisticConfig;");
@@ -830,7 +889,7 @@ function savePluginsConfig($pluginsConfig) {
   if($file = fopen(dirname(__FILE__)."/../../config/plugins.config.php","w")) {
     
     // escape single quotes
-    $pluginsConfig = $GLOBALS['generalFunctions']->escapeQuotesRecursive($pluginsConfig);
+    $pluginsConfig = generalFunctions::escapeQuotesRecursive($pluginsConfig);
     
     // CHECK BOOL VALUES and change to FALSE   
     flock($file,2); // LOCK_EX
@@ -866,7 +925,7 @@ function savePluginsConfig($pluginsConfig) {
  * <b>Used Global Variables</b><br />
  *    - <var>$adminConfig</var> the administrator-settings config (included in the {@link general.include.php})
  *    - <var>$langFile</var> the language file of the backend (included in the {@link general.include.php})
- *    - <var>$xssFilter</var> the {@link xssFilter::xssFilter()} class instance created in the {@link general.include.php})
+ *    - <var>$xssFilter</var> the {@link xssFilter::__construct()} class instance created in the {@link general.include.php})
  * 
  * @param false|string $errorWindow will be filled with an error message if an error occurs
  * 
@@ -885,21 +944,25 @@ function saveSpeakingUrl(&$errorWindow) {
   $save = false;
   $data = false;
   $htaccessFile = DOCUMENTROOT.'/.htaccess';
+  $newWebsitePath = xssFilter::path(substr($_POST['cfg_websitePath'],1));
+  $oldWebsitePath = xssFilter::path(substr($GLOBALS['adminConfig']['websitePath'],1));
   
-  $newWebsitePath = 'RewriteRule ^'.$GLOBALS['xssFilter']->path(substr($_POST['cfg_websitePath'],1));
-  $oldWebsitePath = 'RewriteRule ^'.$GLOBALS['xssFilter']->path(substr($GLOBALS['adminConfig']['websitePath'],1));
+  $newRewriteRule = 'RewriteRule ^'.$newWebsitePath.'category/(.*)/(.*)\.html\?*(.*)$ '.$newWebsitePath.'?category=$1&page=$2$3 [QSA,L]'."\n";
+  $newRewriteRule .= 'RewriteRule ^'.$newWebsitePath.'page/(.*)\.html\?*(.*)$ '.$newWebsitePath.'?page=$1$2 [QSA,L]';
+  $oldRewriteRule = 'RewriteRule ^'.$oldWebsitePath.'category/(.*)/(.*)\.html\?*(.*)$ '.$oldWebsitePath.'?category=$1&page=$2$3 [QSA,L]'."\n";
+  $oldRewriteRule .= 'RewriteRule ^'.$oldWebsitePath.'page/(.*)\.html\?*(.*)$ '.$oldWebsitePath.'?page=$1$2 [QSA,L]';
   
   $speakingUrlCode = '<IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
 # rewrite "/page/*.html" and "/category/*/*.html"
 # and also passes the session var
+RewriteCond %{REQUEST_URI} !\.(css|jpg|gif|png|js)$ [NC] #do the stuff that follows only if the request doesn’t end in one of these file extensions.
 RewriteCond %{HTTP_HOST} ^'.str_replace(array('http://www.','https://www.','http://','https://'),'',$_SERVER["HTTP_HOST"]).'$
-'.$newWebsitePath.'category/(.*)/(.*)\.html\?*(.*)$ ?category=$1&page=$2$3 [QSA,L]
-'.$newWebsitePath.'page/(.*)\.html\?*(.*)$ ?page=$1$2 [QSA,L]
+'.$newRewriteRule.'
 </IfModule>';
   
-  $oldSpeakingUrlCode = str_replace($newWebsitePath,$oldWebsitePath,$speakingUrlCode);
+  $oldSpeakingUrlCode = str_replace($newRewriteRule,$oldRewriteRule,$speakingUrlCode);
   
   // -> looks if the MOD_REWRITE modul exists
   $apacheModules = (function_exists('apache_get_modules')) ? apache_get_modules() : array(false);
@@ -914,16 +977,12 @@ RewriteCond %{HTTP_HOST} ^'.str_replace(array('http://www.','https://www.','http
     
     // vars
     $currrentContent = file_get_contents($htaccessFile);
-    $checkCurrrentContent = (strlen($newWebsitePath) >  strlen($oldWebsitePath))
-      ? str_replace(array($newWebsitePath,$oldWebsitePath),'',$currrentContent)
-      : str_replace(array($oldWebsitePath,$newWebsitePath),'',$currrentContent);
-    $checkSpeakingUrlCode = str_replace($newWebsitePath,'',$speakingUrlCode);
     
     // ->> create or change the .htaccess file
     if($_POST['cfg_speakingUrl'] == 'true') {
       
       // -> if no speakingUrl code exists, add new one
-      if(strpos($checkCurrrentContent,$checkSpeakingUrlCode) === false) {
+      if(strpos($currrentContent,$speakingUrlCode) === false && strpos($currrentContent,$oldSpeakingUrlCode) === false) {
          
         $save = true;
         $data = $currrentContent."\n".$speakingUrlCode;
@@ -1047,7 +1106,7 @@ function generateBackupFileName($backupAppendix = false) {
 function createBackup($backupFileName) {
   
   // -> generate archive
-  require_once(dirname(__FILE__).'/../thirdparty/pclzip.lib.php');
+  require_once(dirname(__FILE__).'/../thirdparty/php/pclzip.lib.php');
   $archive = new PclZip($backupFileName);
   $catchError = $archive->add(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'config/,'.DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'statistic/,'.DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/',PCLZIP_OPT_REMOVE_PATH, DOCUMENTROOT.$GLOBALS['adminConfig']['basePath']);
 
@@ -1092,7 +1151,7 @@ function prepareStyleFilePaths($givenStyleFiles) {
           $styleFile = '/'.$styleFile;
           
       if(!strstr($styleFile,'://')) //check path if its not an url (urls dont pass the xssFilter :-))
-        $styleFile = $GLOBALS['xssFilter']->path($styleFile);
+        $styleFile = xssFilter::path($styleFile);
       
       // adds back to the string only if its not empty
       if(!empty($styleFile))
@@ -1186,6 +1245,49 @@ function showStyleFileInputs($styleFiles,$inputNames) {
 }
 
 /**
+ * <b>Name</b> showPageDate()<br>
+ * 
+ * Shows the page date, if the date is invalid it shows an error text.
+ * 
+ * <b>Used Global Variables</b><br />
+ *    - <var>$langFile</var> the language file of the backend (included in the {@link general.include.php})
+ * 
+ * @param array        $pageContent  the $pageContent array of a page
+ * 
+ * @uses statisticFunctions::checkPageDate()      to check if the page date is a valid date
+ * @uses statisticFunctions::dateDayBeforeAfter() to check if the date was yesterday or is tomorrow
+ * @uses statisticFunctions::formatDate()         to format the unix timstamp into the right date format
+ * 
+ * @return string the page date as text string, or an error text
+ * 
+ * @static
+ * @version 1.0
+ * <br>
+ * <b>ChangeLog</b><br>
+ *    - 1.0 initial release
+ * 
+ */
+function showPageDate($pageContent) {
+  
+  // vars
+  $return = false;
+  $titleDateBefore = '';
+  $titleDateAfter = '';
+  
+  if(statisticFunctions::checkPageDate($pageContent)) {    	
+  	// adds spaces on before and after
+  	if($pageContent['pageDate']['before']) $titleDateBefore = $pageContent['pageDate']['before'].' ';
+  	if($pageContent['pageDate']['after']) $titleDateAfter = ' '.$pageContent['pageDate']['after'];
+
+    // CHECKs the DATE FORMAT
+    $return = (statisticFunctions::validateDateFormat(statisticFunctions::formatDate($pageContent['pageDate']['date'])) === false)
+    ? '[br /][br /][b]'.$GLOBALS['langFile']['sortablePageList_pagedate'].'[/b][br /]'.$titleDateBefore.'[span style=color:#950300]'.$langFile['editor_pageSettings_pagedate_error'].':[/span][br /] '.$pageContent['pageDate']['date'].$titleDateAfter
+    : '[br /][br /][b]'.$GLOBALS['langFile']['sortablePageList_pagedate'].'[/b][br /]'.$titleDateBefore.statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($pageContent['pageDate']['date'],$langFile)).$titleDateAfter;
+  }    
+  return $return;
+}
+
+/**
  * <b>Name</b> editFiles()<br />
  * 
  * Generates a editable textfield with a file selection and a input for creating new files.
@@ -1245,7 +1347,7 @@ function editFiles($filesPath, $siteName, $status, $titleText, $anchorName, $fil
   $filesPath = str_replace(DOCUMENTROOT,'',$filesPath);  
   $dir = DOCUMENTROOT.$filesPath;
   if(!empty($filesPath) && is_dir($dir)) {
-    $files = $GLOBALS['generalFunctions']->readFolderRecursive($filesPath);
+    $files = generalFunctions::readFolderRecursive($filesPath);
     $files = $files['files'];
 
   	// ->> EXLUDES files or folders
@@ -1421,7 +1523,7 @@ function saveEditedFiles(&$savedForm) {
         
     //$_POST['newFile'] = str_replace( array(" ","%","+","&","#","!","?","$","§",'"',"'","(",")"), '_', $_POST['newFile']);
     $_POST['newFile'] = str_replace( array("ä","ü","ö","ß","Ä","Ü","Ö"), array("ae","ue","oe","ss","Ae","Ue","Oe"), $_POST['newFile']);
-    $_POST['newFile'] = $GLOBALS['generalFunctions']->cleanSpecialChars($_POST['newFile'],'_');
+    $_POST['newFile'] = generalFunctions::cleanSpecialChars($_POST['newFile'],'_');
     
     echo $_POST['newFile'];
     
@@ -1461,7 +1563,7 @@ function saveEditedFiles(&$savedForm) {
  */
 function delDir($dir) {
 
-    $filesFolders = $GLOBALS['generalFunctions']->readFolderRecursive($dir);
+    $filesFolders = generalFunctions::readFolderRecursive($dir);
     
     if(is_array($filesFolders)) {
       $return = false;
@@ -1483,7 +1585,7 @@ function delDir($dir) {
       }
       
       // recheck if everything is deleted
-      $checkFilesFolders = $GLOBALS['generalFunctions']->readFolderRecursive($dir);
+      $checkFilesFolders = generalFunctions::readFolderRecursive($dir);
       
       if(rmdir(DOCUMENTROOT.$dir))
         return true;
@@ -1592,7 +1694,7 @@ function isWritableWarningRecursive($folders) {
         $return .= $isFolder;
       } else {
         $return .= isWritableWarning($folder);
-        if($readFolder = $GLOBALS['generalFunctions']->readFolderRecursive($folder)) {
+        if($readFolder = generalFunctions::readFolderRecursive($folder)) {
           if(is_array($readFolder['folders'])) {
             foreach($readFolder['folders'] as $folder) {
               $return .= isWritableWarning($folder);
@@ -1701,7 +1803,7 @@ function startPageWarning() {
   if(basePathWarning() !== false || !is_dir(DOCUMENTROOT.$GLOBALS['adminConfig']['basePath'].'pages/'))
     return false;
   
-  if($GLOBALS['adminConfig']['setStartPage'] && $GLOBALS['websiteConfig']['startPage'] && ($startPageCategory = $GLOBALS['generalFunctions']->getPageCategory($GLOBALS['websiteConfig']['startPage'])) != 0)
+  if($GLOBALS['adminConfig']['setStartPage'] && $GLOBALS['websiteConfig']['startPage'] && ($startPageCategory = generalFunctions::getPageCategory($GLOBALS['websiteConfig']['startPage'])) != 0)
     $startPageCategory .= '/';
   else
     $startPageCategory = '';

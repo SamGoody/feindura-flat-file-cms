@@ -83,8 +83,6 @@ $langFile['THUMBNAIL_TEXT_NAME'] = 'Page-Thumbnail';
 $langFile['THUMBNAIL_TEXT_WIDTH'] = 'Standard <b>Width</b>';
 $langFile['THUMBNAIL_TEXT_HEIGHT'] = 'Standard <b>Height</b>';
 
-$langFile['THUMBNAIL_TOOLTIP_PREVIEW'] = 'It\'s possible that you still see the previous image after the upload, that due to the browser cache.[br /][br /]Um da To update the current image you have refresh the page (F5).';
-
 $langFile['THUMBNAIL_TOOLTIP_WIDTH'] = 'Standardwidth::The width of the thumbnail in pixels.[br /][br /]The image will be resized to this value after the upload.';
 $langFile['THUMBNAIL_TOOLTIP_HEIGHT'] = 'Standardheight::The height of the thumbnail in pixels.[br /][br /]The image will be resized to this value after the upload.';
 
@@ -137,7 +135,6 @@ $langFile['STATISTICS_TEXT_SEARCHWORD_DESCRIPTION'] = 'Searchwords which led fro
 <a href="http://www.google.de">Google</a>,
 <a href="http://www.yahoo.de">Yahoo</a> or
 <a href="http://www.bing.com">Bing (MSN)</a> to this website.';
-$langFile['STATISTICS_TEXT_NOSEARCHWORDS'] = 'No searchwords led yet to this website.';
 
 $langFile['STATISTICS_TEXT_HOUR_SINGULAR'] = 'hour';
 $langFile['STATISTICS_TEXT_HOUR_PLURAL'] = 'hours';
@@ -191,6 +188,7 @@ $langFile['LOG_FILE_DELETED'] = 'File deleted';
 
 $langFile['LOG_BACKUP_CREATED'] = 'Backup created';
 $langFile['LOG_BACKUP_RESTORED'] = 'Backup restored';
+$langFile['LOG_BACKUP_DELETED'] = 'Backup deleted';
 
 // PAGE/CATEGORY STATUS
 $langFile['STATUS_PAGE_PUBLIC'] = 'Page is public';
@@ -234,6 +232,8 @@ $langFile['BUTTON_CREATEPAGE'] = 'New Page';
 $langFile['BUTTON_TOOLTIP_CREATEPAGE'] = 'Create new page';
 $langFile['BUTTON_DELETEPAGE'] = 'Delete Page';
 $langFile['BUTTON_TOOLTIP_DELETEPAGE'] = 'Delete this page';
+$langFile['BUTTON_FRONTENDEDITPAGE'] = 'Edit page in the frontend';
+$langFile['BUTTON_TOOLTIP_FRONTENDEDITPAGE'] = 'Edit this page directly on the website.';
 $langFile['BUTTON_THUMBNAIL_UPLOAD'] = 'Upload a page thumbnail';
 $langFile['BUTTON_TOOLTIP_THUMBNAIL_UPLOAD'] = 'Upload a thumbnail for this page';
 $langFile['BUTTON_THUMBNAIL_DELETE'] = 'Delete a page thumbnail';
@@ -313,7 +313,6 @@ $langFile['home_lastEditedPages_h1'] = 'last edited pages';
 $langFile['home_longestViewedPages_h1'] = 'longest viewed pages';
 
 $langFile['home_refererLog_h1'] = 'Websites from which visitors came';
-$langFile['home_refererLog_nolog'] = 'Yet there are no visitors which came from other websites.';
 $langFile['home_novisitors'] = 'There are no visitors yet';
 
 /*
@@ -724,8 +723,7 @@ $langFile['unsavedPage_question_h1'] = '<span class="brown">The page has been ch
 $langFile['deletePage_question_part1'] = 'You really want to delete the page';
 $langFile['deletePage_question_part2'] = '?';
 
-$langFile['deletePage_finishnotexisting_part1'] = 'The page';
-$langFile['deletePage_finish_part2'] = 'was successfully deleted';
+$langFile['deletePage_notexisting_part1'] = 'The page';
 $langFile['deletePage_notexisting_part2'] = 'doesn \'t exist';
 
 $langFile['deletePage_finish_error'] = 'ERROR: The page could not be deleted!';
@@ -739,7 +737,6 @@ $langFile['pageThumbnailDelete_question_part1'] = 'You really want to delete the
 $langFile['pageThumbnailDelete_question_part2'] = '?';
 
 $langFile['pageThumbnailDelete_name'] = 'The thumbnail';
-$langFile['pageThumbnailDelete_finish_part2'] = 'was successfully deleted';
 $langFile['pageThumbnailDelete_notexisting_part2'] = 'doesn \'t exist';
 
 $langFile['pageThumbnailDelete_finish_error'] = 'ERROR: The thumbnail could not be deleted!';
@@ -789,28 +786,16 @@ $langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'] = 'Backup before the restor
 
 $langFile['BACKUP_BUTTON_DOWNLOAD'] = 'create and download current backup';
 $langFile['BACKUP_TEXT_RESTORE'] = 'Select here a <span class="logoname"><span>fein</span>dura</span> backup file, to restore an old state.<br /><span class="blue">Before the restore a backup of the old state will be created.</ span>';
+$langFile['BACKUP_TOOLTIP_DELETE'] = 'Delete backup';
+$langFile['BACKUP_TEXT_DELETE_QUESTION1'] = 'Really delete'; // really delete backup 2010-11-05 15:03?
+$langFile['BACKUP_TEXT_DELETE_QUESTION2'] = '?';
 
 $langFile['BACKUP_TITLE_LASTBACKUPS'] = 'Download backups';
 $langFile['BACKUP_TEXT_NOBACKUP'] = 'No backup created yet.';
 
 $langFile['BACKUP_ERROR_FILENOTFOUND'] = 'Backup was not found at:';
 $langFile['BACKUP_ERROR_NORESTROEFILE'] = 'No backup file to restore was selected.';
-
-/*
-* search.php
-*/
-
-// ---------- SEARCH
-$langFile['search_h1'] = 'Search pages';
-$langFile['search_results_h1'] = 'Search results for';
-$langFile['search_results_text1'] = 'Matches in the title';
-$langFile['search_results_text2'] = 'Matches in the date or the category';
-$langFile['search_results_text3'] = 'Matching words:';
-$langFile['search_results_text4'] = 'Matching sentence';
-$langFile['search_results_text8'] = 'Matching with the page ID';
-$langFile['search_results_count'] = 'Results';
-$langFile['search_results_time_part1'] = 'in'; // 12 Treffer in 0.32 Sekunden
-$langFile['search_results_time_part2'] = 'seconds';
+$langFile['BACKUP_ERROR_DELETE'] = 'Backup could not be deleted!';
 
 
 // -----------------------------------------------------------------------------------------------

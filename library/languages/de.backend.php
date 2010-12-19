@@ -49,7 +49,7 @@ $langFile['LOGIN_LINK_FORGOTPASSWORD'] = 'Passwort vergessen?';
 $langFile['LOGIN_LINK_BACKTOLOGIN'] = 'zur&uuml;ck zum Login';
 $langFile['LOGIN_BUTTON_SENDNEWPASSWORD'] = 'SENDEN';
 $langFile['LOGIN_TEXT_NEWPASSWORDEMAIL_SUBJECT'] = 'feindura CMS Passwort angefordert von';
-$langFile['LOGIN_TEXT_NEWPASSWORDEMAIL_MESSAGE'] = 'Du hast ein neues Passwort f&uuml;r das feindura - Flat File CMS angefordert.
+$langFile['LOGIN_TEXT_NEWPASSWORDEMAIL_MESSAGE'] = 'Du hast ein neues Passwort für dein feindura - Flat File CMS angefordert.
 Dein Benutzername und dein neues Passwort lauten:';
 
 $langFile['LOGIN_ERROR_FORGOTPASSWORD_NOEMAIL'] = 'Der Benutzer hat keine E-Mail Adressse angegeben.';
@@ -82,8 +82,6 @@ $langFile['THUMBNAIL_TEXT_UNIT'] = 'Pixel';
 $langFile['THUMBNAIL_TEXT_NAME'] = 'Seiten-Thumbnail';
 $langFile['THUMBNAIL_TEXT_WIDTH'] = 'Standard <b>Breite</b>';
 $langFile['THUMBNAIL_TEXT_HEIGHT'] = 'Standard <b>H&ouml;he</b>';
-
-$langFile['THUMBNAIL_TOOLTIP_PREVIEW'] = 'M&ouml;glicherweise ist nach dem Upload noch das vorherige Bild zu sehen, dies ist bedingt durch den Browser-Cache.[br /][br /]Um das aktuelle Bild zu sehen musst du die Seite aktualisieren (F5).';
 
 $langFile['THUMBNAIL_TOOLTIP_WIDTH'] = 'Standardbreite::Die Breite des Thumbnails in Pixeln.[br /][br /]Das Bild wird beim hochladen auf die angegebene Gr&ouml;&szlig;e skaliert.';
 $langFile['THUMBNAIL_TOOLTIP_HEIGHT'] = 'Standardh&ouml;he::Die H&ouml;he des Thumbnails in Pixeln.[br /][br /]Das Bild wird beim hochladen auf die angegebene Gr&ouml;&szlig;e skaliert.';
@@ -137,7 +135,6 @@ $langFile['STATISTICS_TEXT_SEARCHWORD_DESCRIPTION'] = 'Suchworte die von
 <a href="http://www.google.de">Google</a>,
 <a href="http://www.yahoo.de">Yahoo</a> oder
 <a href="http://www.bing.com">Bing (MSN)</a> auf diese Seite gef&uuml;hrt haben';
-$langFile['STATISTICS_TEXT_NOSEARCHWORDS'] = 'Es haben noch keine Suchworte auf diese Seite gef&uuml;hrt.';
 
 $langFile['STATISTICS_TEXT_HOUR_SINGULAR'] = 'Stunde';
 $langFile['STATISTICS_TEXT_HOUR_PLURAL'] = 'Stunden';
@@ -191,6 +188,7 @@ $langFile['LOG_FILE_DELETED'] = 'Datei gel&ouml;scht';
 
 $langFile['LOG_BACKUP_CREATED'] = 'Backup erstellt';
 $langFile['LOG_BACKUP_RESTORED'] = 'Backup wiederhergestellt';
+$langFile['LOG_BACKUP_DELETED'] = 'Backup gel&ouml;scht';
 
 // PAGE/CATEGORY STATUS
 $langFile['STATUS_PAGE_PUBLIC'] = 'Seite ist &ouml;ffentlich';
@@ -227,15 +225,17 @@ $langFile['BUTTON_BACKUP'] = 'Backup Wiederherst.';
 
 // SUB MENU/FOOTER
 $langFile['BUTTON_FILEMANAGER'] = 'Dateimanager';
-$langFile['BUTTON_TOOLTIP_FILEMANAGER'] = 'Dateien und Bilder verwalten';
+$langFile['BUTTON_TOOLTIP_FILEMANAGER'] = 'Dateien und Bilder verwalten.';
 $langFile['BUTTON_CREATEPAGE'] = 'Neue Seite';
-$langFile['BUTTON_TOOLTIP_CREATEPAGE'] = 'Neue Seite erstellen';
+$langFile['BUTTON_TOOLTIP_CREATEPAGE'] = 'Neue Seite erstellen.';
 $langFile['BUTTON_DELETEPAGE'] = 'Seite l&ouml;schen';
-$langFile['BUTTON_TOOLTIP_DELETEPAGE'] = 'Diese Seite l&ouml;schen';
+$langFile['BUTTON_TOOLTIP_DELETEPAGE'] = 'Diese Seite l&ouml;schen.';
+$langFile['BUTTON_FRONTENDEDITPAGE'] = 'Seite im Frontend bearbeiten';
+$langFile['BUTTON_TOOLTIP_FRONTENDEDITPAGE'] = 'Diese Seite direkt auf der Website bearbeiten.';
 $langFile['BUTTON_THUMBNAIL_UPLOAD'] = 'Seiten-Thumbnail hochladen';
-$langFile['BUTTON_TOOLTIP_THUMBNAIL_UPLOAD'] = 'Thumbnail f&uuml;r diese Seite hochladen';
+$langFile['BUTTON_TOOLTIP_THUMBNAIL_UPLOAD'] = 'Thumbnail f&uuml;r diese Seite hochladen.';
 $langFile['BUTTON_THUMBNAIL_DELETE'] = 'Seiten-Thumbnail l&ouml;schen';
-$langFile['BUTTON_TOOLTIP_THUMBNAIL_DELETE'] = 'Thumbnail von dieser Seite l&ouml;schen';
+$langFile['BUTTON_TOOLTIP_THUMBNAIL_DELETE'] = 'Thumbnail von dieser Seite l&ouml;schen.';
 
 // OTHER BUTTONS
 $langFile['BUTTON_UP'] = 'Nach oben';
@@ -312,7 +312,6 @@ $langFile['home_lastEditedPages_h1'] = 'zuletzt bearbeitete Seiten';
 $langFile['home_longestViewedPages_h1'] = 'am l&auml;ngsten betrachteten Seiten';
 
 $langFile['home_refererLog_h1'] = 'Webseiten von denen die letzten Besucher gekommen sind';
-$langFile['home_refererLog_nolog'] = 'Bisher sind noch keine Besucher von anderen Seiten auf diese Seite gekommen.';
 $langFile['home_novisitors'] = 'Bisher sind noch keine Besucher auf diese Seite gekommen.';
 
 /*
@@ -673,7 +672,7 @@ $langFile['editor_pageSettings_field2_tip'] = 'Tags sind Stichworte f&uuml;r die
 $langFile['editor_pageSettings_field2_tip_inputTip'] = 'Die Tags sollten mit [b]Leerzeichen[/b] getrennt werden.';
 $langFile['editor_pageSettings_field3'] = 'Seitendatum';
 $langFile['editor_pageSettings_field3_tip'] = 'Das Datum kann dazu verwendet werden, Seiten nach Datum zu sortieren. (z.B. bei Veranstaltungen)';
-$langFile['editor_pageSettings_pagedate_before_inputTip'] = 'Text vor dem Datum::z.B. "vom 31. Juni bis".';
+$langFile['editor_pageSettings_pagedate_before_inputTip'] = 'Text vor dem Datum::z.B. &quot;vom 31. Juni bis&quot;.';
 $langFile['editor_pageSettings_pagedate_after_inputTip'] = 'Text nach dem Datum::';
 $langFile['editor_pageSettings_pagedate_day_inputTip'] = 'Tag::';
 $langFile['editor_pageSettings_pagedate_month_inputTip'] = 'Monat::';
@@ -722,8 +721,7 @@ $langFile['unsavedPage_question_h1'] = '<span class="brown">Die Seite wurde ver&
 $langFile['deletePage_question_part1'] = 'M&ouml;chtest du die Seite';
 $langFile['deletePage_question_part2'] = 'wirklich l&ouml;schen?';
 
-$langFile['deletePage_finishnotexisting_part1'] = 'Die Seite';
-$langFile['deletePage_finish_part2'] = 'wurde erfolgreich gel&ouml;scht';
+$langFile['deletePage_notexisting_part1'] = 'Die Seite';
 $langFile['deletePage_notexisting_part2'] = 'existiert nicht';
 
 $langFile['deletePage_finish_error'] = 'FEHLER: Die Seite konnte nicht gel&ouml;scht werden!';
@@ -736,8 +734,7 @@ $langFile['deletePage_finish_error'] = 'FEHLER: Die Seite konnte nicht gel&ouml;
 $langFile['pageThumbnailDelete_question_part1'] = 'M&ouml;chtest du das Thumbnail von der Seite';
 $langFile['pageThumbnailDelete_question_part2'] = 'wirklich l&ouml;schen?';
 
-$langFile['pageThumbnailDelete_name'] = 'Der Thumbnail';
-$langFile['pageThumbnailDelete_finish_part2'] = 'wurde erfolgreich gel&ouml;scht';
+$langFile['pageThumbnailDelete_name'] = 'Das Thumbnail';
 $langFile['pageThumbnailDelete_notexisting_part2'] = 'existiert nicht';
 
 $langFile['pageThumbnailDelete_finish_error'] = 'FEHLER: Das Thumbnail konnte nicht gel&ouml;scht werden!';
@@ -787,28 +784,16 @@ $langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'] = 'Backup vor der Wiederher
 
 $langFile['BACKUP_BUTTON_DOWNLOAD'] = 'aktuelles Backup erstellen und herunterladen';
 $langFile['BACKUP_TEXT_RESTORE'] = 'W&auml;hle hier eine <span class="logoname"><span>fein</span>dura</span> Backup-Datei aus um einen alten Stand wieder herzustellen.<br /><span class="blue">Vor der Wiederherstellung wird ein Backup des alten Standes erstellt.</span>';
+$langFile['BACKUP_TOOLTIP_DELETE'] = 'Backup l&ouml;schen';
+$langFile['BACKUP_TEXT_DELETE_QUESTION1'] = ''; // backup 2010-11-05 15:03 wirklich löschen?
+$langFile['BACKUP_TEXT_DELETE_QUESTION2'] = 'wirklich l&ouml;schen?';
 
 $langFile['BACKUP_TITLE_LASTBACKUPS'] = 'Backups herunterladen';
 $langFile['BACKUP_TEXT_NOBACKUP'] = 'Es wurde noch kein Backup erstellt.';
 
 $langFile['BACKUP_ERROR_FILENOTFOUND'] = 'Backup-Datei wurde nicht gefunden in:';
 $langFile['BACKUP_ERROR_NORESTROEFILE'] = 'Es wurde keine Backup-Datei f&uuml;r die Wiederherstellung ausgew&auml;hlt.';
-
-/*
-* search.php
-*/
-
-// ---------- SEARCH
-$langFile['search_h1'] = 'Seiten durchsuchen';
-$langFile['search_results_h1'] = 'Suchergebnisse f&uuml;r';
-$langFile['search_results_text1'] = '&Uuml;bereinstimmungen im Titel';
-$langFile['search_results_text2'] = '&Uuml;bereinstimmungen im Datum oder der Kategorie';
-$langFile['search_results_text3'] = '&Uuml;bereinstimmende W&ouml;rter:';
-$langFile['search_results_text4'] = '&Uuml;bereinstimmenden Satz gefunden';
-$langFile['search_results_text8'] = '&Uuml;bereinstimmung mit der Seiten ID';
-$langFile['search_results_count'] = 'Treffer';
-$langFile['search_results_time_part1'] = 'in'; // 12 Treffer in 0.32 Sekunden
-$langFile['search_results_time_part2'] = 'Sekunden';
+$langFile['BACKUP_ERROR_DELETE'] = 'Backup konnte nicht gel&ouml;scht werden!';
 
 
 // -----------------------------------------------------------------------------------------------

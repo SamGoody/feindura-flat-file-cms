@@ -24,15 +24,16 @@
 /**
 * <b>Classname</b> statisticFunctions<br>
 * 
-* Provides functions for the website statistics.
+* Provides public static functions for the website statistics.
 * 
 * <b>Notice</b>: this class will be used by the implementation classes AND the backend of the feindura-CMS.
 * 
 * @package [Implementation]-[Backend]
 * 
-* @version 0.61
+* @version 0.62
 * <br>
 *  <b>ChangeLog</b><br>
+*    - 0.62 change to static class
 *    - 0.61 doesnt extend generalFunctions anymore, no creates an instance of it
 *    - 0.60 add hasVistiCache()
 *    - 0.59 savePageStats(): prevent save searchwords to be counted miltuple times
@@ -41,8 +42,6 @@
 *    - 0.56 started documentation
 * 
 */ 
-
-date_default_timezone_set('Asia/Jerusalem');
 
 class statisticFunctions {
  
@@ -56,20 +55,22 @@ class statisticFunctions {
   /**
   * Contains the administrator-settings config <var>array</var>
   * 
+  * @static
   * @var array
-  * @see generalFunctions()
+  * @see init()
   * 
   */ 
-  var $adminConfig;
+  public static $adminConfig;
   
   /**
   * Contains the category-settings config <var>array</var>
   * 
+  * @static
   * @var array
-  * @see generalFunctions()
+  * @see init()
   * 
   */ 
-  var $categoryConfig;
+  public static $categoryConfig;
  
  /**
   * Contains the website-statistic <var>array</var>
@@ -77,10 +78,11 @@ class statisticFunctions {
   * Example array:
   * {@example backend/websiteStatistic.array.example.php}
   * 
+  * @static
   * @var array
-  * @see statisticFunctions()
+  * @see init()
   */ 
-  var $websiteStatistic = array();
+  public static $websiteStatistic = array();
   
  /**
   * Contains the backend-statistic config <var>array</var>
@@ -90,58 +92,63 @@ class statisticFunctions {
   * Example array:
   * {@example backend/statisticConfig.array.example.php}
   * 
+  * @static
   * @var array
-  * @see statisticFunctions()
+  * @see init()
   */ 
-  var $statisticConfig = array();
-  
- /**
-  * Contains a <var>instance</var> of the {@link generalFunctions::generalFunctions() generalFunctions} <var>class</var> for using in this <var>class</var>
-  * 
-  * The file with the {@link generalFunctions::generalFunctions() generalFunctions} class is situated at <i>"feindura-CMS/library/classes/generalFunctions.class.php"</i>.<br />   
-  * A instance of the {@link generalFunctions::generalFunctions() generalFunctions} class will be set to this property in the {@link statisticFunctions()} constructor.
-  * 
-  * @var class
-  * @see generalFunctions::generalFunctions()
-  *   
-  */
-  var $generalFunctions;
+  public static $statisticConfig = array();
   
  
  /* ---------------------------------------------------------------------------------------------------------------------------- */
  /* *** CONSTRUCTOR *** */
  /* **************************************************************************************************************************** */
-  
+ 
  /**
   * <b> Type</b>      constructor<br>
-  * <b> Name</b>      statisticFunctions()<br><br>
-  * The constructor of the class, runs the gerneralFunctions constructor and gets the settings.
   * 
-  * <b>Used Global Variables</b><br>
-  *    - <var>$websiteStatistic</var> the website-settings config (included in the {@link general.include.php})
-  *    - <var>$statisticConfig</var> the statistic-settings config (included in the {@link general.include.php})
-  * 
-  * @param object|false $generalFunctions (optional) an instance of the generalFunctions class or FALSE
+  * Constructor is not callable, {@link statisticFunctions::init()} is used instead.
   * 
   * @return void
   * 
-  * @version 1.01
+  * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
+  *    - 1.0 initial release
+  * 
+  */ 
+  private function __construct() {
+  }
+  
+ /**
+  * <b> Type</b>      init<br>
+  * 
+  * The real constructor of the static class, gets the settings.
+  * 
+  * <b>Used Global Variables</b><br>
+  *    - <var>$adminConfig</var> the administrator-settings config (included in the {@link general.include.php})
+  *    - <var>$categoryConfig</var> the categories-settings config (included in the {@link general.include.php})  
+  *    - <var>$websiteStatistic</var> the website-settings config (included in the {@link general.include.php})
+  *    - <var>$statisticConfig</var> the statistic-settings config (included in the {@link general.include.php})
+  * 
+  * 
+  * @return void
+  * 
+  * @static
+  * @version 1.02
+  * <br>
+  * <b>ChangeLog</b><br>
+  *    - 1.02 removed instatiating of generalFunctions class, because generalFunctions is now static  
   *    - 1.01 add $adminConfig and $categoryConfig and creates an instance of the generalFunctions class
   *    - 1.0 initial release
   * 
   */ 
-  function statisticFunctions($generalFunctions = false) {
-
-    // run the parent class constructor
-    $this->generalFunctions = (is_a($generalFunctions,'generalFunctions')) ? $generalFunctions : new generalFunctions();
+  public static function init() {
     
     // GET CONFIG FILES and SET CONFIG PROPERTIES
-    $this->adminConfig = (isset($GLOBALS["adminConfig"])) ? $GLOBALS["adminConfig"] : $GLOBALS["feindura_adminConfig"];
-    $this->categoryConfig = (isset($GLOBALS["categoryConfig"])) ? $GLOBALS["categoryConfig"] : $GLOBALS["feindura_categoryConfig"];
-    $this->websiteStatistic = (isset($GLOBALS["websiteStatistic"])) ? $GLOBALS["websiteStatistic"] : $GLOBALS["feindura_websiteStatistic"];
-    $this->statisticConfig = (isset($GLOBALS["statisticConfig"])) ? $GLOBALS["statisticConfig"] : $GLOBALS["feindura_statisticConfig"];
+    self::$adminConfig = (isset($GLOBALS["adminConfig"])) ? $GLOBALS["adminConfig"] : $GLOBALS["feindura_adminConfig"];
+    self::$categoryConfig = (isset($GLOBALS["categoryConfig"])) ? $GLOBALS["categoryConfig"] : $GLOBALS["feindura_categoryConfig"];
+    self::$websiteStatistic = (isset($GLOBALS["websiteStatistic"])) ? $GLOBALS["websiteStatistic"] : $GLOBALS["feindura_websiteStatistic"];
+    self::$statisticConfig = (isset($GLOBALS["statisticConfig"])) ? $GLOBALS["statisticConfig"] : $GLOBALS["feindura_statisticConfig"];
   }
   
  /* ---------------------------------------------------------------------------------------------------------------------------- */
@@ -155,13 +162,14 @@ class statisticFunctions {
   * 
   * @return string the seconds in a readable time
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function secToTime($sec) {
+  public static function secToTime($sec) {
     $hours = floor($sec / 3600);
     $mins = floor(($sec -= ($hours * 3600)) / 60);  
     $seconds = floor($sec - ($mins * 60));
@@ -189,6 +197,7 @@ class statisticFunctions {
   * 
   * @return string the formated date or the unchanged $timestamp parameter
   * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -196,13 +205,13 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function formatDate($timeStamp, $format = false) {
+  public static function formatDate($timeStamp, $format = false) {
     
     if(empty($timeStamp) || !preg_match('/^[0-9]{1,}$/',$timeStamp))
       return $timeStamp;
              
     if($format === false)
-      $format = $this->adminConfig['dateFormat'];
+      $format = self::$adminConfig['dateFormat'];
         
     if($format == 'eu') {
         return date('d.m.Y',$timeStamp);
@@ -222,6 +231,7 @@ class statisticFunctions {
   * 
   * @return string the formated time with or without seconds or the $timestamp parameter
   * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -229,7 +239,7 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function formatTime($timeStamp,$showSeconds = false) {
+  public static function formatTime($timeStamp,$showSeconds = false) {
     
     if(empty($timeStamp) || !preg_match('/^[0-9]{1,}$/',$timeStamp))
       return $timeStamp;
@@ -254,14 +264,14 @@ class statisticFunctions {
   * 
   * @return float the converted number
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function formatHighNumber($number,$decimalsNumber = 0) {
+  public static function formatHighNumber($number,$decimalsNumber = 0) {
     $number = floatval($number);
     return number_format($number, $decimalsNumber, ',', ' ');
   }
@@ -279,14 +289,14 @@ class statisticFunctions {
   * 
   * @return string|int a string with "yesterday", "today" or "tomorrow" or the unchanged timestamp
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */ 
-  function dateDayBeforeAfter($timestamp,$givenLangFile = false) {
+  public static function dateDayBeforeAfter($timestamp,$givenLangFile = false) {
     
     if(empty($timestamp) || !preg_match('/^[0-9]{1,}$/',$timestamp))
       return $timestamp;
@@ -321,22 +331,22 @@ class statisticFunctions {
   * 
   * @param array $pageContent the $pageContent array of a page
   * 
-  * @uses generalFunctions::$categoryConfig to check if in the category the page date is activated
+  * @uses $categoryConfig to check if in the category the page date is activated
   * 
   * @return bool
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function checkPageDate($pageContent) {
+  public static function checkPageDate($pageContent) {
              
-    if(isset($this->categoryConfig[$pageContent['category']]) &&  // to prevent missing index error
-       $this->categoryConfig[$pageContent['category']]['showpagedate'] &&
-       (!empty($pageContent['pagedate']['before']) || !empty($pageContent['pagedate']['date']) || !empty($pageContent['pagedate']['after'])))
+    if(isset(self::$categoryConfig[$pageContent['category']]) &&  // to prevent missing index error
+       self::$categoryConfig[$pageContent['category']]['showPageDate'] &&
+       (!empty($pageContent['pageDate']['before']) || !empty($pageContent['pageDate']['date']) || !empty($pageContent['pageDate']['after'])))
        return true;
     else
        return false;
@@ -351,13 +361,14 @@ class statisticFunctions {
   * 
   * @return int|false the timestamp of the date or FALSE if the date is not valid
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function validateDateFormat($dateString) {
+  public static function validateDateFormat($dateString) {
     
     // if its a unix timestamp return immediately
     if(preg_match('/^[0-9]{1,}$/',$dateString))
@@ -421,7 +432,7 @@ class statisticFunctions {
         return false;
     }
     
-    // if the function doesn't return something, return false
+    // if the public static function doesn't return something, return false
     return false;
   }
 
@@ -435,17 +446,17 @@ class statisticFunctions {
   * 
   * @return string the formated time
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function showVisitTime($time,$langFile) {
+  public static function showVisitTime($time,$langFile) {
     
     // change seconds to the following format: hh:mm:ss
-    $time = $this->secToTime($time);
+    $time = self::secToTime($time);
     
     $hour = substr($time,0,2);
     $minute = substr($time,3,2);
@@ -524,16 +535,16 @@ class statisticFunctions {
   * 
   * @return bool
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function saveTaskLog($task, $object = false) {
+  public static function saveTaskLog($task, $object = false) {
     
-    $maxEntries = $this->statisticConfig['number']['taskLog'];
+    $maxEntries = self::$statisticConfig['number']['taskLog'];
     $logFilePath = dirname(__FILE__).'/../../'.'statistic/activity.statistic.log';
     
     if(file_exists($logFilePath))
@@ -578,16 +589,16 @@ class statisticFunctions {
   * 
   * @return bool
   * 
-  * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function saveRefererLog() {
+  public static function saveRefererLog() {
     
-    $maxEntries = $this->statisticConfig['number']['refererLog'];
+    $maxEntries = self::$statisticConfig['number']['refererLog'];
     $logFile = dirname(__FILE__).'/../../'.'statistic/referer.statistic.log';
     
     if(file_exists($logFile))
@@ -596,7 +607,7 @@ class statisticFunctions {
     // -> SAVE REFERER LOG
     if(isset($_SERVER['HTTP_REFERER']) &&
        !empty($_SERVER['HTTP_REFERER']) &&
-       strpos($_SERVER['HTTP_REFERER'],str_replace('www.','',$this->adminConfig['url'])) === false && // checks if referer is not the own page
+       strpos($_SERVER['HTTP_REFERER'],str_replace('www.','',self::$adminConfig['url'])) === false && // checks if referer is not the own page
        $logFile = @fopen($logFile,"w")) {
       
       // -> create the new log string
@@ -630,7 +641,7 @@ class statisticFunctions {
   * 
   * @return string|false the right browser name or FALSE if no useragent is available
   * 
-  * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -638,9 +649,9 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function getBrowser() {
+  public static function getBrowser() {
     
-    require_once(dirname(__FILE__).'/../thirdparty/BrowserDetection.php');
+    require_once(dirname(__FILE__).'/../thirdparty/php/BrowserDetection.php');
     
     $browser = new Browser();
 	  $return = $browser->getBrowser();
@@ -666,6 +677,7 @@ class statisticFunctions {
   * 
   * @return string|false the browser chart or FALSE
   * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -673,7 +685,7 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function createBrowserChart($browserString) {
+  public static function createBrowserChart($browserString) {
     
     //var
     $return = false;
@@ -914,18 +926,19 @@ class statisticFunctions {
   * 
   * @return string|false the tag-cloud or FALSE if the $tagString parameter is empty
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function createTagCloud($serializedTags,$minFontSize = 10,$maxFontSize = 20) {
+  public static function createTagCloud($serializedTags,$minFontSize = 10,$maxFontSize = 20) {
     
     //var
     $return = false;
     
-    if(is_string($serializedTags) && !empty($serializedTags)) {
+    if(!empty($serializedTags) && is_string($serializedTags)) {
          
       $tags = unserialize($serializedTags);
       
@@ -957,14 +970,20 @@ class statisticFunctions {
  /**
   * <b>Name</b> addDataToDataString()<br>
   * 
-  * Adds a new string to a data-string in the format: "stringa,42|stringb,23|stringc,1" and counts the string up if its already existing.
+  * Adds a new string to a data-string and counts the string up if its already existing.
+  * 
+  * Example dataString:
+  * {@example dataString.array.example.php}
   * 
   * @param string|array $dataToAdd            a string or an array with data to add, OR a unserialized data-string
   * @param string       $dataString           the data-string which the $dataToAdd parameter will be add to
   * @param bool         $encodeSpecialChars   (optional) if TRUE it clean speacial chars and encode htmlentities before adding to the data-string
   * 
+  * @uses generalFunctions::cleanSpecialChars() to clean the data variable
+  * 
   * @return string the modified data-string
   * 
+  * @static
   * @version 1.1
   * <br>
   * <b>ChangeLog</b><br>
@@ -972,7 +991,7 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function addDataToDataString($dataString, $dataToAdd, $encodeSpecialChars = true) {
+  public static function addDataToDataString($dataString, $dataToAdd, $encodeSpecialChars = true) {
     
     // if dataToAdd is a serialized data-string
     if(is_string($dataToAdd) && !empty($dataToAdd) && ($unserializedDataToAdd = unserialize($dataToAdd)) !== false) {
@@ -1031,7 +1050,7 @@ class statisticFunctions {
       if(is_array($newdata) && !empty($newdata)) {    
         foreach($newdata as $dataVariable) {
           if($encodeSpecialChars === true) {
-            $dataVariable = $this->generalFunctions->cleanSpecialChars($dataVariable,''); // clean special chars
+            $dataVariable = generalFunctions::cleanSpecialChars($dataVariable,''); // clean special chars
             $dataVariable = htmlentities($dataVariable,ENT_QUOTES, 'UTF-8');     
           }
           $newDataArray[] = array('data' => strtolower($dataVariable), 'number' => 1);
@@ -1053,13 +1072,14 @@ class statisticFunctions {
   * 
   * @return bool TRUE if the surrent user is logged in, otherwise false
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function isLoggedUser() {
+  public static function isLoggedUser() {
     return (isset($_SESSION['feinduraLogin'][md5($_SERVER['HTTP_USER_AGENT'].'::'.$_SERVER['REMOTE_ADDR'].'::'.$_SERVER["HTTP_HOST"])]['loggedIn']) &&
             $_SESSION['feinduraLogin'][md5($_SERVER['HTTP_USER_AGENT'].'::'.$_SERVER['REMOTE_ADDR'].'::'.$_SERVER["HTTP_HOST"])]['loggedIn'])
       ? true : false;
@@ -1075,13 +1095,14 @@ class statisticFunctions {
   * 
   * @return bool TRUE if its a spider/bot/webcrawler, FALSE if not
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function isSpider() {
+  public static function isSpider() {
 
     if(isset($_SERVER['HTTP_USER_AGENT'])) {
       
@@ -1138,12 +1159,13 @@ class statisticFunctions {
   * Creates a <var>visit.statistic.cache</var> file and store the md5 sum of the user agent + ip with a timestamp.
   * If the agent load again the website, it check if the agent is already in the cache and the timelimit of 10 min is not passed.
   * 
-  * This function is used when the session ID cannot be transfered, because of deactivated cookies or no session ID in the link was transfered. 
+  * This public static function is used when the session ID cannot be transfered, because of deactivated cookies or no session ID in the link was transfered. 
   * 
   * @param bool $clear if this is TRUE, it only check if the agents in the cache are still up to date, without adding a user agent
   * 
   * @return bool TRUE the user agent is in the cache, FALSE if not
   * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -1151,7 +1173,7 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function hasVisitCache($clear = false) {
+  public static function hasVisitCache($clear = false) {
     
     //var
     $return = false;
@@ -1182,7 +1204,7 @@ class statisticFunctions {
     }
     // agent doesn't exist, create a new cache
     if($return === false && $clear === false) {
-      $spider = ($this->isSpider()) ? 'spider' : 'visitor';
+      $spider = (self::isSpider()) ? 'spider' : 'visitor';
       $newLines[] = $spider.'|#|'.$userAgentMd5.'|#|'.$_SERVER['REMOTE_ADDR'].'|#|'.$currentDate;
     }
     
@@ -1208,13 +1230,14 @@ class statisticFunctions {
   * 
   * @return array the current visitors with $returnVisitors['ip'], $returnVisitors['time'] and $returnVisitors['type']
   * 
+  * @static
   * @version 1.0
   * <br>
   * <b>ChangeLog</b><br>
   *    - 1.0 initial release
   * 
   */
-  function getCurrentVisitors() {
+  public static function getCurrentVisitors() {
     
     //var
     $returnVisitors = array();
@@ -1253,13 +1276,17 @@ class statisticFunctions {
   *    - <var>PHPSTARTTAG</var> the php start tag
   *    - <var>PHPENDTAG</var> the php end tag
   * 
-  * @uses $websiteStatistic for the old website-statistics
-  * @uses saveRefererLog()  to save the referer log-file
-  * @uses isSpider()        to check whether the user-agent is a spider or a human
-  * @uses addDataToDataString() to add a browser to the browser data-string
-  *  
+  * @uses $websiteStatistic         for the old website-statistics
+  * @uses saveRefererLog()          to save the referer log-file
+  * @uses isSpider()                to check whether the user-agent is a spider or a human
+  * @uses addDataToDataString()     to add a browser to the browser data-string
+  * @uses generalFunctions::readPage()        to read the last page again, to save the time spend on the page
+  * @uses generalFunctions::getPageCategory() to get the category of the last page
+  * @uses generalFunctions::savePage()        to save the current page statictics
+  * 
   * @return bool TRUE if the website-statistics were saved, otherwise FALSE
   * 
+  * @static
   * @version 1.02
   * <br>
   * <b>ChangeLog</b><br>
@@ -1268,22 +1295,22 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function saveWebsiteStats() {
+  public static function saveWebsiteStats() {
     global $HTTP_SESSION_VARS;
     
     //unset($_SESSION);
     
-    // needed for check if the user has already visited the page AND reduce memory, because only run once the isSpider() function
+    // needed for check if the user has already visited the page AND reduce memory, because only run once the isSpider() public static function
     // if its an older php version, set the session var
     if(phpversion() <= '4.1.0')
       $_SESSION = $HTTP_SESSION_VARS;
       
     // doesnt save anything if visitor is a logged in user
-    if($this->isLoggedUser())
+    if(self::isLoggedUser())
       return false;
     
     // refresh the visit cache
-    $hasVisitCache = $this->hasVisitCache();
+    $hasVisitCache = self::hasVisitCache();
     
     // COUNT if the user/spider isn't already counted
     // **********************************************
@@ -1292,7 +1319,7 @@ class statisticFunctions {
    
       // ->> CHECKS if the user is NOT a BOT/SPIDER
       if((isset($_SESSION['log_isSpider']) && $_SESSION['log_isSpider'] === false) ||
-         (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = $this->isSpider()) === false)) {
+         (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = self::isSpider()) === false)) {
    
         // -------------------------------------------------------------------------------------
         // -->> --------------------------------------------------------------------------------
@@ -1301,43 +1328,43 @@ class statisticFunctions {
         
         // -> saves the FIRST WEBSITE VISIT
         // -----------------------------
-        if(!isset($this->websiteStatistic['firstVisit']) ||
-          (isset($this->websiteStatistic['firstVisit']) && empty($this->websiteStatistic['firstVisit'])))
-          $this->websiteStatistic['firstVisit'] = time();
+        if(!isset(self::$websiteStatistic['firstVisit']) ||
+          (isset(self::$websiteStatistic['firstVisit']) && empty(self::$websiteStatistic['firstVisit'])))
+          self::$websiteStatistic['firstVisit'] = time();
         
         // -> saves the LAST WEBSITE VISIT
         // ----------------------------
-        $this->websiteStatistic['lastVisit'] = time();
+        self::$websiteStatistic['lastVisit'] = time();
         
         // -> saves the HTTP REFERER
         // ----------------------------
-        $this->saveRefererLog();
+        self::saveRefererLog();
         
         // -> COUNT the USER UP
-        if(!isset($this->websiteStatistic['userVisitCount']) ||
-           (isset($this->websiteStatistic['userVisitCount']) && $this->websiteStatistic['userVisitCount'] == ''))
-          $this->websiteStatistic['userVisitCount'] = '1';
+        if(!isset(self::$websiteStatistic['userVisitCount']) ||
+           (isset(self::$websiteStatistic['userVisitCount']) && self::$websiteStatistic['userVisitCount'] == ''))
+          self::$websiteStatistic['userVisitCount'] = '1';
         else
-          $this->websiteStatistic['userVisitCount']++;
+          self::$websiteStatistic['userVisitCount']++;
         
         // -> adds the user BROWSER
-        $browser = $this->getBrowser();
-        if(isset($this->websiteStatistic['browser']))
-          $this->websiteStatistic['browser'] = $this->addDataToDataString($this->websiteStatistic['browser'],$browser);
+        $browser = self::getBrowser();
+        if(isset(self::$websiteStatistic['browser']))
+          self::$websiteStatistic['browser'] = self::addDataToDataString(self::$websiteStatistic['browser'],$browser);
         else
-          $this->websiteStatistic['browser'] = $browser.',1';
+          self::$websiteStatistic['browser'] = $browser.',1';
         
-        if(!isset($this->websiteStatistic["spiderVisitCount"]))
-          $this->websiteStatistic["spiderVisitCount"] = '0';
+        if(!isset(self::$websiteStatistic["spiderVisitCount"]))
+          self::$websiteStatistic["spiderVisitCount"] = '0';
 
         
       // ->> COUNT the SPIDER UP
       } elseif($_SESSION['log_isSpider'] === true && 
-               (!isset($this->websiteStatistic['spiderVisitCount']) ||
-               (isset($this->websiteStatistic['spiderVisitCount']) && $this->websiteStatistic['spiderVisitCount'] == ''))) {
-        $this->websiteStatistic['spiderVisitCount'] = '1';
+               (!isset(self::$websiteStatistic['spiderVisitCount']) ||
+               (isset(self::$websiteStatistic['spiderVisitCount']) && self::$websiteStatistic['spiderVisitCount'] == ''))) {
+        self::$websiteStatistic['spiderVisitCount'] = '1';
       }elseif($_SESSION['log_isSpider'] === true) {
-        $this->websiteStatistic['spiderVisitCount']++;
+        self::$websiteStatistic['spiderVisitCount']++;
       }
       
       // ->> OPEN website.statistic.php for writing
@@ -1346,13 +1373,13 @@ class statisticFunctions {
         flock($statisticFile,2);        
         fwrite($statisticFile,PHPSTARTTAG);  
               
-        fwrite($statisticFile,"\$websiteStatistic['userVisitCount'] =    '".$this->websiteStatistic["userVisitCount"]."';\n");
-        fwrite($statisticFile,"\$websiteStatistic['spiderVisitCount'] =  '".$this->websiteStatistic["spiderVisitCount"]."';\n\n");
+        fwrite($statisticFile,"\$websiteStatistic['userVisitCount'] =    '".self::$websiteStatistic["userVisitCount"]."';\n");
+        fwrite($statisticFile,"\$websiteStatistic['spiderVisitCount'] =  '".self::$websiteStatistic["spiderVisitCount"]."';\n\n");
         
-        fwrite($statisticFile,"\$websiteStatistic['firstVisit'] =        '".$this->websiteStatistic["firstVisit"]."';\n");
-        fwrite($statisticFile,"\$websiteStatistic['lastVisit'] =         '".$this->websiteStatistic["lastVisit"]."';\n\n");
+        fwrite($statisticFile,"\$websiteStatistic['firstVisit'] =        '".self::$websiteStatistic["firstVisit"]."';\n");
+        fwrite($statisticFile,"\$websiteStatistic['lastVisit'] =         '".self::$websiteStatistic["lastVisit"]."';\n\n");
         
-        fwrite($statisticFile,"\$websiteStatistic['browser'] =      '".$this->websiteStatistic["browser"]."';\n\n");
+        fwrite($statisticFile,"\$websiteStatistic['browser'] =      '".self::$websiteStatistic["browser"]."';\n\n");
         
         fwrite($statisticFile,"return \$websiteStatistic;");
               
@@ -1368,7 +1395,7 @@ class statisticFunctions {
       
       // ->> CHECKS if the user is NOT a BOT/SPIDER
       if((isset($_SESSION['log_isSpider']) && $_SESSION['log_isSpider'] === false) ||
-         (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = $this->isSpider()) === false)) {
+         (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = self::isSpider()) === false)) {
         
         // -------------------------------------------------------------------------------------
         // ->> VISIT TIME of PAGES
@@ -1385,7 +1412,7 @@ class statisticFunctions {
           foreach($_SESSION['log_lastPages'] as $log_lastPage) {
           
             // load the last page again
-            $lastPage = $this->generalFunctions->readPage($log_lastPage,$this->generalFunctions->getPageCategory($log_lastPage));
+            $lastPage = generalFunctions::readPage($log_lastPage,generalFunctions::getPageCategory($log_lastPage));
             
             $visitTime = time() - $_SESSION['log_lastPage_timestamp'];
             
@@ -1450,8 +1477,8 @@ class statisticFunctions {
               $category = ($lastPage['category'] != 0) ? $lastPage['category'].'/' : '';
               
               // -> SAVE the LAST PAGE // if file exists (problem when sorting pages, and user is on the page)
-              if(@file_exists(DOCUMENTROOT.$this->adminConfig['basePath'].'pages/'.$category.$lastPage['id'].'.php'))
-                $this->generalFunctions->savePage($lastPage);
+              if(@file_exists(DOCUMENTROOT.self::$adminConfig['basePath'].'pages/'.$category.$lastPage['id'].'.php'))
+                generalFunctions::savePage($lastPage);
             }
             
           } // <- end of foreach(lastPages)          
@@ -1490,11 +1517,12 @@ class statisticFunctions {
   * @uses $adminConfig                    for the save path of the pages
   * @uses isSpider()                      to check whether the user-agent is a spider or a human
   * @uses addDataToDataString()               to add the searchwords to the searchword data-string
-  * @uses generalFunctions::readPage()    to read the last visited page for the view-time
+  * @uses generalFunctions::isPageContentArray() check if the $pageContent parameter is a valid pageContent array    
   * @uses generalFunctions::savePage()    to save the page and also the last visited page with the calculated view-time
   * 
   * @return bool TRUE if the page-statistic was saved succesfully or FALSE if the user agent is a spider, or the $pageContent parameter is not a valid $pageContent array
   * 
+  * @static
   * @version 1.01
   * <br>
   * <b>ChangeLog</b><br>
@@ -1502,28 +1530,28 @@ class statisticFunctions {
   *    - 1.0 initial release
   * 
   */
-  function savePageStats($pageContent) {
+  public static function savePageStats($pageContent) {
     global $HTTP_SESSION_VARS;
     
     //unset($_SESSION);
     
-    // needed for check if the user has already visited the page AND reduce memory, because only run once the isSpider() function
+    // needed for check if the user has already visited the page AND reduce memory, because only run once the isSpider() public static function
     // if its an older php version, set the session var
     if(phpversion() <= '4.1.0')
       $_SESSION = $HTTP_SESSION_VARS;
       
     // doesnt save anything if visitor is a logged in user
-    if($this->isLoggedUser())
+    if(self::isLoggedUser())
       return false;
 
     // -------------------------------------------------------------------------------------
     // -->> --------------------------------------------------------------------------------
     // CHECKS if the user is NOT a BOT/SPIDER
     if((isset($_SESSION['log_isSpider']) && $_SESSION['log_isSpider'] === false) ||
-       (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = $this->isSpider()) === false)) {
+       (!isset($_SESSION['log_isSpider']) && ($_SESSION['log_isSpider'] = self::isSpider()) === false)) {
          
       // CHECK if the $pageContent parameter is a valid $pageContent array
-      if($this->generalFunctions->isPageContentArray($pageContent) === false)
+      if(generalFunctions::isPageContentArray($pageContent) === false)
         return false;
       
       // STORE last visited page IDs in a session array and the time
@@ -1533,7 +1561,7 @@ class statisticFunctions {
       // -----------------------------
       if(empty($pageContent['log_firstVisit'])) {
         $pageContent['log_firstVisit'] = time();
-        $pageContent['log_visitorcount'] = 0;
+        $pageContent['log_visitorCount'] = 0;
       }
       
       // -> saves the LAST PAGE VISIT
@@ -1546,16 +1574,16 @@ class statisticFunctions {
         $_SESSION['log_visitedPages'] = array();
         
       if(in_array($pageContent['id'],$_SESSION['log_visitedPages']) === false) {
-        //echo $pageContent['id'].' -> '.$pageContent['log_visitorcount'];
-        $pageContent['log_visitorcount']++;
+        //echo $pageContent['id'].' -> '.$pageContent['log_visitorCount'];
+        $pageContent['log_visitorCount']++;
         // add to the array of already visited pages
         $_SESSION['log_visitedPages'][] = $pageContent['id'];
       }
       
       // ->> SAVE THE SEARCHWORDs from GOOGLE, YAHOO, MSN (Bing)
       // -------------------------------------------------------
-      if(!isset($_SESSION['log_searchwords']))
-        $_SESSION['log_searchwords'] = array();
+      if(!isset($_SESSION['log_searchWords']))
+        $_SESSION['log_searchWords'] = array();
 
       if(isset($_SERVER['HTTP_REFERER']) &&
          !empty($_SERVER['HTTP_REFERER'])) {        
@@ -1563,7 +1591,7 @@ class statisticFunctions {
         $searchWords = $_SERVER['HTTP_REFERER'];
         // test search url strings:
         //$searchWords = 'http://www.google.de/search?q=mair%C3%A4nd+%26+geld+syteme%3F&ie=utf-8&oe=utf-8&aq=t&rls=org.mozilla:de:official&client=firefox-a';
-        //$searchWords = 'http://www.google.de/#sclient=psy&num=10&hl=de&safe=off&q=ich+suche+was&aq=f&aqi=g1&aql=&oq=&gs_rfai=&pbx=1&fp=bea9cbc9f7597291';
+        $searchWords = 'http://www.google.de/#sclient=psy&num=10&hl=de&safe=off&q=ich+suche+was&aq=f&aqi=g1&aql=&oq=&gs_rfai=&pbx=1&fp=bea9cbc9f7597291';
         //$searchWords = 'http://www.bing.com/search?q=halo+wich+suche+was&go=&form=QBLH&filt=all';
         //$searchWords = 'http://de.search.yahoo.com/search;_ylt=AoJmH5FT4CkRvDpo3RuiawIqrK5_?vc=&p=hallo+ich+suche+was&toggle=1&cop=mss&ei=UTF-8&fr=yfp-t-708';
         //$searchWords = 'http://de.search.yahoo.com/search;_ylt=A03uv8f1RWxKvX8BGYMzCQx.?p=umlaute+fdgdfg&y=Suche&fr=yfp-t-501&fr2=sb-top&rd=r1&sao=1';
@@ -1581,21 +1609,21 @@ class statisticFunctions {
           // gos through searchwords and check if there already saved  
           $newSearchWords = array();
           foreach($searchWords as $searchWord) {
-            if(in_array($searchWord,$_SESSION['log_searchwords']) === false) {
+            if(in_array($searchWord,$_SESSION['log_searchWords']) === false) {
               $newSearchWords[] = $searchWord;
-              $_SESSION['log_searchwords'][] = $searchWord;
+              $_SESSION['log_searchWords'][] = $searchWord;
             }
           }
           
           if(!empty($newSearchWords)) {
             // adds the searchwords to the searchword data string
-            $pageContent['log_searchwords'] = $this->addDataToDataString($pageContent['log_searchwords'],$searchWords);   
+            $pageContent['log_searchWords'] = self::addDataToDataString($pageContent['log_searchWords'],$searchWords);   
           }
         }
       }
       
       // -> SAVE the PAGE STATISTICS
-      return $this->generalFunctions->savePage($pageContent);
+      return generalFunctions::savePage($pageContent);
       
     } else
       return false;

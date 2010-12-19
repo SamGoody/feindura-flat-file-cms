@@ -22,6 +22,8 @@
  */
 require_once(dirname(__FILE__)."/../../includes/secure.include.php");
 
+echo ' '; // hack for safari, otherwise it throws an error that he could not find htmlentities like &ouml;
+
 // gets the vars
 if(isset($_POST['category']))
   $category = $_POST['category'];
@@ -38,7 +40,7 @@ else
 $asking = $_POST['asking'];
 
 // load the page
-$pageContent = $generalFunctions->readPage($page,$category);
+$pageContent = generalFunctions::readPage($page,$category);
 $thumbnail = $pageContent['thumbnail'];
 
 // QUESTION
@@ -52,7 +54,7 @@ if(is_file(DOCUMENTROOT.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']
   
   // if the thumbnail doesnt exists, delete it from the pageContent
   $pageContent['thumbnail'] = '';
-  $generalFunctions->savePage($pageContent);
+  generalFunctions::savePage($pageContent);
   
   // show only the ok button
   $asking = true;
@@ -64,13 +66,12 @@ if($asking && is_file(DOCUMENTROOT.$adminConfig['uploadPath'].$adminConfig['page
     
     // DELETING    
     $pageContent['thumbnail'] = '';
-    if(unlink(DOCUMENTROOT.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail) && $generalFunctions->savePage($pageContent)) {
-
-        // DELETING FINISH --------------
-        $question = '<h1>'.$langFile['pageThumbnailDelete_name'].' &quot;<span style="color:#000000;">'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail.'</span>&quot; '.$langFile['pageThumbnailDelete_finish_part2'].'</h1><br />
-        <a href="?category='.$category.'&amp;page='.$page.'" class="ok center" onclick="closeWindowBox(\'index.php?site='.$site.'&amp;category='.$category.'&amp;page='.$page.'\');return false;">&nbsp;</a>'."\n";
+    if(unlink(DOCUMENTROOT.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail) && generalFunctions::savePage($pageContent)) {
+        statisticFunctions::saveTaskLog(5,'page='.$pageContent['id']); // <- SAVE the task in a LOG FILE
         
-        $statisticFunctions->saveTaskLog(5,'page='.$pageContent['id']); // <- SAVE the task in a LOG FILE
+        $question = '';
+        echo 'DONTSHOW';        
+        echo '<script type="text/javascript">/* <![CDATA[ */closeWindowBox(\'index.php?site='.$site.'&category='.$category.'&page='.$page.'\');/* ]]> */</script>';
         
     } else {
       // DELETING ERROR --------------
@@ -98,7 +99,11 @@ if(!$asking) {
 
 <!-- show a preview of the thumbnail -->
 <div style="width:100%; text-align:center; padding-top:20px;">
-<img src="<?php echo $adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail; ?>" alt="thumbnail" title="<?php echo $adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail; ?>" />
+<?php
+  // generates a random number to put on the end of the image, to prevent caching
+  $randomImage = '?'.md5(uniqid(rand(),1));
+?>
+<img src="<?php echo $adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail.$randomImage; ?>" alt="thumbnail" title="<?php echo $adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$thumbnail; ?>" />
 </div>
 </div>
 <?php

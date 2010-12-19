@@ -24,8 +24,8 @@ require_once(dirname(__FILE__)."/../includes/secure.include.php");
 /* split the value of the sortation */
 $sortOrder = explode('|',$_POST['sort_order']);
 
-// dreht die reihenfolge um, wenn sortascending == true
-if(!$categoryConfig[$_POST['categoryNew']]['sortascending'])
+// dreht die reihenfolge um, wenn sortAscending == true
+if(!$categoryConfig[$_POST['categoryNew']]['sortAscending'])
   $sortOrder = array_reverse($sortOrder);
 
 // MOVE the file if it is sorted in an new category
@@ -46,24 +46,24 @@ foreach($sortOrder as $sort) {
   if($sort != '') {
     
     // ->> SORT the pages new
-    if($pageContent = $generalFunctions->readPage($sort,$_POST['categoryNew'])) {
+    if($pageContent = generalFunctions::readPage($sort,$_POST['categoryNew'])) {
       
       // -> changes the properties of the page
-      $pageContent['sortorder'] = $count; // get a new sort order number
+      $pageContent['sortOrder'] = $count; // get a new sort order number
       $pageContent['category'] = $_POST['categoryNew']; // eventually get a new category id
        
       
       // ->> save the new sorting
-      if($generalFunctions->savePage($pageContent)) {
+      if(generalFunctions::savePage($pageContent)) {
         $status = $langFile['sortablePageList_save_finished'];
         $count++;
         
         // -> saves the task log
-        if($_POST['sortedPageId'] == $pageContent['id'] && empty($categoryConfig[$_POST['categoryNew']]['sortbypagedate'])) {
+        if($_POST['sortedPageId'] == $pageContent['id'] && empty($categoryConfig[$_POST['categoryNew']]['sortByPageDate'])) {
           $logText = ($_POST['categoryOld'] != $_POST['categoryNew'])
             ? 3 : 4;
           // save log
-          $statisticFunctions->saveTaskLog($logText,'page='.$pageContent['id'].'|-|category='.$_POST['categoryNew'].'|-|moved'); // <- SAVE the task in a LOG FILE
+          statisticFunctions::saveTaskLog($logText,'page='.$pageContent['id'].'|-|category='.$_POST['categoryNew'].'|-|moved'); // <- SAVE the task in a LOG FILE
         }
       // -X ERROR savePage
       } else {
@@ -73,7 +73,7 @@ foreach($sortOrder as $sort) {
       /*
       echo substr($pageContent['title'],0,4).',';
       echo $pageContent['id'].',';
-      echo $pageContent['sortorder'].'|';
+      echo $pageContent['sortOrder'].'|';
       */
       
     // -X ERROR readPage 
@@ -83,7 +83,7 @@ foreach($sortOrder as $sort) {
 }
 // -> CHECKs if the category folder is empty,
 // if yes: the "&nbsp;" is read by the sortPages.js and it puts, a "no pages" - notice
-if(!$generalFunctions->loadPages($_POST['categoryOld'],false))
+if(!generalFunctions::loadPages($_POST['categoryOld'],false))
   echo '<span></span>';
   
 echo $status;

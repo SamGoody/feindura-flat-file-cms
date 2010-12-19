@@ -81,7 +81,6 @@ $langFile['THUMBNAIL_TEXT_UNIT'] = 'pixel';
 $langFile['THUMBNAIL_TEXT_NAME'] = 'miniature de la page';
 $langFile['THUMBNAIL_TEXT_WIDTH'] = 'standard <b>largeur</b>';
 $langFile['THUMBNAIL_TEXT_HEIGHT'] = 'standard <b>hauteur</b>';
-$langFile['THUMBNAIL_TOOLTIP_PREVIEW'] = 'Eventuellement apr&egrave;s le t&eacute;l&eacute;chargement d\'un fichier, l\'image pr&eacute;cedente sera encore pr&eacute;sente ce qui se &eacute;ffectue par le cache du navigateur.[br /][br /]Pour voir l\'image actuelle, la page doit &ecirc;tre r&eacute;initalis&eacute;e.(F5).';
 $langFile['THUMBNAIL_TOOLTIP_WIDTH'] = 'largeur standard::la largeur du thumbnail en pixels.[br /][br /]L\'image t&eacute;l&eacute;charg&eacute;e sera mise &agrave; l\'&eacute;chelle norm&eacute;e.';
 $langFile['THUMBNAIL_TOOLTIP_HEIGHT'] = 'hauteur standard::la hauteur du thumbnail en pixels.[br /][br /]L\'image t&eacute;l&eacute;charg&eacute;e sera mise &agrave; l\'&eacute;chelle norm&eacute;e.';
 $langFile['THUMBNAIL_TEXT_RATIO'] = 'rapport largeur/hauteur';
@@ -131,7 +130,7 @@ $langFile['STATISTICS_TEXT_SEARCHWORD_DESCRIPTION'] = 'Mot de recherche qui ont 
 <a href="http://www.google.de">Google</a>,
 <a href="http://www.yahoo.de">Yahoo</a> ou
 <a href="http://www.bing.com">Bing (MSN)</a> sur ce site web';
-$langFile['STATISTICS_TEXT_NOSEARCHWORDS'] = 'Aucun mot a m&egrave;n&eacute; sur ce site web.';
+
 $langFile['STATISTICS_TEXT_HOUR_SINGULAR'] = 'heur';
 $langFile['STATISTICS_TEXT_HOUR_PLURAL'] = 'heures';
 $langFile['STATISTICS_TEXT_MINUTE_SINGULAR'] = 'minute';
@@ -174,8 +173,9 @@ $langFile['LOG_PLUGINSETUP_SAVED'] = 'pr&eacute;f&eacute;rences plugins sauvegar
 $langFile['LOG_FILE_SAVED'] = 'fichier sauvegard&eacute;';
 $langFile['LOG_FILE_DELETED'] = 'fichier sauvegard&eacute;';
 
-$langFile['LOG_BACKUP_CREATED'] = 'backup cr&eacute;&eacute;e';
-$langFile['LOG_BACKUP_RESTORED'] = 'backup et restauration';
+$langFile['LOG_BACKUP_CREATED'] = 'sauvegarde cr&eacute;&eacute;e';
+$langFile['LOG_BACKUP_RESTORED'] = 'restauration de sauvegarde';
+$langFile['LOG_BACKUP_DELETED'] = 'supprim&eacute; de sauvegarde';
 
 // PAGE/CATEGORY STATUS
 $langFile['STATUS_PAGE_PUBLIC'] = 'site web public';
@@ -218,6 +218,8 @@ $langFile['BUTTON_CREATEPAGE'] = 'nouvelle page';
 $langFile['BUTTON_TOOLTIP_CREATEPAGE'] = 'cr&eacute;er une nouvelle page';
 $langFile['BUTTON_DELETEPAGE'] = '&eacute;ffacer la page';
 $langFile['BUTTON_TOOLTIP_DELETEPAGE'] = '&eacute;ffacer cette page';
+$langFile['BUTTON_FRONTENDEDITPAGE'] = 'modifier la page dans le frontend';
+$langFile['BUTTON_TOOLTIP_FRONTENDEDITPAGE'] = 'modifier cette page directement sur le site web';
 $langFile['BUTTON_THUMBNAIL_UPLOAD'] = 't&eacute;l&eacute;charger thumbnail de la page';
 $langFile['BUTTON_TOOLTIP_THUMBNAIL_UPLOAD'] = 't&eacute;l&eacute;charger thumbnail pour cette page';
 $langFile['BUTTON_THUMBNAIL_DELETE'] = '&eacute;ffacer thumbnail de la page';
@@ -288,7 +290,6 @@ $langFile['home_mostVisitedPages_h1'] = 'pages les plus fr&eacute;quent&eacute;e
 $langFile['home_lastEditedPages_h1'] = 'derni&egrave;res pages r&eacute;dig&eacute;es';
 $langFile['home_longestViewedPages_h1'] = 'pages les plus regard&eacute;s';
 $langFile['home_refererLog_h1'] = 'sites web d\'o&ugrave; viennent les derniers visiteurs';
-$langFile['home_refererLog_nolog'] = 'actuellement il n\'y pas eu de visiteurs d\'autres sites web.';
 $langFile['home_novisitors'] = 'actuellement il n\'y a pas eu de visiteurs sur le site web.';
 
 /*
@@ -658,8 +659,7 @@ $langFile['unsavedPage_question_h1'] = '<span class="brown">La page a &eacute;t&
 // ---------- DELETE PAGE
 $langFile['deletePage_question_part1'] = 'Vous &ecirc;tes sur de vraiment';
 $langFile['deletePage_question_part2'] = 'vouloir &eacute;ffacer le site?';
-$langFile['deletePage_finishnotexisting_part1'] = 'le site web';
-$langFile['deletePage_finish_part2'] = 'a &eacute;t&eacute; &eacute;ffac&eacute;';
+$langFile['deletePage_notexisting_part1'] = 'le site web';
 $langFile['deletePage_notexisting_part2'] = 'n\'existe pas';
 $langFile['deletePage_finish_error'] = 'ERREUR: La page ne pouvait pas &ecirc;tre &eacute;ffac&eacute;e!';
 
@@ -671,7 +671,6 @@ $langFile['deletePage_finish_error'] = 'ERREUR: La page ne pouvait pas &ecirc;tr
 $langFile['pageThumbnailDelete_question_part1'] = 'Vous &ecirc;tes sur de vraiment';
 $langFile['pageThumbnailDelete_question_part2'] = '&eacute;ffacer le thumbnail de cette page?';
 $langFile['pageThumbnailDelete_name'] = 'le thumbnail';
-$langFile['pageThumbnailDelete_finish_part2'] = 'a &eacute;t&eacute; &eacute;ffac&eacute;!';
 $langFile['pageThumbnailDelete_notexisting_part2'] = 'n\'existe pas';
 $langFile['pageThumbnailDelete_finish_error'] = 'ERREUR: Le thumbnail ne pouvait pas &ecirc;tre &eacute;ffac&eacute;e!';
 
@@ -705,38 +704,26 @@ $langFile['pagethumbnail_upload_response_finish'] = 'L\'image a &eacute;t&eacute
 
 // -> BACKUP
 
-$langFile['BACKUP_TITLE_BACKUP'] = 'backup';
+$langFile['BACKUP_TITLE_BACKUP'] = 'sauvegarde';
 $langFile['BACKUP_TITLE_RESTORE'] = 'r&eacute;tablir';
 
-$langFile['BACKUP_TITLE_RESTORE_FROMFILES'] = 'choisir de backup existant';
-$langFile['BACKUP_TITLE_RESTORE_FROMUPLOAD'] = 't&eacute;l&eacute;charger le fichier de backup';
+$langFile['BACKUP_TITLE_RESTORE_FROMFILES'] = 'choisir de sauvegarde existant';
+$langFile['BACKUP_TITLE_RESTORE_FROMUPLOAD'] = 't&eacute;l&eacute;charger le fichier de sauvegarde';
 
-$langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'] = 'backup avant la r&eacute;cup&eacute;ration';
+$langFile['BACKUP_TEXT_RESTORE_BACKUPBEFORERESTORE'] = 'sauvegarde avant la r&eacute;cup&eacute;ration';
 
-$langFile['BACKUP_BUTTON_DOWNLOAD'] = 'cr&eacute;er et t&eacute;l&eacute;chargement de backup actuelle';
-$langFile['BACKUP_TEXT_RESTORE'] = 'S&eacute;lectionnez ici une <span class="logoname"><span>fein</span>dura</span> fichier de backup, de r&eacute;tablir un &eacute;tat ancien.<br /><span class="blue">Avant de restaurer une backup de l\'ancien stand est cr&eacute;&eacute;.</ span>';
+$langFile['BACKUP_BUTTON_DOWNLOAD'] = 'cr&eacute;er et t&eacute;l&eacute;chargement de sauvegarde actuelle';
+$langFile['BACKUP_TEXT_RESTORE'] = 'S&eacute;lectionnez ici une <span class="logoname"><span>fein</span>dura</span> fichier de sauvegarde, de r&eacute;tablir un &eacute;tat ancien.<br /><span class="blue">Avant de restaurer une sauvegarde de l\'ancien stand est cr&eacute;&eacute;.</ span>';
+$langFile['BACKUP_TOOLTIP_DELETE'] = 'supprimer sauvegarde';
+$langFile['BACKUP_TEXT_DELETE_QUESTION1'] = ''; // backup 2010-11-05 15:03 supprimer?
+$langFile['BACKUP_TEXT_DELETE_QUESTION2'] = 'supprimer?';
 
-$langFile['BACKUP_TITLE_LASTBACKUPS'] = 't&eacute;l&eacute;charger backups';
-$langFile['BACKUP_TEXT_NOBACKUP'] = 'Pas de backup a &eacute;t&eacute; cr&eacute;&eacute; pour le moment.';
+$langFile['BACKUP_TITLE_LASTBACKUPS'] = 't&eacute;l&eacute;charger sauvegardes';
+$langFile['BACKUP_TEXT_NOBACKUP'] = 'Pas de sauvegarde a &eacute;t&eacute; cr&eacute;&eacute; pour le moment.';
 
-$langFile['BACKUP_ERROR_FILENOTFOUND'] = 'Backup n\'a pas &eacute;t&eacute; trouv&eacute; au chemin d\'acc&egrave;s:';
-$langFile['BACKUP_ERROR_NORESTROEFILE'] = 'Il n\'y a pas de fichier de backup pour restaurer s&eacute;lectionn&eacute;.';
-
-/*
-* search.php
-*/
-
-// ---------- SEARCH
-$langFile['search_h1'] = 'fouiller les pages';
-$langFile['search_results_h1'] = 'r&eacute;sultat de recherche pour';
-$langFile['search_results_text1'] = 'convergences dans le titre';
-$langFile['search_results_text2'] = 'convergences dans la date ou la cat&eacute;gorie';
-$langFile['search_results_text3'] = 'mots conforms:';
-$langFile['search_results_text4'] = 'trouv&eacute; une phrase conforme';
-$langFile['search_results_text8'] = 'convergence avec l\'ID de la page';
-$langFile['search_results_count'] = 'r&eacute;sultat';
-$langFile['search_results_time_part1'] = 'en'; // 12 r&eacute;sultat en 0.32 secondes
-$langFile['search_results_time_part2'] = 'secondes';
+$langFile['BACKUP_ERROR_FILENOTFOUND'] = 'Sauvegarde n\'a pas &eacute;t&eacute; trouv&eacute; au chemin d\'acc&egrave;s:';
+$langFile['BACKUP_ERROR_NORESTROEFILE'] = 'Il n\'y a pas de fichier de sauvegarde pour restaurer s&eacute;lectionn&eacute;.';
+$langFile['BACKUP_ERROR_DELETE'] = 'Sauvegarde ne peut pas &ecirc;tre supprim&eacute;!';
 
 // -----------------------------------------------------------------------------------------------
 // RETURN ****************************************************************************************

@@ -14,21 +14,31 @@
     You should have received a copy of the GNU General Public License along with this program;
     if not,see <http://www.gnu.org/licenses/>.
 */
-// setup.php version 2.44 (BACKEND)
+/**
+ * The Backend search file.
+ * 
+ * @uses search::find() to search in the pages
+ * 
+ * @version 1.0
+ * <br />
+ * <b>ChangeLog</b><br />
+ *    - 1.0 initial release
+ *      
+ */ 
 
 
 /* LANGUAGE-VARS
 
-$langFile['search_h1'] = 'Seiten durchsuchen';
-$langFile['search_results_h1'] = 'Suchergebnisse f&uuml;r';
-$langFile['search_results_text1'] = '&Uuml;bereinstimmungen im Titel';
-$langFile['search_results_text2'] = '&Uuml;bereinstimmungen im Datum oder der Kategorie';
-$langFile['search_results_text3'] = '&Uuml;bereinstimmende W&ouml;rter:';
-$langFile['search_results_text4'] = '&Uuml;bereinstimmenden Satz gefunden';
-$langFile['search_results_text8'] = '&Uuml;bereinstimmung mit der Seiten ID';
-$langFile['search_results_count'] = 'Treffer';
-$langFile['search_results_time_part1'] = 'in'; // 12 Treffer in 0.32 Sekunden
-$langFile['search_results_time_part2'] = 'Sekunden';
+$langFile['SEARCH_TITLE'] = 'Seiten durchsuchen';
+$langFile['SEARCH_TITLE_RESULTS'] = 'Suchergebnisse f&uuml;r';
+$langFile['SEARCH_TEXT_MATCH_TITLE'] = '&Uuml;bereinstimmungen im Titel';
+$langFile['SEARCH_TEXT_MATCH_DATE'] = '&Uuml;bereinstimmungen im Seitendatum';
+$langFile['SEARCH_TEXT_MATCH_WORDS'] = '&Uuml;bereinstimmende W&ouml;rter:';
+$langFile['SEARCH_TEXT_MATCH_CATEGORY'] = '&Uuml;bereinstimmender Kategoriename';
+$langFile['SEARCH_TEXT_MATCH_ID'] = '&Uuml;bereinstimmung mit der Seiten ID';
+$langFile['SEARCH_TEXT_RESULTS'] = 'Treffer';
+$langFile['SEARCH_TEXT_TIME_1'] = 'in'; // 12 Treffer in 0.32 Sekunden
+$langFile['SEARCH_TEXT_TIME_2'] = 'Sekunden';
 
 */
 
@@ -41,253 +51,135 @@ $time_start = microtime(); //Zeitbeginn am Seitenanfang
 require_once(dirname(__FILE__)."/../includes/secure.include.php");
 
 // set the GET searchword as the POST searchword, IF exists
-if(isset($_GET['search']))
-  $_POST['search'] = urldecode($_GET['search']);
+$searchWords = (isset($_GET['search'])) ? urldecode($_GET['search']) : $_POST['search'];
 
-// clean up the searchWord
-$searchWord = stripslashes($_POST['search']);
-//$searchWord = htmlentities($searchWord,ENT_NOQUOTES,'UTF-8');
+?>
 
-// show the form
-echo '<form action="index.php?site='.$_GET['site'].'" method="post" enctype="multipart/form-data" accept-charset="UTF-8">';
+<form action="index.php?site=<?= $_GET['site']; ?>" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+  <div class="block">
+  <h1><?= $langFile['SEARCH_TITLE']; ?></h1>
+    <div class="content">
+      <input name="search" type="text" size="50" value="<?= $searchWords; ?>" style="float:left; margin-top: 12px; margin-right:10px;" />
+      <input type="submit" value="" class="button search" />
+    </div>
+    <div class="bottom"></div>
+  </div>
+</form>
+<?php
 
-echo '<div class="block">
-      <h1>'.$langFile['search_h1'].'</h1>
-        <div class="content">
-          <input name="search" type="text" size="50" value="'.$searchWord.'" style="float:left; margin-top: 12px; margin-right:10px;" />
-          <input type="submit" value="" class="button search" />
-        </div>
-        <div class="bottom"></div>
-      </div>
-      </form>';
-
-$count = '0';
-// -------------------------------------------------------------------------------------------
-// STARTS SEARCH
-if(!empty($searchWord)) {
-
-//$categoriesList = $categoryConfig;
-//array_unshift($categoriesList,array('id' => 0,'name' => $langFile['categories_nocategories_name']));
-$allPageContents = $generalFunctions->loadPages(true,true);
-
-// SEARCH RESULTS HEADLINE
-echo '<div class="block"><h1>'.$langFile['search_results_h1'].' &quot;'.$searchWord.'&quot;</h1><div class="bottom"></div></div>';
-
-// ------------------------
-// --->> OUTPUT LAYOUT
-function ausgabeblock_start($count,$pageContent) {
-  global $categoryConfig;
+// ->> SEARCHING, if searchwords are given
+if(!empty($searchWords)) {
   
-  // set category name
-  if(isset($categoryConfig[$pageContent['category']]['name']))
-    $categoryName = '&rArr; '.$categoryConfig[$pageContent['category']]['name'];
-  elseif($pageContent['category'] == 0)
-    $categoryName = '&rArr; '.$GLOBALS['langFile']['CATEGORIES_TOOLTIP_NONCATEGORY'];
+  // var
+  $count = 0;
+
+  // SEARCH RESULTS HEADLINE
+  echo '<div class="block"><h1>'.$langFile['SEARCH_TITLE_RESULTS'].' &quot;'.$searchWords.'&quot;</h1><div class="bottom"></div></div>';
+    
+  // START SEARCH
+  $search = new search();
+  $search->checkIfPublic = false;
+  $results = $search->find($searchWords);
   
-  // -> RETURN OUTPUT LAYOUT
-  return '<div class="content"><h3><a href="?category='.$pageContent['category'].'&amp;page='.$pageContent['id'].'">'.$pageContent['title'].'</a> <span>'.$categoryName.'</span></h3><p>';
-}
-function ausgabeblock_end() {
-  return '</p></div>
-  <div class="bottom"></div>';
-}
-// --- ENDE OUTPUT LAYOUT
-// ---------------------------
-
-
-//print_r($allPageContents);
-
-  // schleife die die einzelnen gruppen öffnet
-  foreach($allPageContents as $pageContent)  {
+  /*
+  echo '<pre>';
+  var_dump($results);
+  echo '</pre>';
+  */
+  	
+  // ->> OUTPUT
+  // **********
+  
+  // -> messure end time
+  $time_end = microtime();
+  $time = round($time_end - $time_start,2);
+  echo '<h2>'.count($results).' '.$langFile['SEARCH_TEXT_RESULTS'].' <span style="font-size:10px;">'.$langFile['SEARCH_TEXT_TIME_1'].' '.$time.' '.$langFile['SEARCH_TEXT_TIME_2'].'</span></h2>';
+  
+  // -> display results
+  $countoutput = 0; 
+  // FERTIGE AUSGABE sortiert nach prioritität 
+  if(isset($results)) {
+    foreach($results as $result) {
       
-    	//setzt die priotität der suchergebnisse am anfang auf 0
-    	$priority = 0;
-            
-      // bereitet $pageContent[content] vor
-      $pageContent['content'] = strip_tags($pageContent['content']);
+      $page = generalFunctions::readPage($result['page']['id'],$result['page']['category']);
       
-      // -> check for public only in the frontend search
-      //if($categoryConfig[$pageContent['category']]['public'] && $pageContent['public']) {
-       	$inhalt = strtolower($pageContent['content']);
-       	$id = strtolower($pageContent['id']);
-        $titel = strtolower($pageContent['title']);
-        $categoryName = strtolower($categoryConfig[$pageContent['category']]['name']);
-        $beforeDate = strtolower($pageContent['pagedate']['before']);
-        $date = $statisticFunctions->formatDate($pageContent['pagedate']['date']);
-        $afterDate = strtolower($pageContent['pagedate']['after']);
-      /*} else {
-       	$inhalt = '';
-       	$titel = '';
-       	$categoryName = '';
-    	  $date = '';
-       }*/
-     
-      // teile $searchWord in einzelne worte auf
-      $searchWord = $generalFunctions->cleanSpecialChars($searchWord);
-      if(substr($searchWord,-1) == ' ') // deletes space on the ende
-        $searchWord = substr($searchWord,0,-1);
-      if(substr($searchWord,0,1) == ' ') // deletes space on the beginning
-        $searchWord = substr($searchWord,1);
-      $searchWord = strtolower($searchWord);
-      $searchwords = explode(" ", $searchWord);
-          	        	              
-      // ->> SEARCH ALL WORDS
-      // *********************
-			  
-		  // für jedes wort wir eine einzelne suchausgabe erstellt und mit .. getrennt
-			$zaehl = 0;
-			$if_find = false;
-			$words = 0;
-
-		  foreach($searchwords as $searchword) {
-
-				// -> SEARCH TITLE
-				if(strpos($titel, $searchword) !== false) { //wenn im titel gefunden wurde
-					$findtext = false;
-					$priority = $priority + 8;
-					$wortanzahl = $langFile['search_results_text1']; //angabe findings im titel							
-					$if_find = true;
-				// -> SEARCH DATE or CATEGORY
-				} elseif(strpos($beforeDate, $searchword) !== false ||
-	               strpos($afterDate, $searchword) !== false ||
-                 strpos($date, $statisticFunctions->validateDateFormat($searchword)) !== false ||
-                 strpos($categoryName, $searchword) !== false) { //wenn im datum gefunden wurde
-					$findtext = false;
-					$priority = $priority + 3;
-					$wortanzahl = $langFile['search_results_text2']; //angabe findings im datum oder gruppe
-					$if_find = true;
-				// -> SEARCH ID
-			  } elseif($id == $searchword) { //wenn in der seiten id gefunden
-					$priority = $priority + 10;
-					$findtext = false;
-					$stelle = 0;
-					$wortanzahl = $langFile['search_results_text8']; //angabe findings in id
-					$if_find = true;
-				// -> SEARCH CONTENT
-				} elseif(strpos($inhalt, $searchword) !== false) { //wenn im inhalt gefunden wurde
-					$findtext = true;
-					$priority++;
-																			
-					$wortlaenge[$zaehl] = strlen($searchword);							
-					$stellen[$zaehl] = strpos($inhalt, $searchword);
-					$ausgabenlaenge = 40; //ausgabenlänge vor und hinter einzelnen wörtern
-					$ausgabenlaengereset = $ausgabenlaenge;
-					$words++;
-					$wortanzahl = $langFile['search_results_text3'].' '.$words; //angabe über wortanzahl bei mehreren wörtern
-					$if_find = true;
-				}
-				
-				if($if_find) {
-				  
-				
-        	// -> CREATE FINDINGS ARRAY
-          $findings[$zaehl] = array("stelle" => $stellen[$zaehl], "wortlaenge" => $wortlaenge[$zaehl], "findtext" => $findtext);
-          $zaehl++;
-			    unset($findtext);
+      // -> generate toolTip information
+      $pageDate = showPageDate($page);
+      if($categoryConfig[$page['category']]['showTags'] && !empty($page['tags'])) {
+        $pageTags = '[br /][br /]';
+        $pageTags .= '[b]'.$langFile['sortablePageList_tags'].'[/b][br /]'.$page['tags'];
+      }      
+      $startPageText = ($adminConfig['setStartPage'] && $page['id'] == $websiteConfig['startPage'])
+        ? $langFile['sortablePageList_functions_startPage_set'].'[br /][br /]'
+        : '';
+      
+      echo '<div class="block open search"><h1>&nbsp;</h1>';
+      
+      // found ID
+      if($result['id']) {
+        echo '<span class="resultHeadline matchingID">';
+        echo $langFile['SEARCH_TEXT_MATCH_ID'].' &rArr; ';      
+        echo '</span>';
+      }
+      
+      // first TITLE
+      echo '<span class="resultHeadline">';
+      echo '<a href="?category='.$page['category'].'&amp;page='.$page['id'].'" class="toolTip" title="'.str_replace(array('[',']','<','>','"'),array('(',')','(',')',''),$page['title']).'::'.$startPageText.'[b]ID[/b] '.$page['id'].$pageDate.$pageTags.'">';
+      echo ($result['title']) ? $result['title'] : $page['title'];
+      echo '</a>';
+      echo '</span>';
+      
+      // otherwise display all results
+      if($result['id'] === false) {
+        echo '  <div class="content">';
+        
+        // CATEGORY
+        if($result['category']) {
+          echo '<br /><span class="keywords category">';
+          echo ' '.$langFile['SEARCH_TEXT_MATCH_CATEGORY'].': '.$result['category'];
+          echo '</span>';
         }
-		  }
-							   
-			// ausgabe wenn was gefunden wurde
-			if($if_find === true) {
-			  array_multisort($findings,SORT_ASC, SORT_REGULAR);
-			  
-			  //var_dump($findings);			  
-			  $count++;  //zählt die treffer
-			 // AUSGABE anfang
-			 $beginn_ausgabeblock = @ausgabeblock_start($count,$pageContent); 
-			 $ausgabetext = $beginn_ausgabeblock; //schreibt beginn des ausgabeblocks
-			 
-			  unset($stelle);
-			  for ($i = 0; $i < count($findings); $i++) {
-				// überprüft ob das wort am anfang steht
-				$lenge = $ausgabenlaenge;	 //länge vor dem gefunden wort		
-				  if(($findings[$i]['stelle']-$lenge)>='0'){
-				  $stellestart = $findings[$i]['stelle']-$lenge;
-				  } else {
-				  $stellestart = '0';
-				  $lenge = $findings[$i]['stelle'];
-				  }
-				
-				//echo '<br />i: '.$i.'<br />';
-				//echo '<b>stelle</b>: '.$findings[$i]['stelle'].'<br />';
-				//echo 'wortlange: '.$wortlaenge[$i].'<br />';
-				//echo $i;
-				//echo $ausgabenlaenge;
-				
-				if($findings[$i]['findtext'] === true) {	
-				
-					//überprüft ob das vorherige (davor) wort nah am jetzigen ist
-					if(isset($findings[($i-1)]['stelle']) && ($findings[($i-1)]['stelle']+$findings[($i-1)]['wortlaenge']) >= ($findings[$i]['stelle']-$ausgabenlaenge)) {
-						$auszug_v = '';
-						$priority++;
-						} else {
-						$auszug_v = '..'.substr($pageContent['content'], $stellestart, $lenge);
-						}
-										
-					// überprüft ob das nächste (dahinter) wort nah am jetzigen ist
-					if(isset($findings[($i+1)]['stelle']) && ($findings[$i]['stelle']+$findings[$i]['wortlaenge']+$ausgabenlaenge) >= $findings[($i+1)]['stelle'] && $findings[($i+1)]['stelle']-($findings[$i]['stelle']+$findings[$i]['wortlaenge']) <= $ausgabenlaenge) {
-						if(($findings[($i+1)]['stelle']-($findings[$i]['stelle']+$findings[$i]['wortlaenge'])) <= $ausgabenlaenge)
-							$ausgabenlaenge = ($findings[($i+1)]['stelle']-($findings[$i]['stelle']+$findings[$i]['wortlaenge']));
-						$auszug_h_point = '';
-						$priority++;
-						} else {
-						$ausgabenlaenge = $ausgabenlaengereset;
-						$auszug_h_point = '..';
-						}
-							
-					$auszug_m = substr($pageContent['content'], $findings[$i]['stelle'], $findings[$i]['wortlaenge']);
-					$auszug_h = substr($pageContent['content'], ($findings[$i]['stelle']+$findings[$i]['wortlaenge']), $ausgabenlaenge).$auszug_h_point;
-					} elseif($i == 0) {
-						// wenn nur im titel und datum gefunden wurde, zeige eine vorschau des inhalts
-						$auszug_v = substr($pageContent['content'], 0, 90).'..';
-					}
-															
-					// AUSGABE mitte
-					$ausgabetext .= $auszug_v.'<b>'.$auszug_m.'</b>'.$auszug_h;
-					
-					$ausgabenlaenge = $ausgabenlaengereset;
-					unset($auszug_v,$auszug_m,$auszug_h);
-				}
-				// AUSGABE ende
-				$ende_ausgabeblock = @ausgabeblock_end();
-				$ausgabetext .= $ende_ausgabeblock; //ausgabeblock ende
-				// AUSGABE WIRD IN ARRAY GESPEICHERT
-				$ausgabe[] = array('priority' => $priority, 'output' => $ausgabetext, 'words' => $wortanzahl);
-				
-				unset($findings,$stellen,$wortlaenge,$ausgabetext,$wortanzahl);
-				$priority = 0; //setzt priorität wieder auf 0
-			} //ende if_find=true
-			
-	} //ende kategorien for schleife
-	
-// AUSGABE angabe der Treffer vor ausgabe
-// LADEZEIT MESSEN ausgabe
-$time_end = microtime();
-$time = round($time_end - $time_start,2);
-
-$timeOutputText = '<h2>'.$count.' '.$langFile['search_results_count'].' <span style="font-size:10px;">'.$langFile['search_results_time_part1'].' '.$time.' '.$langFile['search_results_time_part2'].'</span></h2>';
-
-// show time and result number above
-echo $timeOutputText;
-
-
-$countoutput = 0; 
-// FERTIGE AUSGABE sortiert nach prioritität 
-if(isset($ausgabe)) {
-	array_multisort($ausgabe,SORT_DESC, SORT_REGULAR);
-
-  foreach($ausgabe as $output) {
-    $countoutput++;
-    //echo '|-'.$output['priority'].'-||';
-    echo '<div class="block"><h1>'.$countoutput.'. <span style="font-size:10px;">'.$output['words'].'</span></h1>'.$output['output'].'</div>';
+        
+        // SEARCHWORDS
+        if($result['searchwords']) {
+          echo '<br /><span class="keywords blue">';
+          echo ' '.$langFile['SEARCH_TEXT_MATCH_SEARCHWORDS'].': '.$result['searchwords'];
+          echo '</span>';
+        }
+        
+        // TAGS
+        if($result['tags']) {
+          echo '<br /><span class="keywords blue">';
+          echo ' '.$langFile['SEARCH_TEXT_MATCH_TAGS'].': '.$result['tags'];
+          echo '</span>';
+        }
+        
+        echo '<p>';
+        if($result['description'] || $result['content']) {
+          // DESCRIPTION
+          if($result['description']) {
+            echo '<span class="description">'.$result['description'].'</span>';
+          }
+          if($result['content']) {
+            echo $result['content'];
+          }
+          
+        // if nothing in the content or description is found its shows the description
+        } elseif(!empty($page['description']))
+          echo '<span class="description">'.$page['description'].'</span>';
+        else
+          echo substr(strip_tags($page['content']),0,200);
+          
+        echo '</p>';
+        echo '  </div>';
+      }      
+      
+      //echo '  <div class="bottom"></div>';
+      echo '</div>';
+      
+      $count++;
+    }
+    echo '<div style="height: 60px;">&nbsp;</div>';
   }
-  
-  // show time and result number below
-  //echo $timeOutputText;
 }
-
-unset($searchWord,$ausgabe);
-} // ende if suche
-
-
 ?>

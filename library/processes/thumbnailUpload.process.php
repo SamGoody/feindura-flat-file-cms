@@ -199,7 +199,7 @@ if($_POST['upload']) {
           imagedestroy($oldImg);
           
           // get pageContent (ERROR)
-          if(!$pageContent = $generalFunctions->readPage($page,$category))
+          if(!$pageContent = generalFunctions::readPage($page,$category))
             $error[] = $langFile['file_error_read'];
         
           // CHECK FOR ERROR 4
@@ -217,9 +217,11 @@ if($_POST['upload']) {
             
             // saves the new thumbnail in the flatfile ---------------------  
             $pageContent['thumbnail'] = $newFileName;
-            if($generalFunctions->savePage($pageContent)) {
-              $response[] = $langFile['pagethumbnail_upload_response_finish'].'<br /><br /><img src="'.$uploadPath.$newFileName.'" />';
-              $statisticFunctions->saveTaskLog(6,'page='.$pageContent['id']); // <- SAVE the task in a LOG FILE
+            if(generalFunctions::savePage($pageContent)) {
+              // generates a random number to put on the end of the image, to prevent caching
+              $randomImage = '?'.md5(uniqid(rand(),1));
+              $response[] = $langFile['pagethumbnail_upload_response_finish'].'<br /><br /><img src="'.$uploadPath.$newFileName.$randomImage.'" />';
+              statisticFunctions::saveTaskLog(6,'page='.$pageContent['id']); // <- SAVE the task in a LOG FILE
             }
             
             // call this javascript, on the succesfull finish of the upload

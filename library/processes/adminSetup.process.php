@@ -26,25 +26,15 @@ require_once(dirname(__FILE__)."/../includes/secure.include.php");
 if(isset($_POST['send']) && $_POST['send'] ==  'adminSetup') {
   
   // ** ensure the the post vars with a 'Path' in the key value ending with a '/'
-  foreach($_POST as $postKey => $post) {
-    
-    if(strstr($postKey,'Path')) {
-      if(!empty($post) && substr($post,-1) !== '/') {
-        $post = $post.'/';        
-      }
-      $post = preg_replace("#/+#",'/',$post);
-      
-      $_POST[$postKey] = $post;
-    }
-  }
+  addSlashToPathsEnd($_POST);
   
   // ** adds a "/" on the beginning of all absolute paths
   if(!empty($_POST['cfg_websitePath']) && substr($_POST['cfg_websitePath'],0,1) !== '/')
         $_POST['cfg_websitePath'] = '/'.$_POST['cfg_websitePath'];
   if(!empty($_POST['cfg_uploadPath']) && substr($_POST['cfg_uploadPath'],0,1) !== '/')
         $_POST['cfg_uploadPath'] = '/'.$_POST['cfg_uploadPath'];
-  if(!empty($_POST['cfg_websitefilesPath']) && substr($_POST['cfg_websitefilesPath'],0,1) !== '/')
-        $_POST['cfg_websitefilesPath'] = '/'.$_POST['cfg_websitefilesPath'];
+  if(!empty($_POST['cfg_websiteFilesPath']) && substr($_POST['cfg_websiteFilesPath'],0,1) !== '/')
+        $_POST['cfg_websiteFilesPath'] = '/'.$_POST['cfg_websiteFilesPath'];
   if(!empty($_POST['cfg_stylesheetPath']) && substr($_POST['cfg_stylesheetPath'],0,1) !== '/')
         $_POST['cfg_stylesheetPath'] = '/'.$_POST['cfg_stylesheetPath'];  
   
@@ -89,7 +79,7 @@ if(isset($_POST['send']) && $_POST['send'] ==  'adminSetup') {
   $adminConfig['websitePath'] =  $_POST['cfg_websitePath'];
   
   $adminConfig['uploadPath'] = $_POST['cfg_uploadPath'];  
-  $adminConfig['websitefilesPath'] = $_POST['cfg_websitefilesPath'];
+  $adminConfig['websiteFilesPath'] = $_POST['cfg_websiteFilesPath'];
   $adminConfig['stylesheetPath'] = $_POST['cfg_stylesheetPath'];    
   $adminConfig['dateFormat'] = $_POST['cfg_dateFormat'];
   $adminConfig['speakingUrl'] = $_POST['cfg_speakingUrl'];
@@ -100,15 +90,15 @@ if(isset($_POST['send']) && $_POST['send'] ==  'adminSetup') {
   
   $adminConfig['user']['fileManager'] = $_POST['cfg_userFileManager'];
   $adminConfig['user']['editWebsiteFiles'] = $_POST['cfg_userWebsiteFiles'];
-  $adminConfig['user']['editStylesheets'] = $_POST['cfg_userStylesheets'];  
+  $adminConfig['user']['editStyleSheets'] = $_POST['cfg_userStylesheets'];  
   $adminConfig['user']['info'] = $_POST['cfg_userInfo'];
     
   // -> saved in pageSetup.php
   //$adminConfig['setStartPage'] = $_POST['cfg_setStartPage'];
-  //$adminConfig['pages']['createdelete'] = $_POST['cfg_pageCreatePages'];
+  //$adminConfig['pages']['createDelete'] = $_POST['cfg_pageCreatePages'];
   //$adminConfig['pages']['thumbnails'] = $_POST['cfg_pageThumbnailUpload'];  
   //$adminConfig['pages']['plugins'] = $_POST['cfg_pagePlugins'];
-  //$adminConfig['pages']['showtags'] = $_POST['cfg_pageTags'];
+  //$adminConfig['pages']['showTags'] = $_POST['cfg_pageTags'];
 
   $adminConfig['editor']['enterMode'] = strtolower($_POST['cfg_editorEnterMode']);
   $adminConfig['editor']['styleFile'] = prepareStyleFilePaths($_POST['cfg_editorStyleFile']);
@@ -126,7 +116,7 @@ if(isset($_POST['send']) && $_POST['send'] ==  'adminSetup') {
      
     // give documentSaved status
     $documentSaved = true;
-    $statisticFunctions->saveTaskLog(8); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(8); // <- SAVE the task in a LOG FILE
     
   } else
     $errorWindow .= $langFile['adminSetup_fmsSettings_error_save'];
@@ -152,7 +142,7 @@ if(isset($_POST['saveFckStyleFile'])) {
   
     // give documentSaved status
     $documentSaved = true;
-    $statisticFunctions->saveTaskLog(9); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(9); // <- SAVE the task in a LOG FILE
   } else {
     $errorWindow .= $langFile['adminSetup_styleFileSettings_error_save'];
   }
@@ -167,11 +157,11 @@ include_once(dirname(__FILE__).'/../processes/saveEditFiles.process.php');
 $adminConfig = @include (dirname(__FILE__)."/../../config/admin.config.php");
 $categoryConfig = @include (dirname(__FILE__)."/../../config/category.config.php");
 // RESET of the vars in the classes
-$generalFunctions->adminConfig = $adminConfig;
-$statisticFunctions->adminConfig = $adminConfig;
-$generalFunctions->categoryConfig = $categoryConfig;
-$statisticFunctions->categoryConfig = $categoryConfig;
-$generalFunctions->storedPageIds = null;
-$generalFunctions->storedPages = null;
+generalFunctions::$storedPageIds = null;
+generalFunctions::$storedPages = null;
+generalFunctions::$adminConfig = $adminConfig;
+generalFunctions::$categoryConfig = $categoryConfig;
+statisticFunctions::$adminConfig = $adminConfig;
+statisticFunctions::$categoryConfig = $categoryConfig;
 
 ?>

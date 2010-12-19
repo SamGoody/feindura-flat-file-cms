@@ -44,7 +44,7 @@ if((isset($_POST['send']) && $_POST['send'] ==  'userSetup' && isset($_POST['cre
   $userConfig['UnnamedUser'] = array('id' => $newId);
   if(saveUserConfig($userConfig)) {
      $userInfo = $langFile['userSetup_createUser_created'];
-     $statisticFunctions->saveTaskLog(25); // <- SAVE the task in a LOG FILE
+     statisticFunctions::saveTaskLog(25); // <- SAVE the task in a LOG FILE
   } else { // throw error
     $errorWindow .= ($errorWindow) // if there is allready an warning
       ? '<br /><br />'.$langFile['userSetup_error_create']
@@ -72,7 +72,7 @@ if(((isset($_POST['send']) && $_POST['send'] ==  'userSetup' && isset($_POST['de
   if(saveUserConfig($newUserConfig)) {
     $userInfo = $langFile['userSetup_deleteUser_deleted'].': '.$storedUserName;
     $documentSaved = true; // set documentSaved status
-    $statisticFunctions->saveTaskLog(26,$storedUserName); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(26,$storedUserName); // <- SAVE the task in a LOG FILE
   } else
     $errorWindow .= $langFile['userSetup_error_save'];
 }
@@ -86,7 +86,7 @@ if(isset($_POST['send']) && $_POST['send'] == 'userSetup') {
   $newUserConfig = $_POST['users'];
   // prepare user POST data
   foreach($newUserConfig as $user => $configs) {
-    $configs['username'] = $generalFunctions->cleanSpecialChars($configs['username'],'');
+    $configs['username'] = generalFunctions::cleanSpecialChars($configs['username'],'');
     $newUserConfig[$configs['username']] = $configs;
     unset($newUserConfig[$user]);
     
@@ -117,9 +117,9 @@ if(isset($_POST['send']) && $_POST['send'] == 'userSetup') {
   if(saveUserConfig($newUserConfig)) {
     $documentSaved = true; // set documentSaved status
     if($userPassChanged)
-      $statisticFunctions->saveTaskLog(27,$savedUsername); // <- SAVE the task in a LOG FILE
+      statisticFunctions::saveTaskLog(27,$savedUsername); // <- SAVE the task in a LOG FILE
     else
-      $statisticFunctions->saveTaskLog(28,$savedUsername); // <- SAVE the task in a LOG FILE
+      statisticFunctions::saveTaskLog(28,$savedUsername); // <- SAVE the task in a LOG FILE
   } else
     $errorWindow .= $langFile['userSetup_error_save'];
 }

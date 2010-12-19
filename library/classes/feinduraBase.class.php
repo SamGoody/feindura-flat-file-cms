@@ -18,9 +18,10 @@
  * This file contains the {@link feindura} base class.
  * 
  * @package [Implementation]
- */ 
+ */
+
 /**
-* The basis feindura class for the implementation classes
+* The basis feindura class for the implementation classes.
 * 
 * It's methods provide necessary functions for the {@link feindura} and the {@link feinduraModules} <var>classes</var>.
 * 
@@ -30,9 +31,10 @@
 * 
 * @package [Implementation]
 * 
-* @version 1.58
+* @version 1.59
 * <br />
 * <b>ChangeLog</b><br />
+*    - 1.59 changed it to a PHP5 class, add visibilities (public, protected, private)
 *    - 1.58 add phpDocumentor documentation
 *    - 1.57 startet documentation
 */
@@ -46,22 +48,14 @@ class feinduraBase {
  // *********
   
  /**
-  * Is TRUE when the user is logged into the backend of feindura and visits the frontend website.
-  * If TRUE, it will enable the the frontend editing feature.  
-  * 
-  * 
-  * @var bool
-  */
-  var $loggedIn = false;
-  
- /**
   * Contains the session-ID, if cookies are deactivated
   * 
   * This session ID is then placed on the end of every link.
-  *      
+  * 
   * @var string
+  * @access protected
   */
-  var $sessionId = null;
+  protected $sessionId = null;
   
  /**
   * Contains the variable names used for the <var>$_GET</var> variables
@@ -75,77 +69,92 @@ class feinduraBase {
   * </samp>
   * 
   * @var array
+  * @access protected
   * @see feinduraBase()
-  *   
+  * 
   */
-  var $varNames = array('page' => 'page', 'category' => 'category', 'modul' => 'modul');
+  protected $varNames = array('page' => 'page', 'category' => 'category', 'modul' => 'modul');
                                  
   // PUBLIC
   // *********
-    
+  
+ /**
+  * Is TRUE when the user is logged into the backend of feindura and visits the frontend website.
+  * If TRUE, it will enable the the frontend editing feature.  
+  * 
+  * 
+  * @var bool
+  * @access public
+  */
+  public $loggedIn = false;
+  
  /**
   * Contains the administrator-settings and the page-settings set in the CMS backend
   * 
   * The file with the administrator-settings config array is situated at <i>"feindura-CMS/config/admin.config.php"</i>.
   *   
-  * This settings will be set to this property in the {@link feinduraBase()} constructor.
+  * This settings will be set to this property in the {@link __construct() feinduraBase} constructor.
   * 
   * Example array:
   * {@example backend/adminConfig.array.example.php}
   * 
-  * @var array  
-  * @see feinduraBase::feinduraBase()
+  * @var array
+  * @access public
+  * @see feinduraBase::__construct()
   * 
   */
-  var $adminConfig;
+  public $adminConfig;
 
  /**
   * Contains the website-settings config set in the CMS backend
   * 
   * The file with the website-settings config array is situated at <i>"feindura-CMS/config/website.config.php"</i>.
   *   
-  * This settings will be set to this property in the {@link feinduraBase()} constructor.
+  * This settings will be set to this property in the {@link __construct() feinduraBase} constructor.
   * 
   * Example array:
   * {@example backend/websiteConfig.array.example.php}
   * 
-  * @var array  
-  * @see feinduraBase::feinduraBase()
+  * @var array
+  * @access public
+  * @see feinduraBase::__construct()
   * 
   */
-  var $websiteConfig;
+  public $websiteConfig;
   
  /**
   * Contains the categories-settings config set in the CMS backend
   * 
   * The file with the categories-settings config array is situated at <i>"feindura-CMS/config/category.config.php"</i>.
   *   
-  * This settings will be set to this property in the {@link feinduraBase()} constructor.
+  * This settings will be set to this property in the {@link __construct() feinduraBase} constructor.
   * 
   * Example array:
   * {@example backend/categoryConfig.array.example.php}
   * 
   * @var array
-  * @see feinduraBase::feinduraBase()
+  * @access public
+  * @see feinduraBase::__construct()
   * 
   */
-  var $categoryConfig;
+  public $categoryConfig;
   
  /**
   * Contains the plugin-settings config set in the CMS backend
   * 
   * The file with the plugin-settings config array is situated at <i>"feindura-CMS/config/plugin.config.php"</i>.
   *   
-  * This settings will be set to this property in the {@link feinduraBase()} constructor.
+  * This settings will be set to this property in the {@link __construct() feinduraBase} constructor.
   * 
   * Example array:
   * {@example backend/pluginsConfig.array.example.php}
   * 
   * @var array
-  * @see feinduraBase::feinduraBase()
+  * @access public
+  * @see feinduraBase::__construct()
   * 
   */
-  var $pluginsConfig;
+  public $pluginsConfig;
   
   
  /**
@@ -158,11 +167,12 @@ class feinduraBase {
   * The standard value is <i>"en"</i> (english).
   *  
   * @var string
+  * @access public
   * @see $languageFile
   * @see feinduraBase()
-  *   
+  * 
   */  
-  var $language = 'en';
+  public $language = 'en';
   
  /**
   * Contains the frontend language-file array
@@ -170,53 +180,14 @@ class feinduraBase {
   * The frontend language file array contains texts for displaying page <i>warnings</i> or <i>errors</i> and additional texts like <i>"more"</i>, etc.<br />
   * The file is situated at <i>"feindura-CMS/library/languages/de.frontend.php"</i>.
   *   
-  * It will be <i>included</i> and set to this property in the {@link feinduraBase()} constructor.
+  * It will be <i>included</i> and set to this property in the {@link __construct() feinduraBase} constructor.
   * 
-  * @var array  
+  * @var array
+  * @access public
   * @see feinduraBase()
   * 
   */
-  var $languageFile = null;  
-
- /**
-  * Contains a <var>instance</var> of the {@link xssFilter::xssFilter() xssFilter} <var>class</var> for using in this <var>class</var>
-  * 
-  * The file with the {@link xssFilter::xssFilter() xssFilter} class is situated at <i>"feindura-CMS/library/classes/xssFilter.class.php"</i>.<br />   
-  * A instance of the {@link xssFilter::xssFilter() xssFilter} class will be set to this property in the {@link feinduraBase()} constructor.
-  * 
-  * @var class
-  * @see feinduraBase()
-  * @see xssFilter::xssFilter()
-  *   
-  */
-  var $xssFilter;
-
- /**
-  * Contains a <var>instance</var> of the {@link generalFunctions::generalFunctions() generalFunctions} <var>class</var> for using in this <var>class</var>
-  * 
-  * The file with the {@link generalFunctions::generalFunctions() generalFunctions} class is situated at <i>"feindura-CMS/library/classes/generalFunctions.class.php"</i>.<br />   
-  * A instance of the {@link generalFunctions::generalFunctions() generalFunctions} class will be set to this property in the {@link feinduraBase()} constructor.
-  * 
-  * @var class
-  * @see feinduraBase()
-  * @see generalFunctions::generalFunctions()
-  *   
-  */
-  var $generalFunctions;
-  
- /**
-  * Contains a <var>instance</var> of the {@link statisticFunctions::statisticFunctions() statisticFunctions} <var>class</var> for using in this <var>class</var>
-  * 
-  * The file with the {@link statisticFunctions::statisticFunctions() statisticFunctions} class is situated at <i>"feindura-CMS/library/classes/statisticFunctions.class.php"</i>.<br />
-  * A instance of the {@link statisticFunctions::statisticFunctions() statisticFunctions} class will be set to this property in the {@link feinduraBase()} constructor.
-  * 
-  * @var class
-  * @see feinduraBase()
-  * @see statisticFunctions::statisticFunctions()
-  * 
-  */
-  var $statisticFunctions;
-
+  public $languageFile = null;
   
  
  /* ---------------------------------------------------------------------------------------------------------------------------- */
@@ -225,7 +196,6 @@ class feinduraBase {
  
  /**
   * <b> Type</b>      constructor<br />
-  * <b> Name</b>      feinduraBase()<br />
   * 
   * The constructor of the class, sets all basic properties.
   * 
@@ -248,27 +218,28 @@ class feinduraBase {
   * 
   * @uses $adminConfig                            the administrator-settings config array will set to this property
   * @uses $websiteConfig                          the website-settings config array will set to this property
-  * @uses $categoryConfig                         the category-settings config array will set to this property
-  * @uses $generalFunctions                       a generalFunctions class instance will set to this property
-  * @uses $statisticFunctions                     a statisticFunctions class instance will set to this property
+  * @uses $categoryConfig                         the category-settings config array will set to this property  * 
   * @uses $loggedIn                               to set whether the visitor is logged in or not  
   * @uses $varNames                               the variable names from the administrator-settings config will set to this property
   * @uses $sessionId                              the session ID string will set to this property, if cookies are deactivated
   * @uses $language                               to set the given $language parameter to, or try to find out the browser language
   * @uses $languageFile                           set the loaded frontend language-file to this property
+  * @uses generalFunctions::init()                init the generalFucntions class
+  * @uses statisticFunctions::init()              init the statisticFunctions class
   * @uses statisticFunctions::saveWebsiteStats()  save the website statistic like user visit count, first and last visit AND the visit time of the last visited pages
   * 
   * @return void
   * 
-  * @example includeFeindura.example.php    
+  * @example includeFeindura.example.php
   * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function feinduraBase($language = false) {   // (String) string with the COUNTRY CODE ("de", "en", ..)
+  protected function __construct($language = false) {   // (String) string with the COUNTRY CODE ("de", "en", ..)
     
     // GET CONFIG FILES and SET CONFIG PROPERTIES
     $this->adminConfig = $GLOBALS["feindura_adminConfig"];
@@ -276,10 +247,9 @@ class feinduraBase {
     $this->categoryConfig = $GLOBALS["feindura_categoryConfig"];
     $this->pluginsConfig = $GLOBALS["feindura_pluginsConfig"];
     
-    // GET FUNCTIONS
-    $this->xssFilter = new xssFilter();
-    $this->generalFunctions = new generalFunctions();
-    $this->statisticFunctions = new statisticFunctions($this->generalFunctions);    
+    // INIT STATIC CLASSES
+    generalFunctions::init();
+    statisticFunctions::init();    
     
     // eventually LOGOUT
     if(isset($_GET['feindura_logout']))
@@ -293,7 +263,7 @@ class feinduraBase {
     
     // save the website statistics
     // ***************************
-    $this->statisticFunctions->saveWebsiteStats();
+    statisticFunctions::saveWebsiteStats();
     
     // sets the varNames.. from the adminConfig
     // ****************************************
@@ -309,12 +279,9 @@ class feinduraBase {
       $this->sessionId = htmlspecialchars(session_name().'='.session_id()); //SID
     }
     
-    // -> CHECK the GET variables
-    $this->generalFunctions->checkMainVars($this->varNames['category'],$this->varNames['category']);
-    
     // sets the language PROPERTY from the session var AND the languageFile Array
     // **************************************************************************
-    if(isset($language) && !empty($language) && ($language = $this->xssFilter->alphabetical($language)) === false)
+    if(isset($language) && !empty($language) && ($language = xssFilter::alphabetical($language)) === false)
       die('Wrong &quot;language&quot; parameter! Parameter can only have alphabetical characters. Script will be terminated.');
     
     // set the given country code
@@ -323,7 +290,7 @@ class feinduraBase {
       
     // if no country code is given, try to get the BROWSER LANGUAGE
     } else
-      $this->language = $this->generalFunctions->checkLanguageFiles(false,false,$this->language); // returns a COUNTRY SHORTNAME 
+      $this->language = generalFunctions::checkLanguageFiles(false,false,$this->language); // returns a COUNTRY SHORTNAME 
 
     $this->loadFrontendLanguageFile($this->language);
   }
@@ -331,46 +298,6 @@ class feinduraBase {
  /* ---------------------------------------------------------------------------------------------------------------------------- */
  /* *** METHODS *** */
  /* **************************************************************************************************************************** */
-  
-  /**
-  * <b> Name</b>      loadFrontendLanguageFile()<br />
-  * 
-  * Loads the frontend language file into the {@link $languageFile} property.
-  * 
-  * 
-  * <b>Used Constants</b><br />
-  *    - <var>DOCUMENTROOT</var> the absolut path of the webserver
-  * 
-  * @param string $language a given country code which will be used to try to laod the language file
-  * 
-  * @uses language the country code from the property
-  * 
-  * @return array|false the frontend language file or FALSE if the file doesn't exist
-  * 
-  * 
-  * @version 1.0
-  * <br />
-  * <b>ChangeLog</b><br />
-  *    - 1.0 initial release
-  * 
-  */
-  function loadFrontendLanguageFile($language) {
-    
-    // creates the frontend language file path
-    $frontendLangFilePath = dirname(__FILE__).'/../languages/'.$language.'.frontend.php';
-    $sharedLangFilePath = dirname(__FILE__).'/../languages/'.$language.'.shared.php';
-    
-    // includes the langFile
-    if(file_exists($frontendLangFilePath) && file_exists($sharedLangFilePath)) {
-      $sharedLangFile = include($sharedLangFilePath);
-      $frontendLangFile = include($frontendLangFilePath);      
-      $this->languageFile = $sharedLangFile + $frontendLangFile;
-      
-      return $this->languageFile;
-    } else
-      return false;
-    
-  }
 
  /**
   * <b> Name</b>      getCurrentPageId()<br />
@@ -388,20 +315,20 @@ class feinduraBase {
   * 
   * @uses $varNames                     for variable names which the $_GET will use for the page ID
   * @uses $adminConfig                  to look if set startpage is allowed
-  * @uses feindura::$startPage     if no $_GET variable exists it will try to get the {@link feindura::$startPage} property
+  * @uses feindura::$startPage          if no $_GET variable exists it will try to get the {@link feindura::$startPage} property
   * @uses generalFunctions::loadPages() for loading all pages to get the right page ID, if the $_GET variable is not a ID but a page name
   * 
   * 
   * @return int|false the current page ID or FALSE
   * 
-  * 
+  * @access public
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function getCurrentPageId() {
+  public function getCurrentPageId() {
     
     // ->> GET PAGE is an ID
     // *********************
@@ -410,7 +337,7 @@ class feinduraBase {
        
       // set PAGE GET var
       if(!empty($_GET[$this->varNames['page']]))
-        return $_GET[$this->varNames['page']]; // get the category ID from the $_GET var
+        return intval($_GET[$this->varNames['page']]); // get the category ID from the $_GET var
     
     // ->> GET PAGE is a NAME
     // **********************
@@ -418,18 +345,19 @@ class feinduraBase {
              !empty($_GET['page'])) {
     
       // load the pages of the category
-      $pages = $this->generalFunctions->loadPages($this->category);
+      $pages = generalFunctions::loadPages($this->category);
       //print_r($this->storedPages);
       if($pages) {
-        foreach($pages as $page) {
-          $transformedCategory = htmlentities($_GET['page'],ENT_QUOTES,'UTF-8');
-          
+        foreach($pages as $page) {          
+          $transformedPage = htmlentities($_GET['page'],ENT_QUOTES,'UTF-8');
+
           // RETURNs the right page Id
-          if($this->generalFunctions->encodeToUrl($page['title']) == $transformedCategory) {
+          if(generalFunctions::encodeToUrl($page['title']) == $transformedPage) {
             return $page['id'];
           }
         }
-      }  
+      }
+      
     } elseif($this->adminConfig['setStartPage'] && is_numeric($this->startPage)) {
       return $this->startPage;
     } else
@@ -446,7 +374,7 @@ class feinduraBase {
 
  /**
   * <b> Name</b>      getCurrentCategoryId()<br />
-  * <b> Alias</b>     getCategory()<br />
+  * <b> Alias</b>     getCategoryId()<br />
   * 
   * Returns the current category ID from the <var>$_GET</var> variable.
   * 
@@ -465,23 +393,23 @@ class feinduraBase {
   * 
   * @return int|false the current category ID or FALSE
   * 
-  * 
+  * @access public
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function getCurrentCategoryId() {
+  public function getCurrentCategoryId() {
     
     // ->> GET CATEGORY is an ID
     // *************************
     if(isset($_GET[$this->varNames['category']]) &&
+       !empty($_GET[$this->varNames['category']]) &&
        is_numeric($_GET[$this->varNames['category']])) {
        
       // set CATEGORY GET var
-      if(!empty($_GET[$this->varNames['category']]))
-        return $_GET[$this->varNames['category']]; // get the category ID from the $_GET var
+      return intval($_GET[$this->varNames['category']]); // get the category ID from the $_GET var
     
     // ->> GET CATEGORY is a NAME
     // **************************
@@ -492,12 +420,11 @@ class feinduraBase {
         $transformedCategory = htmlentities($_GET['category'],ENT_QUOTES,'UTF-8');
       
         // RETURNs the right category Id
-        if($this->generalFunctions->encodeToUrl($category['name']) == $transformedCategory) {
+        if(generalFunctions::encodeToUrl($category['name']) == $transformedCategory) {
           return $category['id'];
         }
       }
-    } elseif($this->adminConfig['setStartPage'] && is_numeric($this->startCategory)) {
-	
+    } elseif(empty($_GET['page']) && $this->adminConfig['setStartPage'] && is_numeric($this->startCategory)) {
       return $this->startCategory;
     } else
       return false;
@@ -531,30 +458,30 @@ class feinduraBase {
   * 
   * @return int|false the set page ID or FALSE
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function setCurrentPageId($setStartPage = false) {  // (bool) if TRUE it sets the startPage  
+  protected function setCurrentPageId($setStartPage = false) {
     
     // sets the startPage if it exists
     if($setStartPage === true && $this->adminConfig['setStartPage'] && !empty($this->websiteConfig['startPage'])) { //empty($this->category)
-      $this->startPage = $this->websiteConfig['startPage'];
+      $this->startPage = intval($this->websiteConfig['startPage']);
     }
       
     // sets the new page PROPERTY
     $this->page = $this->getCurrentPageId();
-      
+    
     return $this->page;
   }
  /**
   * Alias of {@link setCurrentPageId()}
   * @ignore
   */
-  function setPageId($setStartPage = false) {
+  protected function setPageId($setStartPage = false) {
     // call the right function
     return $this->setCurrentPageId($setStartPage);
   }
@@ -570,29 +497,29 @@ class feinduraBase {
   * 
   * @param bool $setStartCategory (optional) If set to TRUE it also sets the {@link $startCategory} property
   * 
-  * @uses $adminConfig              to check if setting a startpage is allowed
-  * @uses $websiteConfig            to get the startpage ID
-  * @uses feindura::$category       as the property to set
-  * @uses feindura::$startCategory  if the $setStartCategory parameter is TRUE this property will also be set
-  * @uses getPageCategory()         to get the right category ID of the startpage
-  * @uses getCurrentCategoryId()    to get the {@link feindura::$category} property or the {@link $startCategory} property
+  * @uses $adminConfig                        to check if setting a startpage is allowed
+  * @uses $websiteConfig                      to get the startpage ID
+  * @uses feindura::$category                 as the property to set
+  * @uses feindura::$startCategory            if the $setStartCategory parameter is TRUE this property will also be set
+  * @uses getCurrentCategoryId()              to get the {@link feindura::$category} property or the {@link $startCategory} property
+  * @uses generalFunctions::getPageCategory() to get the right category ID of the startpage
   * 
   * @return int|false the set category ID or FALSE
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function setCurrentCategoryId($setStartCategory = false) {
+  protected function setCurrentCategoryId($setStartCategory = false) {
     
     // sets the startPage if it exists
     if($setStartCategory === true && $this->adminConfig['setStartPage'] && !empty($this->websiteConfig['startPage'])) {   
-      $this->startCategory = $this->getPageCategory($this->websiteConfig['startPage']);
+      $this->startCategory = generalFunctions::getPageCategory($this->websiteConfig['startPage']);
     }
-    
+
     // sets the new category PROPERTY
     $this->category = $this->getCurrentCategoryId();
     
@@ -602,9 +529,49 @@ class feinduraBase {
   * Alias of {@link setCurrentCategoryId()}
   * @ignore
   */
-  function setCategoryId($setStartCategory = false) {
+  protected function setCategoryId($setStartCategory = false) {
     // call the right function
     return $this->setCurrentCategoryId($setStartCategory = false);
+  }
+
+ /**
+  * <b> Name</b>      loadFrontendLanguageFile()<br />
+  * 
+  * Loads the frontend language file into the {@link $languageFile} property.
+  * 
+  * 
+  * <b>Used Constants</b><br />
+  *    - <var>DOCUMENTROOT</var> the absolut path of the webserver
+  * 
+  * @param string $language a given country code which will be used to try to laod the language file
+  * 
+  * @uses language the country code from the property
+  * 
+  * @return array|false the frontend language file or FALSE if the file doesn't exist
+  * 
+  * @access protected
+  * @version 1.0
+  * <br />
+  * <b>ChangeLog</b><br />
+  *    - 1.0 initial release
+  * 
+  */
+  protected function loadFrontendLanguageFile($language) {
+    
+    // creates the frontend language file path
+    $frontendLangFilePath = dirname(__FILE__).'/../languages/'.$language.'.frontend.php';
+    $sharedLangFilePath = dirname(__FILE__).'/../languages/'.$language.'.shared.php';
+    
+    // includes the langFile
+    if(file_exists($frontendLangFilePath) && file_exists($sharedLangFilePath)) {
+      $sharedLangFile = include($sharedLangFilePath);
+      $frontendLangFile = include($frontendLangFilePath);      
+      $this->languageFile = $sharedLangFile + $frontendLangFile;
+      
+      return $this->languageFile;
+    } else
+      return false;
+    
   }
 
  /**
@@ -657,7 +624,7 @@ class feinduraBase {
   * @uses feindura::$thumbnailBefore
   * @uses feindura::$thumbnailAfter
   * 
-  * @uses publicCategory()                         to check whether the category is public  
+  * 
   * @uses createTitle()                            to create the page title
   * @uses createThumbnail()                        to check to show thumbnails are allowed and create the thumbnail <img> tag
   * @uses createAttributes()                       to create the attributes used in the error tag
@@ -665,21 +632,27 @@ class feinduraBase {
   * @uses shortenText()                            to shorten the non HTML page content, if the $useHtml parameter is FALSE
   * @uses statisticFunctions::formatDate()         to format the page date for output
   * @uses statisticFunctions::dateDayBeforeAfter() check if the page date is "yesterday" "today" or "tomorrow"
-  * @uses generalFunctions::isPageContentArray()   to check if the given array is a $pageContent array  
+  * @uses generalFunctions::isPublicCategory()     to check whether the category is public
+  * @uses generalFunctions::isPageContentArray()   to check if the given array is a $pageContent array
   * @uses generalFunctions::readPage()		         to load the page if the $page parameter is an ID
+  * @uses generalFunctions::getPageCategory()      to get the category of the page
   * 
   * 
   * @return array the generated page array, ready to display in a HTML file
   * 
   * @example showPage.example.php the called showPage method in this example uses the generatePage() method
   * 
+  * @see feindura::showPages()
+  * @see feindura::listPages()
+  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function generatePage($page, $showErrors = true, $shortenText = false, $useHtml = true) {
+  protected function generatePage($page, $showErrors = true, $shortenText = false, $useHtml = true) {
     
     // vars
     $return['id'] = false;
@@ -722,16 +695,16 @@ class feinduraBase {
     
     // ->> LOAD the pageContent ARRAY
     // -> checks if $page is an pageContent Array
-    if($this->generalFunctions->isPageContentArray($page)) {
+    if(generalFunctions::isPageContentArray($page)) {
       $pageContent = $page;
       
     // $page is NUMBER
     } else {
       // gets the category of the page
-      $category = $this->getPageCategory($page);
+      $category = generalFunctions::getPageCategory($page);
       
       // -> if not try to load the page
-      if(!$pageContent = $this->generalFunctions->readPage($page,$category)) {
+      if(!$pageContent = generalFunctions::readPage($page,$category)) {
         // if could not load throw ERROR
         if($showErrors) {
 	        $return['content'] = $errorStartTag.$this->languageFile['error_noPage'].$errorEndTag; // if not throw error and and the method
@@ -742,7 +715,7 @@ class feinduraBase {
     }
     
     // -> PAGE is PUBLIC? if not throw ERROR
-    if(!$pageContent['public'] || $this->publicCategory($pageContent['category']) === false) {
+    if(!$pageContent['public'] || generalFunctions::isPublicCategory($pageContent['category']) === false) {
       if($showErrors) {
         $return['content'] = $errorStartTag.$this->languageFile['error_pageClosed'].$errorEndTag; // if not throw error and and the method
         return $return; 
@@ -755,14 +728,14 @@ class feinduraBase {
     
     // -> PAGE DATE
     // *****************
-    $pagedate = false;
-    if($this->statisticFunctions->checkPageDate($pageContent)) {
+    $pageDate = false;
+    if(statisticFunctions::checkPageDate($pageContent)) {
     	$titleDateBefore = '';
     	$titleDateAfter = '';
     	// adds spaces on before and after
-    	if($pageContent['pagedate']['before']) $titleDateBefore = $pageContent['pagedate']['before'].' ';
-    	if($pageContent['pagedate']['after']) $titleDateAfter = ' '.$pageContent['pagedate']['after'];
-    	$pagedate = $titleDateBefore.$this->statisticFunctions->formatDate($this->statisticFunctions->dateDayBeforeAfter($pageContent['pagedate']['date'],$this->languageFile)).$titleDateAfter;
+    	if($pageContent['pageDate']['before']) $titleDateBefore = $pageContent['pageDate']['before'].' ';
+    	if($pageContent['pageDate']['after']) $titleDateAfter = ' '.$pageContent['pageDate']['after'];
+    	$pageDate = $titleDateBefore.statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($pageContent['pageDate']['date'],$this->languageFile)).$titleDateAfter;
     }
       
     // -> PAGE TITLE
@@ -817,11 +790,11 @@ class feinduraBase {
           //$shortenText = $this->contentLength; // standard preview length
   
         if($useHtml)
-          $pageContentEdited = $this->shortenHtmlText($pageContentEdited, $shortenText, $pageContent, "...");
+          $pageContentEdited = $this->shortenHtmlText($pageContentEdited, $shortenText, $pageContent);
         else {
           // clear string of html tags (except BR)
           $pageContentEdited = strip_tags($pageContentEdited, '<b><i><sup><sub><em><strong><u><br><br />');
-          $pageContentEdited = $this->shortenText($pageContentEdited, $shortenText, $pageContent, "...");
+          $pageContentEdited = $this->shortenText($pageContentEdited, $shortenText, $pageContent);
         }
       }
       
@@ -855,8 +828,8 @@ class feinduraBase {
     if($pageContent['category'] && $pageContent['category'] != '0')
       $return['category'] = $this->categoryConfig[$pageContent['category']]['name'];
     
-    if($pagedate)
-       $return['pageDate']  = $pagedate;
+    if($pageDate)
+       $return['pageDate']  = $pageDate;
        
     if(!empty($pageContent['title']))
        $return['title']	    = $title;
@@ -914,13 +887,14 @@ class feinduraBase {
   * 
   * @example getPageTitle.example.php the {@link getPageTitle()} method in this example calls this method with the title properties as parameters
   * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function createTitle($pageContent, $titleLength = false, $titleAsLink = false, $titleShowPageDate = false, $titleShowCategory = false, $titleCategorySeparator = false) {
+  protected function createTitle($pageContent, $titleLength = false, $titleAsLink = false, $titleShowPageDate = false, $titleShowCategory = false, $titleCategorySeparator = false) {
       
       // vars 
       $titleBefore = '';
@@ -930,20 +904,20 @@ class feinduraBase {
       //$fullTitle = strip_tags($pageContent['title']);
            
       // generate titleDate
-      if($titleShowPageDate && $this->statisticFunctions->checkPageDate($pageContent)) {
+      if($titleShowPageDate && statisticFunctions::checkPageDate($pageContent)) {
          $titleDateBefore = '';
          $titleDateAfter = '';
 	       // adds spaces on before and after
-         if($pageContent['pagedate']['before']) $titleDateBefore = $pageContent['pagedate']['before'].' ';
-         if($pageContent['pagedate']['after']) $titleDateAfter = ' '.$pageContent['pagedate']['after'];
-         $titleDate = $titleDateBefore.$this->statisticFunctions->formatDate($this->statisticFunctions->dateDayBeforeAfter($pageContent['pagedate']['date'],$this->languageFile)).$titleDateAfter.' ';
+         if($pageContent['pageDate']['before']) $titleDateBefore = $pageContent['pageDate']['before'].' ';
+         if($pageContent['pageDate']['after']) $titleDateAfter = ' '.$pageContent['pageDate']['after'];
+         $titleDate = $titleDateBefore.statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($pageContent['pageDate']['date'],$this->languageFile)).$titleDateAfter.' ';
       } else $titleDate = false;      
       
       
       /*
       // shorten the title
       if(is_numeric($titleLength))
-        $title = $this->shortenText($fullTitle, $titleLength, false, "...");
+        $title = $this->shortenText($fullTitle, $titleLength, false);
       else
         $title = $fullTitle;
       */
@@ -973,7 +947,7 @@ class feinduraBase {
       
       // shorten the title
       if(is_numeric($titleLength))
-        $title = $this->shortenText($title, $titleLength, false, "...");
+        $title = $this->shortenText($title, $titleLength, false);
         
       // -> builds the title
       // *******************
@@ -1001,13 +975,17 @@ class feinduraBase {
   * 
   * @return array|false the generated thumbnail <img> tag and a the plain thumbnail path or FALSE if no thumbnail exists or is not allowed to show
   * 
+  * @see feindura::createLink()
+  * @see feinduraBase::generatePage()
+  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function createThumbnail($pageContent) {
+  protected function createThumbnail($pageContent) {
       
     // ->> CHECK if thumbnail exists and is allowed to show
     if(!empty($pageContent['thumbnail']) &&
@@ -1063,14 +1041,14 @@ class feinduraBase {
   * 
   * @return string the generated attribute string
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function createAttributes($id, $class, $attributes) {
+  protected function createAttributes($id, $class, $attributes) {
   
       $attributeString = '';
       
@@ -1103,21 +1081,22 @@ class feinduraBase {
   * @param string         $idType           the ID(s) type can be "cat", "category", "categories" or "pag", "page" or "pages"
   * @param int|array|bool $ids              the category or page ID(s), can be a number or an array with numbers, if TRUE it loads all pages
   * 
-  * @uses publicCategory()              to check if the category(ies) or page(s) category(ies) are public
-  * @uses isPageContentArray()		      to check if the given array is a $pageContent array, if TRUE it just returns this array
-  * @uses generalFunctions::loadPages()	to load pages
-  * @uses generalFunctions::readPage()	to load a single page
+  * @uses isPageContentArray()		                 to check if the given array is a $pageContent array, if TRUE it just returns this array
+  * @uses generalFunctions::isPublicCategory()     to check if the category(ies) or page(s) category(ies) are public
+  * @uses generalFunctions::loadPages()	           to load pages
+  * @uses generalFunctions::readPage()	           to load a single page
+  * @uses generalFunctions::getPageCategory()      to get the category of the page
   * 
   * @return array|false an array with $pageContent array(s)
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */
-  function loadPagesByType($idType, $ids) {
+  protected function loadPagesByType($idType, $ids) {
     
     // vars
     $return = false;
@@ -1130,18 +1109,18 @@ class feinduraBase {
       if($ids === true || is_array($ids) || is_numeric($ids)) {
         
         // if its an array with $pageContent arrays -> return this
-        if($this->generalFunctions->isPageContentArray($ids) || (isset($ids[0]) && $this->generalFunctions->isPageContentArray($ids[0]))) {
+        if(generalFunctions::isPageContentArray($ids) || (isset($ids[0]) && generalFunctions::isPageContentArray($ids[0]))) {
           return $ids;
         
-        // OTHER BUTTONSwise load the pages from the category(ies)
+        // OTHERWISE load the pages from the category(ies)
         } else {
 	
           // checks if the categories are public         
-          if(($ids = $this->publicCategory($ids)) !== false) {
+          if(($ids = generalFunctions::isPublicCategory($ids)) !== false) {
 
 	          // returns the loaded pages from the CATEGORY IDs
 	          // the pages in the returned array also get SORTED
-            return $this->generalFunctions->loadPages($ids);
+            return generalFunctions::loadPages($ids);
 
           } else return false;
         }
@@ -1157,8 +1136,8 @@ class feinduraBase {
       if($ids === true) {
 	
 	// checks if the categories are public         
-	if(($ids = $this->publicCategory($ids)) !== false) {
-	  return $this->generalFunctions->loadPages($ids);
+	if(($ids = generalFunctions::isPublicCategory($ids)) !== false) {
+	  return generalFunctions::loadPages($ids);
 	}
       
       // -----------------------------------------    
@@ -1167,7 +1146,7 @@ class feinduraBase {
       } elseif($ids && is_array($ids)) {
         
         // checks if its an Array with pageContent Arrays
-        if($this->generalFunctions->isPageContentArray($ids) || (isset($ids[0]) && $this->generalFunctions->isPageContentArray($ids[0]))) {
+        if(generalFunctions::isPageContentArray($ids) || (isset($ids[0]) && generalFunctions::isPageContentArray($ids[0]))) {
           return $ids;          
         //otherwise load the pages from the categories
         } else {
@@ -1175,9 +1154,9 @@ class feinduraBase {
           // loads all pages in an array
           foreach($ids as $page) {
       	    // get category
-      	    $category = $this->getPageCategory($page);
-      	    if(($category = $this->publicCategory($category)) !== false) {
-              if($pageContent = $this->generalFunctions->readPage($page,$category)) {
+      	    $category = generalFunctions::getPageCategory($page);
+      	    if(($category = generalFunctions::isPublicCategory($category)) !== false) {
+              if($pageContent = generalFunctions::readPage($page,$category)) {
                 $return[] = $pageContent;
               }
 	          }
@@ -1187,10 +1166,10 @@ class feinduraBase {
       // ->> single page ID
       // *************** 
       } elseif($ids && is_numeric($ids)) {
-        $category = $this->getPageCategory($page);
-	      if(($category = $this->publicCategory($category)) !== false) {
+        $category = generalFunctions::getPageCategory($page);
+	      if(($category = generalFunctions::isPublicCategory($category)) !== false) {
           // loads the single page in an array 
-          if($pageContent = $this->generalFunctions->readPage($ids,$category)) {
+          if($pageContent = generalFunctions::readPage($ids,$category)) {
             $return[] = $pageContent;
           } else return false;
         } else return false;
@@ -1200,77 +1179,6 @@ class feinduraBase {
     // -> returns an array with the pageContent Arrays
     return $return;
   }
-  
- /**
-  * <b>Name</b> publicCategory()<br />
-  * 
-  * Checks whether the given category(ies) are public and returns the ID or an array with IDs of the public ones.
-  * 
-  * @param int|array|bool $ids the category or page ID(s), can be a number or an array with numbers, if TRUE then it check all categories
-  * 
-  * @uses $categoryConfig      to check if a category is public
-  * 
-  * @return array|false an array with ID(s) of the public category(ies)
-  * 
-  * 
-  * @version 1.0
-  * <br />
-  * <b>ChangeLog</b><br />
-  *    - 1.0 initial release
-  * 
-  */
-  function publicCategory($ids) {
-    
-    // var
-    $newIds = false;
-    
-    // ->> ALL categories
-    if($ids === true) {
-      
-        // adds the non-category
-        $newIds[] = 0;
-        
-        foreach($this->categoryConfig as $category) {
-          // checks if the category is public and creates a new array
-          if($category['public'])
-            $newIds[] = $category['id'];
-        }
-      // ->> MULITPLE categories
-    } elseif(is_array($ids)) {
-      // goes trough the given category IDs array
-      foreach($ids as $id) {
-        // checks if the category is public and creates a new array
-      	if($id == 0 || (isset($this->categoryConfig[$id]) && $this->categoryConfig[$id]['public']))    
-      	  $newIds[] = $id;
-            }
-      
-    // -> SINGLE category ID
-    } elseif(is_numeric($ids)) {
-
-      // checks if the category is public
-      if($ids == 0 || $this->categoryConfig[$ids]['public'])    
-        return $ids;
-      else return false;
-    
-    } else return false;
-    
-    // and return the new category IDs array
-    return $newIds;
-  }
-
- /**
-  * <b>Name</b> getPageCategory()<br />
-  * 
-  * Gets the category ID of a page.
-  * 
-  * @uses generalFunctions::getPageCategory()
-  * @see generalFunctions::getPageCategory()
-  * 
-  */
-  function getPageCategory($page) {
-    return $this->generalFunctions->getPageCategory($page);
-  }
-
 
  /**
   * <b>Name</b> loadPrevNextPage()<br />
@@ -1281,21 +1189,21 @@ class feinduraBase {
   * 
   * @param int|array|string $page    a page ID, a $pageContent array or a string with "previous" or "next"
   * 
-  * @uses getPropertyPage()		to get the right {@link feindura::$page} property
-  * @uses getPageCategory()		to get the category ID of the given page
-  * @uses generalFunctions::readPage()	to load the $pageContent array of the page and return it
-  * @uses generalFunctions::loadPages()	to load all pages in a category to find the right previous or next page and return it
+  * @uses getPropertyPage()		                 to get the right {@link feindura::$page} property
+  * @uses generalFunctions::readPage()	       to load the $pageContent array of the page and return it
+  * @uses generalFunctions::loadPages()	       to load all pages in a category to find the right previous or next page and return it
+  * @uses generalFunctions::getPageCategory()  to get the category ID of the given page
   * 
   * @return int|array|false the page ID of the right page or FALSE if no page could be loaded (can also return an $pageContent array)
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   *   
   */ 
-  function loadPrevNextPage($page) {
+  protected function loadPrevNextPage($page) {
     
     // var
     $prevNext = false;
@@ -1316,7 +1224,7 @@ class feinduraBase {
     }
     
     // CHECK if its a $pageContent array, set the $page ID to the $page parameter
-    if($this->generalFunctions->isPageContentArray($page))
+    if(generalFunctions::isPageContentArray($page))
       return $page;
     
     // USES the PRIORITY: 1. -> page var 2. -> PROPERTY page var 3. -> false
@@ -1327,17 +1235,17 @@ class feinduraBase {
      
     // -> IF only $page ID or $pageContent array is given return loaded page
     if($prevNext === false) {
-      //return $this->generalFunctions->readPage($page,$category);
+      //return generalFunctions::readPage($page,$category);
       return $page;
       
     // ->> ELSE return the previous or the next $pageContent array in the category
     } else {
     
       // gets the category of the page
-      $category = $this->getPageCategory($page);
+      $category = generalFunctions::getPageCategory($page);
       
       // loads all pages in this category
-      $categoryWithPages = $this->generalFunctions->loadPages($category);
+      $categoryWithPages = generalFunctions::loadPages($category);
   
       if($categoryWithPages !== false) {
         $count = 0;
@@ -1376,14 +1284,17 @@ class feinduraBase {
   * 
   * @return array|false the $pageContent array or FALSE if the $pageContent['tags'] doesn't match with any of the given tags
   * 
+  * @see feindura::listPagesByTags()
+  * @see feindura::createMenuByTags()
   * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   *   
   */ 
-  function compareTags($pageContent,  // (Array) the pageContent Array, needs the $pageContent['tags'] var
+  protected function compareTags($pageContent,  // (Array) the pageContent Array, needs the $pageContent['tags'] var
                                  $tags) {       // (Array) with the search TAGs
     
     // CHECKS if the $tags are in an array,
@@ -1423,14 +1334,17 @@ class feinduraBase {
   * 
   * @return array|false the $pageContent array of $pageContent arrays or FALSE if no $pageContent array have the any of the given tags
   * 
+  * @see feindura::listPagesByTags()
+  * @see feindura::createMenuByTags()
   * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */   
-  function hasTags($idType, $ids, $tags) {
+  protected function hasTags($idType, $ids, $tags) {
     
     // var
     $return = false;
@@ -1499,13 +1413,17 @@ class feinduraBase {
   * 
   * @link http://www.php.net/manual/de/datetime.formats.php
   * 
+  * @see feindura::listPagesByDate()
+  * @see feindura::createMenuByDate()
+  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */     
-  function loadPagesByDate($idType, $ids, $monthsInThePast = true, $monthsInTheFuture = true, $sortByCategories = false, $reverseList = false) {
+  protected function loadPagesByDate($idType, $ids, $monthsInThePast = true, $monthsInTheFuture = true, $sortByCategories = false, $reverseList = false) {
 
     if(!is_bool($monthsInThePast) && is_numeric($monthsInThePast))
       $monthsInThePast = round($monthsInThePast);
@@ -1548,16 +1466,16 @@ class feinduraBase {
       $selectedPages = array();
       foreach($pages as $page) {
         // show the pages, if they have a date which can be sorten
-        if(!empty($page['pagedate']['date']) &&
-           ($page['category'] != 0 && $this->categoryConfig[$page['category']]['showpagedate'])) {         
+        if(!empty($page['pageDate']['date']) &&
+           ($page['category'] != 0 && $this->categoryConfig[$page['category']]['showPageDate'])) {         
            
-           //echo $page['pagedate']['date'].' >= '.$pastDate.'<br />';
+           //echo $page['pageDate']['date'].' >= '.$pastDate.'<br />';
            
            // adds the page to the array, if:
            // -> the currentdate ist between the minus and the plus month or
            // -> mins or plus month are true (means there is no time limit)
-           if(($monthsInThePast === true || $page['pagedate']['date'] >= $pastDate) &&
-              ($monthsInTheFuture === true || $page['pagedate']['date'] <= $futureDate))
+           if(($monthsInThePast === true || $page['pageDate']['date'] >= $pastDate) &&
+              ($monthsInTheFuture === true || $page['pageDate']['date'] <= $futureDate))
              $selectedPages[] = $page;
         }
       }      
@@ -1568,7 +1486,7 @@ class feinduraBase {
         usort($selectedPages,'sortByDate');
       // sorts by DATE and CATEGORIES
       else
-        $selectedPages = $this->generalFunctions->sortPages($selectedPages,'sortByDate');
+        $selectedPages = generalFunctions::sortPages($selectedPages,'sortByDate');
       
       // -> flips the sorted array if $reverseList === true
       if($reverseList === true)
@@ -1599,14 +1517,17 @@ class feinduraBase {
   * 
   * @return int|false a page or category property ID or FALSE, if there are no property IDs
   * 
+  * @see feindura::listPages()
+  * @see feindura::createMenu()
   * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */ 
-  function getPropertyIdsByType($idType,$ids) {
+  protected function getPropertyIdsByType($idType,$ids) {
   
     $idType = strtolower($idType);
     $shortIdType = substr($idType,0,3);
@@ -1641,34 +1562,19 @@ class feinduraBase {
   * 
   * @return int|true the {@link feindura::$page} property or the $page parameter
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
-  *   
+  * 
   */  
-  function getPropertyPage($page = false) { // (false or Number)
+  protected function getPropertyPage($page = false) { // (false or Number)
     if(is_bool($page) && is_numeric($this->page))
       return $this->page;  // set the page var from PROPERTY var
     else
       return $page;
   }
-  
-  
-  // -> START -- getPropertyPages *******************************************************************
-  // if given pages var if false it sets the PAGES PROPERTY
-  // ------------------------------------------------------------------------------------------------
-  /*
-  function getPropertyPages($pages = false) { // (false or Array)
-    if($pages === false && is_array($this->pages))
-      $pages = $this->pages;  // set the pages var from PROPERTY var
-
-    return $pages;
-  }
-  */
-  // -> END -- getPropertyPages ---------------------------------------------------------------------
-  
   
  /**
   * <b>Name</b> getPropertyCategory()<br />
@@ -1679,46 +1585,18 @@ class feinduraBase {
   * 
   * @return int|true the {@link feindura::$category} property or the $category parameter
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   *   
   */  
-  function getPropertyCategory($category = false) { // (false or Number)
+  protected function getPropertyCategory($category = false) { // (false or Number)
     if(is_bool($category) && is_numeric($this->category))
       return $this->category;  // set the category var from PROPERTY var
     else
       return $category;
-  }
-
- /**
-  * <b>Name</b> getStoredPageIds()<br />
-  * 
-  * Returns the {@link generalFunctions::$storedPageIds} property.
-  * 
-  * @uses generalFunctions::getStoredPageIds()
-  * @see generalFunctions::getStoredPageIds()
-  * 
-  */
-  function getStoredPageIds() {
-
-    return $this->generalFunctions->getStoredPageIds();
-  }
-
- /**
-  * <b>Name</b> getStoredPages()<br />
-  * 
-  * Returns the {@link generalFunctions::$storedPages} property.
-  * 
-  * @uses generalFunctions::getStoredPages()
-  * @see generalFunctions::getStoredPages()
-  * 
-  */
-  function getStoredPages() {
-
-    return $this->generalFunctions->getStoredPages();
   }
 
  /**
@@ -1734,51 +1612,48 @@ class feinduraBase {
   * @param array|false  $pageContent     the pageContent array of the page to create the "more" link to the page from
   * @param string|false $endString       a string which will be put after the last character and before the "more" link
   * 
-  * @uses createHref()                                  create the href for the "more" link  
-  * @uses generalFunctions::getRealCharacterNumber()    to get the real number of characters of the string (adds the multiple characters of htmlentities)
-  * @uses generalFunctions::isPageContentArray()			  check if the given $pageContent parameter is valid
+  * @uses createHref()                                  create the href for the "more" link
+  * @uses generalFunctions::isPageContentArray()			  check if the given $pageContent parameter is valid  
+  * @uses generalFunctions::decodeToPlainText()         to decode the string to plain text, to shorten to the right letter number
+  * @uses generalFunctions::encodePlainText()           to encode the plain text back to a string with htmlentities
+  * 
   * 
   * @return string the shortened string
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release  
   * 
   */
-  function shortenText($string, $length, $pageContent = false, $endString = "...") {
+  protected function shortenText($string, $length, $pageContent = false, $endString = " ...") {
       
-      //var
-      $output = $string;
-      
-      // getting length
-      if(is_numeric($length)) {
-        // gets real length, if there are htmlentities like &auml; &uuml; etc
-        $length = $this->generalFunctions->getRealCharacterNumber($string,$length);        
-      }
+      // encode to plain text to cut to zthe right letter number
+      $string = generalFunctions::decodeToPlainText($string);
       
       // shorten the string
       if($length < strlen($string)) {      
-        $output = substr($string,0,$length);
-        
-        // search last whitespace and cut until there
-        if($endPos = strrpos($output, ' '))
-          $output = substr($output, 0, $endPos);
+        // go until you found a whitespace
+        while(substr($string,$length,1) != ' ' && $length < strlen($string)) {   
+          $length++;
+        }        
+        $string = substr($string,0,$length);
 
         // adds the endString
         if(is_string($endString))
-          $output .= $endString;
+          $string .= $endString;
       }
+      
+      $string = preg_replace("/ +/", ' ', $string);
+      $string = generalFunctions::encodePlainText($string);
       
       // adds the MORE LINK
-      if(is_string($endString) && $this->generalFunctions->isPageContentArray($pageContent)) {
-        $output .= " \n".'<a href="'.$this->createHref($pageContent).'">'.$this->languageFile['page_more'].'</a>';
+      if(is_string($endString) && generalFunctions::isPageContentArray($pageContent)) {
+        $string .= " \n".'<a href="'.$this->createHref($pageContent).'">'.$this->languageFile['page_more'].'</a>';
       }
       
-      $output = preg_replace("/ +/", ' ', $output);
-      
-      return $output;
+      return $string;
   }
 
  /**
@@ -1796,36 +1671,28 @@ class feinduraBase {
   * @param string|false $endString       a string which will be put after the last character and before the "more" link
   * 
   * @uses shortenText()                                 shorten the text
-  * @uses createHref()                                  create the href for the "more" link  
+  * @uses createHref()                                  create the href for the "more" link
+  * @uses generalFunctions::decodeToPlainText()         to decode the HTML string to plain text, to shorten to the right letter number  
   * 
   * @return string the shortened string
   * 
-  * 
+  * @access protected
   * @version 1.0
   * <br />
   * <b>ChangeLog</b><br />
   *    - 1.0 initial release
   * 
   */  
-  function shortenHtmlText($input, $length, $pageContent = false, $endString = '...') {
+  protected function shortenHtmlText($input, $length, $pageContent = false, $endString = ' ...') {
 
       // vars
       $textWasCut = false;
-      $rawText = strip_tags($input);      
-      $rawText = str_replace("\n", ' ', $rawText);
-      $rawText = str_replace("\r", ' ', $rawText);
-      $rawText = preg_replace("/ +/", ' ', $rawText);
-      
-      if(is_numeric($length))
-        $length = $this->generalFunctions->getRealCharacterNumber($rawText,$length);
+      $input = generalFunctions::decodeToPlainText($input);
+      $rawText = strip_tags($input);
       
       // only if the given LENGTH is SMALLER than the RAW TEXT, SHORTEN the TEXT
       // ***********************************************
       if(is_numeric($length) && $length < strlen($rawText)) {
-         
-        // wandelt umlaute um im text mit HTML tags
-        if(substr(phpversion(),0,1) >= 5)
-          $decodedContent = html_entity_decode($input, ENT_QUOTES);
         
         // -> FIND THE REAL POSITION, for LENGTH
         // find the real position in the html text
@@ -1837,10 +1704,7 @@ class feinduraBase {
         // goes trough the text and find the real position
         while($currentLength != $length) {
           // get the CURRENT CHAR
-          if(substr(phpversion(),0,1) >= 5)
-            $actualChar = substr($decodedContent, $position, 1);
-          else
-            $actualChar = substr($input, $position, 1);
+          $actualChar = substr($input, $position, 1);
           
           //echo '<br />'.$actualChar.'<br />';
           //echo 'realPos: '.$position.'<br />';
@@ -1863,6 +1727,7 @@ class feinduraBase {
         //echo 'realPos: '.$position.'<br />';
         
         // shortens the text
+        //(will also change the plain text back into one with html entities)
         $input = $this->shortenText($input,$position,false,false);
         
         // checks if there is a unclosed html tag (example: <h1..)

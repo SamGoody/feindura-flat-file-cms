@@ -33,20 +33,19 @@ require_once(dirname(__FILE__)."/../includes/secure.include.php");
   <div class="functions"><?php echo $langFile['sortablePageList_headText5']; ?></div>
 </div>
 
-<form action="<?= $generalFunctions->getCurrentUrl(); ?>" method="post" accept-charset="UTF-8">
+<form action="<?= generalFunctions::getCurrentUrl(); ?>" method="post" accept-charset="UTF-8">
 <?php
 
 // shows the PAGES in NO CATEGORIES (the page/ folder),
 // by adding a empty category to the $categoryConfig array
-$allCategories= $categoryConfig;
-array_unshift($allCategories,array('id' => 0,'name' => $langFile['CATEGORIES_TOOLTIP_NONCATEGORY']));
-
+$nonCategory[0] = array('id' => 0,'name' => $langFile['CATEGORIES_TOOLTIP_NONCATEGORY']);
+$allCategories = $nonCategory + $categoryConfig;
 // -----------------------------------------------------------------------------------------------------------
 // ->> LIST CATEGORIES
 foreach($allCategories as $category) {
   
   // -> LOAD the PAGES FROM the CATEGORY
-  $pages = $generalFunctions->loadPages($category['id'],true);
+  $pages = generalFunctions::loadPages($category['id'],true);
   //print_r($pages);
 
   // shows after saving the right category open
@@ -56,7 +55,7 @@ foreach($allCategories as $category) {
   ? '' : ' hidden';
   
   // shows the text of the sorting of a CATEGORY
-  $categorySorting = ($category['sortbypagedate'])? '&nbsp;<img src="library/images/sign/sortByDate_small.png" class="blockH1Icon toolTip" title="'.$langFile['sortablePageList_sortOrder_date'].'::" alt="icon" />' : '';
+  $categorySorting = ($category['sortByPageDate'])? '&nbsp;<img src="library/images/sign/sortByDate_small.png" class="blockH1Icon toolTip" title="'.$langFile['sortablePageList_sortOrder_date'].'::" alt="icon" />' : '';
   
   // show whether the category is public or nonpublic
   if($category['public']) {
@@ -96,7 +95,7 @@ foreach($allCategories as $category) {
       echo '<div class="functions">';
       
       // create page
-      if(($category['id'] == 0 && $adminConfig['pages']['createdelete']) || $category['createdelete'])
+      if(($category['id'] == 0 && $adminConfig['pages']['createDelete']) || $category['createDelete'])
         echo '<a href="?category='.$category['id'].'&amp;page=new" title="'.$langFile['BUTTON_TOOLTIP_CREATEPAGE'].'::" class="createPage toolTip">&nbsp;</a>';
          
   echo '  </div>
@@ -104,7 +103,7 @@ foreach($allCategories as $category) {
       <div class="content">';
   
   // -> CHECK if pages are sortable
-  $listIsSortableClass = (empty($category['sortbypagedate'])) ? ' class="sortablePageList"' : '';
+  $listIsSortableClass = (empty($category['sortByPageDate'])) ? ' class="sortablePageList"' : '';
   
   echo '<ul'.$listIsSortableClass.' id="category'.$category['id'].'">';
 
@@ -121,7 +120,7 @@ foreach($allCategories as $category) {
       // vars
       $pageDate = '';
       $showTags = '';
-      $sort_order[] = $pageContent['sortorder'];
+      $sort_order[] = $pageContent['sortOrder'];
     
       // show whether the page is public or nonpublic
 
@@ -134,37 +133,23 @@ foreach($allCategories as $category) {
       }
       
       // shorten the title
-      $title = $generalFunctions->shortenTitle($pageContent['title'],31);
+      $title = generalFunctions::shortenString($pageContent['title'],31);
       
-      // -> show lastsavedate
-      $lastSaveDate = $statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($pageContent['lastsavedate'],$langFile)).' '.$statisticFunctions->formatTime($pageContent['lastsavedate']);
+      // -> show lastSaveDate
+      $lastSaveDate = statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($pageContent['lastSaveDate'],$langFile)).' '.statisticFunctions::formatTime($pageContent['lastSaveDate']);
       
-      // -> show pagedate
-      if($statisticFunctions->checkPageDate($pageContent)) {
-        
-      	$titleDateBefore = '';
-      	$titleDateAfter = '';
-      	// adds spaces on before and after
-      	if($pageContent['pagedate']['before']) $titleDateBefore = $pageContent['pagedate']['before'].' ';
-      	if($pageContent['pagedate']['after']) $titleDateAfter = ' '.$pageContent['pagedate']['after'];
-	
-        // CHECKs the DATE FORMAT
-        $pageDate = ($statisticFunctions->validateDateFormat($statisticFunctions->formatDate($pageContent['pagedate']['date'])) === false)
-        ? '[br /][br /][b]'.$langFile['sortablePageList_pagedate'].'[/b][br /]'.$titleDateBefore.'[span style=color:#950300]'.$langFile['editor_pageSettings_pagedate_error'].':[/span][br /] '.$pageContent['pagedate']['date'].$titleDateAfter
-        : '[br /][br /][b]'.$langFile['sortablePageList_pagedate'].'[/b][br /]'.$titleDateBefore.$statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($pageContent['pagedate']['date'],$langFile)).$titleDateAfter;
-        
-      } else $pageDate = '';
+      // -> show pageDate
+      $pageDate = showPageDate($pageContent);
       
       // -> show tags
-      if($category['showtags'] && !empty($pageContent['tags'])) {
+      if($category['showTags'] && !empty($pageContent['tags'])) {
         $showTags = '[br /][br /]';
         $showTags .= '[b]'.$langFile['sortablePageList_tags'].'[/b][br /]'.$pageContent['tags'];
       }
-
       
       // -----------------------   ********  ---------------------- 
       // LIST PAGES
-      // id'.$pageContent['id'].' sort'.$pageContent['sortorder'].' cat: '.$pageContent['category'].' 
+      // id'.$pageContent['id'].' sort'.$pageContent['sortOrder'].' cat: '.$pageContent['category'].' 
       echo '<li id="page'.$pageContent['id'].'">';
       
       // startpage icon before the name
@@ -177,11 +162,10 @@ foreach($allCategories as $category) {
       }
       
       echo '<div class="name"><a href="?category='.$category['id'].'&amp;page='.$pageContent['id'].'" class="toolTip'.$activeStartPage.'" title="'.str_replace(array('[',']','<','>','"'),array('(',')','(',')',''),$pageContent['title']).'::'.$startPageText.'[b]ID[/b] '.$pageContent['id'].$pageDate.$showTags.'"><b>'.$title.'</b></a></div>';
-      if(!empty($pageContent['lastsaveauthor']))
-        echo '<div class="lastSaveDate toolTip" title="'.$langFile['editor_h1_lastsaveauthor'].' '.$pageContent['lastsaveauthor'].'::">&nbsp;&nbsp;'.$lastSaveDate.'</div>';
-      else
-        echo '<div class="lastSaveDate">&nbsp;&nbsp;'.$lastSaveDate.'</div>';
-      echo '<div class="counter">&nbsp;&nbsp;'.$statisticFunctions->formatHighNumber($pageContent['log_visitorcount']).'</div>
+      echo (!empty($pageContent['lastSaveAuthor']))
+        ? '<div class="lastSaveDate toolTip" title="'.$langFile['editor_h1_lastsaveauthor'].' '.$pageContent['lastSaveAuthor'].'::">&nbsp;&nbsp;'.$lastSaveDate.'</div>'
+        : '<div class="lastSaveDate">&nbsp;&nbsp;'.$lastSaveDate.'</div>';
+      echo '<div class="counter">&nbsp;&nbsp;'.statisticFunctions::formatHighNumber($pageContent['log_visitorCount']).'</div>
       <div class="status'.$publicClass.'"><a href="?site='.$_GET['site'].'&amp;status=changePageStatus&amp;public='.$pageContent['public'].'&amp;category='.$category['id'].'&amp;page='.$pageContent['id'].'" class="toolTip" title="'.$publicText.'::'.$langFile['sortablePageList_changeStatus_linkPage'].'">&nbsp;</a></div>';
       
       // PAGE FUCNTIONS
@@ -199,7 +183,7 @@ foreach($allCategories as $category) {
       echo '<a href="?category='.$category['id'].'&amp;page='.$pageContent['id'].'" title="'.$langFile['sortablePageList_functions_editPage'].'::" class="editPage toolTip">&nbsp;</a>';
       
       // delete page
-      if(($category['id'] == 0 && $adminConfig['pages']['createdelete']) || $allCategories[$category['id']]['createdelete'])
+      if(($category['id'] == 0 && $adminConfig['pages']['createDelete']) || $allCategories[$category['id']]['createDelete'])
         echo '<a href="?site=deletePage&amp;category='.$category['id'].'&amp;page='.$pageContent['id'].'" onclick="openWindowBox(\'library/sites/windowBox/deletePage.php?category='.$category['id'].'&amp;page='.$pageContent['id'].'\',\''.$langFile['BUTTON_DELETEPAGE'].'\');return false;" title="'.$langFile['BUTTON_DELETEPAGE'].'::" class="deletePage toolTip">&nbsp;</a>';
 
       // startpage
@@ -229,8 +213,8 @@ echo '</ul>
      <div class="bottom"></div>
   </div>';
 
-echo "\n".'<!-- transport the sortorder to the javascript -->
-      <input type="hidden" name="reverse" id="reverse'.$category['id'].'" value="'.$allCategories[$category['id']]['sortascending'].'" /> <!-- reverse order yes/no -->
+echo "\n".'<!-- transport the sortOrder to the javascript -->
+      <input type="hidden" name="reverse" id="reverse'.$category['id'].'" value="'.$allCategories[$category['id']]['sortAscending'].'" /> <!-- reverse order yes/no -->
       <input type="hidden" name="sort_order" id="sort_order'.$category['id'].'" value="'.@implode($sort_order,'|').'" /> <!-- the new page order -->';
 }
 

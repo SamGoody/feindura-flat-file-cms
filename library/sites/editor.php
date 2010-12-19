@@ -47,7 +47,7 @@ if($adminConfig['setStartPage'] && $pageContent['id'] == $websiteConfig['startPa
 }
 
 // shows the text of the sorting of a CATEGORY
-$categorySorting = ($categoryConfig[$_GET['category']]['sortbypagedate'])
+$categorySorting = ($categoryConfig[$_GET['category']]['sortByPageDate'])
   ? '&nbsp;<img src="library/images/sign/sortByDate_small.png" class="blockH1Icon toolTip" title="'.$langFile['sortablePageList_sortOrder_date'].'::" alt="icon" />'
   : '';
 
@@ -59,11 +59,11 @@ echo '<h1 class="'.$headerColor.$startPageTitle.'">'.$newPageIcon.$startPageIcon
     <?php
     
     // -> show LAST SAVE DATE TIME
-    $lastSaveDate =  $statisticFunctions->formatDate($statisticFunctions->dateDayBeforeAfter($pageContent['lastsavedate'],$langFile));
-    $lastSaveTime =  $statisticFunctions->formatTime($pageContent['lastsavedate']);
+    $lastSaveDate =  statisticFunctions::formatDate(statisticFunctions::dateDayBeforeAfter($pageContent['lastSaveDate'],$langFile));
+    $lastSaveTime =  statisticFunctions::formatTime($pageContent['lastSaveDate']);
     
-    $editedByUser = (!empty($pageContent['lastsaveauthor']))
-      ? '</b> '.$langFile['editor_pageinfo_lastsaveauthor'].' <b>'.$pageContent['lastsaveauthor']
+    $editedByUser = (!empty($pageContent['lastSaveAuthor']))
+      ? '</b> '.$langFile['editor_pageinfo_lastsaveauthor'].' <b>'.$pageContent['lastSaveAuthor']
       : '';
     
     echo ($newPage)
@@ -81,11 +81,18 @@ echo '<h1 class="'.$headerColor.$startPageTitle.'">'.$newPageIcon.$startPageIcon
         $thumbnailWidth = ' width="200"';
       //else
         //$thumbnailWidth = ' width="'.$thumbnailWidth.'"';
-        
+      
+      // generates a random number to put on the end of the image, to prevent caching
+      $randomImage = '?'.md5(uniqid(rand(),1));
       
       echo '<br /><div style="z-index:5; position:relative; margin-bottom: 10px; float:right; line-height:28px; text-align:center;">';
-      echo '<span class="thumbnailToolTip" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::'.$langFile['THUMBNAIL_TOOLTIP_PREVIEW'].'">'.$langFile['THUMBNAIL_TEXT_NAME'].'</span><br />';
-      echo '<img src="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'" class="thumbnailPreview thumbnailToolTip"'.$thumbnailWidth.' alt="thumbnail" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::'.$langFile['THUMBNAIL_TOOLTIP_PREVIEW'].'" />';
+      echo '<span class="thumbnailToolTip" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::">'.$langFile['THUMBNAIL_TEXT_NAME'].'</span><br />';
+      echo '<span class="deleteIcon">';
+      echo '<a href="?site=pageThumbnailDelete&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'" onclick="openWindowBox(\'library/sites/windowBox/pageThumbnailDelete.php?site='.$_GET['site'].'&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'\',\''.$langFile['BUTTON_THUMBNAIL_DELETE'].'\',true);return false;" title="'.$langFile['BUTTON_TOOLTIP_THUMBNAIL_DELETE'].'::"" class="deleteIcon toolTip"></a>';
+      echo '<a href="?site=pageThumbnailUpload&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'" onclick="openWindowBox(\'library/sites/windowBox/pageThumbnailUpload.php?site='.$_GET['site'].'&amp;category='.$_GET['category'].'&amp;page='.$_GET['page'].'\',\''.$langFile['BUTTON_THUMBNAIL_UPLOAD'].'\',true);return false;" class="image">';
+      echo '<img src="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].$randomImage.'" class="thumbnailPreview thumbnailToolTip"'.$thumbnailWidth.' alt="thumbnail" title="'.$adminConfig['uploadPath'].$adminConfig['pageThumbnail']['path'].$pageContent['thumbnail'].'::" />';
+      echo '</a>';
+      echo '</span>';
       echo '</div>';
     
     // -> show the thumbnail upload button if there is no thumbnail yet
@@ -137,7 +144,7 @@ echo '<h1 class="'.$headerColor.$startPageTitle.'">'.$newPageIcon.$startPageIcon
               <select name="categoryId">';
               
               // -> shows non-category selection if create pages is allowed
-              if($adminConfig['pages']['createdelete'])
+              if($adminConfig['pages']['createDelete'])
                 echo '<option value="0">'.$langFile['editor_pageinfo_category_noCategory'].'</option>';
               
               // ->> goes trough categories and list them
@@ -149,7 +156,7 @@ echo '<h1 class="'.$headerColor.$startPageTitle.'">'.$newPageIcon.$startPageIcon
                   $selected = '';
                 
                 // -> shows category selection if create pages is allowed
-                if($listCategory['createdelete'])
+                if($listCategory['createDelete'])
                   echo '<option value="'.$listCategory['id'].'"'.$selected.'>'.$listCategory['name'].' (ID '.$listCategory['id'].')</option>'."\n";
               }             
               
@@ -175,7 +182,7 @@ echo '<h1 class="'.$headerColor.$startPageTitle.'">'.$newPageIcon.$startPageIcon
               <td class="left">
               <span class="info"><strong>'.$langFile['editor_pageinfo_linktothispage'].'</strong></span>
               </td><td class="right">
-              <span class="info" style="font-size:11px;"><a href="'.$hostUrl.$generalFunctions->createHref($pageContent).'" class="extern">'.$hostUrl.$generalFunctions->createHref($pageContent).'</a></span>
+              <span class="info" style="font-size:11px;"><a href="'.$hostUrl.generalFunctions::createHref($pageContent).'" class="extern">'.$hostUrl.generalFunctions::createHref($pageContent).'</a></span>
               </td>
               </tr>';
       }
@@ -205,10 +212,10 @@ $hidden = ' hidden';
   <?php
   // -> format vars
   // --------------
-  $firstVisitDate = $statisticFunctions->formatDate($pageContent['log_firstVisit']);
-  $firstVisitTime = $statisticFunctions->formatTime($pageContent['log_firstVisit']);
-  $lastVisitDate = $statisticFunctions->formatDate($pageContent['log_lastVisit']);
-  $lastVisitTime = $statisticFunctions->formatTime($pageContent['log_lastVisit']);
+  $firstVisitDate = statisticFunctions::formatDate($pageContent['log_firstVisit']);
+  $firstVisitTime = statisticFunctions::formatTime($pageContent['log_firstVisit']);
+  $lastVisitDate = statisticFunctions::formatDate($pageContent['log_lastVisit']);
+  $lastVisitTime = statisticFunctions::formatTime($pageContent['log_lastVisit']);
   
   $visitTimes_max = unserialize($pageContent['log_visitTime_max']);
   $visitTimes_min = unserialize($pageContent['log_visitTime_min']);
@@ -231,7 +238,7 @@ $hidden = ' hidden';
       </td><td class="right" style="font-size:15px;">
         <?php
         // -> VISIT COUNT
-        echo '<span class="brown" style="font-weight:bold;font-size:20px;">'.$statisticFunctions->formatHighNumber($pageContent['log_visitorcount']).'</span>';
+        echo '<span class="brown" style="font-weight:bold;font-size:20px;">'.statisticFunctions::formatHighNumber($pageContent['log_visitorCount']).'</span>';
         ?>
       </td>      
     </tr>
@@ -268,7 +275,7 @@ $hidden = ' hidden';
         $showTimeHead = true;
         if(is_array($visitTimes_max)) {
           foreach($visitTimes_max as $visitTime_max) {
-            if($visitTime_max_formated = $statisticFunctions->showVisitTime($visitTime_max,$langFile)) {
+            if($visitTime_max_formated = statisticFunctions::showVisitTime($visitTime_max,$langFile)) {
               if($showTimeHead)
                 echo '<span class="blue" id="visitTimeMax">'.$visitTime_max_formated.'</span><br />
                 <div id="visitTimeMaxContainer">';
@@ -293,7 +300,7 @@ $hidden = ' hidden';
         if(is_array($visitTimes_max)) {
           $visitTimes_min = array_reverse($visitTimes_min);
           foreach($visitTimes_min as $visitTime_min) {          
-            if($visitTime_min_formated = $statisticFunctions->showVisitTime($visitTime_min,$langFile)) {
+            if($visitTime_min_formated = statisticFunctions::showVisitTime($visitTime_min,$langFile)) {
               if($showTimeHead)
                 echo '<span class="blue" id="visitTimeMin">'.$visitTime_min_formated.'</span><br />
                 <div id="visitTimeMinContainer">';
@@ -331,7 +338,7 @@ $hidden = ' hidden';
       
       // -> show TAG CLOUD
       echo '<div class="tagCloud">';
-      $statisticFunctions->createTagCloud($pageContent['log_searchwords']);
+      echo statisticFunctions::createTagCloud($pageContent['log_searchWords']);
       echo '</div>';
 
       ?>
@@ -385,13 +392,14 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
       <?php
       
       // -> CHECK if page date or tags are activated, show the spacer
-      if($categoryConfig[$_GET['category']]['showpagedate'] ||
-         $categoryConfig[$_GET['category']]['showtags']) {
+      if($categoryConfig[$_GET['category']]['showPageDate'] ||
+         $categoryConfig[$_GET['category']]['showTags'] ||
+         $adminConfig['pages']['showTags']) {
         echo '<tr><td class="spacer"></td><td></td></tr>';
       }
             
       // ->> CHECK if activated
-      if($categoryConfig[$_GET['category']]['showpagedate']) { ?>
+      if($categoryConfig[$_GET['category']]['showPageDate']) { ?>
       
       <!-- ***** SORT DATE -->      
       <?php
@@ -399,7 +407,7 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
       // check if already a (wrong) pageDate exists
       $pageDate = (isset($pageDate))
         ? $pageDate
-        : $pageContent['pagedate']['date'];  
+        : $pageContent['pageDate']['date'];  
       
       // add the DATE of TODAY, if its a NEW PAGE
       $pageDate = ($newPage)
@@ -418,7 +426,7 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
         $dateFormat = $langFile['DATE_INT'];
       
       // CHECKs the DATE FORMAT
-      if(!empty($pageDate) && $statisticFunctions->validateDateFormat($pageDate) === false)
+      if(!empty($pageDate) && statisticFunctions::validateDateFormat($pageDate) === false)
         echo '<span class="toolTip red" title="'.$langFile['editor_pageSettings_pagedate_error'].'::'.$langFile['editor_pageSettings_pagedate_error_tip'].'[br /][b]'.$dateFormat.'[/b]"><b>'.$langFile['editor_pageSettings_pagedate_error'].'</b></span>'; 
       else
         echo '<span class="toolTip" title="'.$langFile['editor_pageSettings_field3'].'::'.$langFile['editor_pageSettings_field3_tip'].'">'.$langFile['editor_pageSettings_field3'].'</span>';
@@ -426,12 +434,12 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
       </label>
       
       </td><td class="right">
-        <input name="pagedate[before]" value="<?php echo $pageContent['pagedate']['before']; ?>" class="inputToolTip" title="<?php echo $langFile['editor_pageSettings_pagedate_before_inputTip']; ?>" style="width:130px;" />
+        <input name="pageDate[before]" value="<?php echo $pageContent['pageDate']['before']; ?>" class="inputToolTip" title="<?php echo $langFile['editor_pageSettings_pagedate_before_inputTip']; ?>" style="width:130px;" />
         
         <?php
         
         // -> creates DAY selection
-        $pageDateTags['day'] = '<select name="pagedate[day]" class="toolTip" title="'.$langFile['editor_pageSettings_pagedate_day_inputTip'].'">'."\n";
+        $pageDateTags['day'] = '<select name="pageDate[day]" class="toolTip" title="'.$langFile['editor_pageSettings_pagedate_day_inputTip'].'">'."\n";
         for($i = 1; $i <= 31; $i++) {
           // adds following zero
           if(strlen($i) == 1)
@@ -447,7 +455,7 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
         $pageDateTags['day'] .= '</select>'."\n";
 
         // -> creates MONTH selection
-        $pageDateTags['month'] = '<select name="pagedate[month]" class="toolTip" title="'.$langFile['editor_pageSettings_pagedate_month_inputTip'].'">'."\n";
+        $pageDateTags['month'] = '<select name="pageDate[month]" class="toolTip" title="'.$langFile['editor_pageSettings_pagedate_month_inputTip'].'">'."\n";
         for($i = 1; $i <= 12; $i++) {
           // adds following zero
           if(strlen($i) == 1)
@@ -471,7 +479,7 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
         else
           $year = null;
           
-        $pageDateTags['year'] = '<input type="text" class="short toolTip" name="pagedate[year]" title="'.$langFile['editor_pageSettings_pagedate_year_inputTip'].'" value="'.$year.'" maxlength="4" />'."\n";
+        $pageDateTags['year'] = '<input type="text" class="short toolTip" name="pageDate[year]" title="'.$langFile['editor_pageSettings_pagedate_year_inputTip'].'" value="'.$year.'" maxlength="4" />'."\n";
         
         // -> WRITES the SORT DATE TAGS
         if($adminConfig['dateFormat'] == 'eu') {
@@ -482,12 +490,12 @@ $hidden = ($newPage || $savedForm == 'pageSettings') ? '' : ' hidden';
         
         ?>
         
-        <input name="pagedate[after]" value="<?php echo $pageContent['pagedate']['after']; ?>" class="toolTip" title="<?php echo $langFile['editor_pageSettings_pagedate_after_inputTip']; ?>" style="width:120px;" />
+        <input name="pageDate[after]" value="<?php echo $pageContent['pageDate']['after']; ?>" class="toolTip" title="<?php echo $langFile['editor_pageSettings_pagedate_after_inputTip']; ?>" style="width:120px;" />
       </td></tr>
       <?php }
       
       // ->> CHECK if activated
-      if($categoryConfig[$_GET['category']]['showtags']) {
+      if($categoryConfig[$_GET['category']]['showTags'] || $adminConfig['pages']['showTags']) {
       ?>      
       <!-- ***** TAGS -->
       
@@ -557,7 +565,7 @@ $blockContentEdited = (isset($pageContent['plugins']))
       <?php
       
       // ->> LOAD PLUGINS      
-      $plugins = $generalFunctions->readFolder($adminConfig['basePath'].'plugins/');
+      $plugins = generalFunctions::readFolder($adminConfig['basePath'].'plugins/');
       foreach($plugins['folders'] as $pluginFolder) {
       
         // vars
@@ -655,9 +663,9 @@ $blockContentEdited = (isset($pageContent['plugins']))
 // from the Page, if empty,
 // than from the Category if empty,
 // than from the HTMl-Editor Settings
-$editorStyleFiles = $generalFunctions->getStylesByPriority($pageContent['styleFile'],'styleFile',$pageContent['category']);
-$editorStyleId = $generalFunctions->getStylesByPriority($pageContent['styleId'],'styleId',$pageContent['category']);
-$editorStyleClass = $generalFunctions->getStylesByPriority($pageContent['styleClass'],'styleClass',$pageContent['category']);
+$editorStyleFiles = generalFunctions::getStylesByPriority($pageContent['styleFile'],'styleFile',$pageContent['category']);
+$editorStyleId = generalFunctions::getStylesByPriority($pageContent['styleId'],'styleId',$pageContent['category']);
+$editorStyleClass = generalFunctions::getStylesByPriority($pageContent['styleClass'],'styleClass',$pageContent['category']);
 
 // -> CREATES the EDITOR-INSTANCE
 // ------------------------------
@@ -749,6 +757,9 @@ window.addEvent('domready',function(){
   </div>
 </div>
 
+<?php
+if(isAdmin()) {
+?>
 <!-- ***** ADVANCED PAGE SETTINGS -->
 <a name="advancedPageSettingsAnchor" id="advancedPageSettingsAnchor" class="anchorTarget"></a>
 <?php
@@ -778,7 +789,7 @@ $blockContentEdited = ((!empty($pageContent['styleFile']) && $pageContent['style
       <span class="hint" style="float:right;width:190px;"><?php echo $langFile['STYLESHEETS_EXAMPLE_STYLEFILE']; ?></span>
       <?php
       
-      echo showStyleFileInputs($generalFunctions->getStylesByPriority($pageContent['styleFile'],'styleFile',$pageContent['category']),'styleFile');
+      echo showStyleFileInputs(generalFunctions::getStylesByPriority($pageContent['styleFile'],'styleFile',$pageContent['category']),'styleFile');
 
       ?>      
       </div>
@@ -788,13 +799,13 @@ $blockContentEdited = ((!empty($pageContent['styleFile']) && $pageContent['style
       <tr><td class="left">
       <span class="toolTip" title="<?php echo $langFile['STYLESHEETS_TEXT_ID'].'::'.$langFile['STYLESHEETS_TOOLTIP_ID'].'[br /][br /][span class=hint]'.$langFile['editor_advancedpageSettings_stylesheet_ifempty'].'[/span]'; ?>"><?php echo $langFile['STYLESHEETS_TEXT_ID']; ?></span>
       </td><td class="right">
-      <input name="styleId" value="<?php echo $generalFunctions->getStylesByPriority($pageContent['styleId'],'styleId',$pageContent['category']); ?>" class="inputToolTip" title="<?php echo $langFile['editor_advancedpageSettings_stylesheet_ifempty']; ?>" />
+      <input name="styleId" value="<?php echo generalFunctions::getStylesByPriority($pageContent['styleId'],'styleId',$pageContent['category']); ?>" class="inputToolTip" title="<?php echo $langFile['editor_advancedpageSettings_stylesheet_ifempty']; ?>" />
       </td></tr>
                   
       <tr><td class="left">
       <span class="toolTip" title="<?php echo $langFile['STYLESHEETS_TEXT_CLASS'].'::'.$langFile['STYLESHEETS_TOOLTIP_CLASS'].'[br /][br /][span class=hint]'.$langFile['editor_advancedpageSettings_stylesheet_ifempty'].'[/span]'; ?>"><?php echo $langFile['STYLESHEETS_TEXT_CLASS']; ?></span>
       </td><td class="right">
-      <input name="styleClass" value="<?php echo $generalFunctions->getStylesByPriority($pageContent['styleClass'],'styleClass',$pageContent['category']); ?>" class="inputToolTip" title="<?php echo $langFile['editor_advancedpageSettings_stylesheet_ifempty']; ?>" />
+      <input name="styleClass" value="<?php echo generalFunctions::getStylesByPriority($pageContent['styleClass'],'styleClass',$pageContent['category']); ?>" class="inputToolTip" title="<?php echo $langFile['editor_advancedpageSettings_stylesheet_ifempty']; ?>" />
       </td></tr>
 
       <tr><td class="leftBottom"></td><td></td></tr>
@@ -806,4 +817,7 @@ $blockContentEdited = ((!empty($pageContent['styleFile']) && $pageContent['style
   </div>
   <div class="bottom"></div>
 </div>
+<?php } else
+  echo '<div style="height:20px;"></div>';
+?>
 </form>

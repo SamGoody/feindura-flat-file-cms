@@ -29,6 +29,9 @@ $categoryInfo = false;
 // ****** ---------- SAVE PAGE CONFIG in config/admin.config.php
 if(isset($_POST['send']) && $_POST['send'] ==  'pageConfig') {
   
+  // ** ensure the the post vars with a 'Path' in the key value ending with a '/'
+  addSlashToPathsEnd($_POST);
+  
   // ** removes a "/" on the beginning of all relative paths
   if(!empty($_POST['cfg_thumbPath']) && substr($_POST['cfg_thumbPath'],0,1) == '/')
         $_POST['cfg_thumbPath'] = substr($_POST['cfg_thumbPath'],1);
@@ -41,10 +44,10 @@ if(isset($_POST['send']) && $_POST['send'] ==  'pageConfig') {
   
   // -> PREPARE CONFIG VARs
   $adminConfig['setStartPage'] = $_POST['cfg_setStartPage'];
-  $adminConfig['pages']['createdelete'] = $_POST['cfg_pageCreatePages'];
+  $adminConfig['pages']['createDelete'] = $_POST['cfg_pageCreatePages'];
   $adminConfig['pages']['thumbnails'] = $_POST['cfg_pageThumbnailUpload'];  
   $adminConfig['pages']['plugins'] = $_POST['cfg_pagePlugins'];
-  $adminConfig['pages']['showtags'] = $_POST['cfg_pageTags'];
+  $adminConfig['pages']['showTags'] = $_POST['cfg_pageTags'];
   
   $adminConfig['pageThumbnail']['width'] =  $_POST['cfg_thumbWidth'];
   $adminConfig['pageThumbnail']['height'] = $_POST['cfg_thumbHeight'];
@@ -56,7 +59,7 @@ if(isset($_POST['send']) && $_POST['send'] ==  'pageConfig') {
      
     // give documentSaved status
     $documentSaved = true;
-    $statisticFunctions->saveTaskLog(14); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(14); // <- SAVE the task in a LOG FILE
     
   } else
     $errorWindow .= $langFile['adminSetup_fmsSettings_error_save'];
@@ -85,9 +88,8 @@ if((isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST[
     if(@is_dir(DOCUMENTROOT.$adminConfig['basePath'].'pages/'.$newId)) {
       $isDir = true;
     } else {
-      // erstellt ein verzeichnis
-      if(!@mkdir(DOCUMENTROOT.$adminConfig['basePath'].'pages/'.$newId, PERMISSIONS) ||
-         !@chmod(DOCUMENTROOT.$adminConfig['basePath'].'pages/'.$newId, PERMISSIONS)) {
+      // creates a new category folder
+      if(!@mkdir(DOCUMENTROOT.$adminConfig['basePath'].'pages/'.$newId, PERMISSIONS)) {
           $isDir = false;
           $errorWindow .= $langFile['pageSetup_error_createDir'];      
       // save category dir could be created
@@ -101,7 +103,7 @@ if((isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST[
       $categoryConfig[$newId] = array('id' => $newId); // gives the new category a id  
       if(saveCategories($categoryConfig)) {
          $categoryInfo = $langFile['pageSetup_createCategory_created'];
-         $statisticFunctions->saveTaskLog(15); // <- SAVE the task in a LOG FILE
+         statisticFunctions::saveTaskLog(15); // <- SAVE the task in a LOG FILE
       } else { // throw error
         $errorWindow .= ($errorWindow) // if there is allready an warning
           ? '<br /><br />'.$langFile['pageSetup_error_create']
@@ -132,7 +134,7 @@ if(((isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST
     // if there is a category dir, trys to delete it !important deletes all files in it
     if(is_dir(DOCUMENTROOT.$adminConfig['basePath'].'pages/'.$_GET['category'])) {
     
-      if($pageContents = $generalFunctions->loadPages($_GET['category'],true)) {
+      if($pageContents = generalFunctions::loadPages($_GET['category'],true)) {
       
         // deletes possible thumbnails before deleting the category
         foreach($pageContents as $page) {
@@ -152,7 +154,7 @@ if(((isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST
       }    
     }
     
-    $statisticFunctions->saveTaskLog(16,$storedCategoryName); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(16,$storedCategoryName); // <- SAVE the task in a LOG FILE
   } else // throw error
     $errorWindow .= $langFile['pageSetup_error_delete'];
 
@@ -175,7 +177,7 @@ if(substr($_GET['status'],0,12) == 'moveCategory' && !empty($_GET['category']) &
     // save the categories array
     if(saveCategories($categoryConfig)) {
       $documentSaved = true; // set documentSaved status
-      $statisticFunctions->saveTaskLog(17,'category='.$_GET['category']); // <- SAVE the task in a LOG FILE
+      statisticFunctions::saveTaskLog(17,'category='.$_GET['category']); // <- SAVE the task in a LOG FILE
     } else
       $errorWindow .= $langFile['pageSetup_error_save'];
     
@@ -191,13 +193,13 @@ if(isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST['
   // cleans the category names
   $catewgoriesCleaned = array();
   foreach($_POST['categories'] as $category) {
-      $category['name'] = $generalFunctions->prepareStringInput($category['name']);
+      $category['name'] = generalFunctions::prepareStringInput($category['name']);
       $categoriesCleaned[$category['id']] = $category;
   }
 
   if(saveCategories($categoriesCleaned)) {
     $documentSaved = true; // set documentSaved status
-    $statisticFunctions->saveTaskLog(18); // <- SAVE the task in a LOG FILE
+    statisticFunctions::saveTaskLog(18); // <- SAVE the task in a LOG FILE
   } else
     $errorWindow .= $langFile['pageSetup_error_save'];
   
@@ -209,11 +211,11 @@ if(isset($_POST['send']) && $_POST['send'] ==  'categorySetup' && isset($_POST['
 $adminConfig = @include (dirname(__FILE__)."/../../config/admin.config.php");
 $categoryConfig = @include (dirname(__FILE__)."/../../config/category.config.php");
 // RESET of the vars in the classes
-$generalFunctions->adminConfig = $adminConfig;
-$statisticFunctions->adminConfig = $adminConfig;
-$generalFunctions->categoryConfig = $categoryConfig;
-$statisticFunctions->categoryConfig = $categoryConfig;
-$generalFunctions->storedPageIds = null;
-$generalFunctions->storedPages = null;
+generalFunctions::$storedPageIds = null;
+generalFunctions::$storedPages = null;
+generalFunctions::$adminConfig = $adminConfig;
+generalFunctions::$categoryConfig = $categoryConfig;
+statisticFunctions::$adminConfig = $adminConfig;
+statisticFunctions::$categoryConfig = $categoryConfig;
 
 ?>
