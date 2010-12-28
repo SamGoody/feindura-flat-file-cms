@@ -340,7 +340,7 @@ window.addEvent('domready',function(){
 		var page = $(e.target)
 		  , pop = MooRTE.Elements.linkPop;
 
-		if (!page || pop && !pop.visible) return;
+		if (!page || pop && pop.visible) return;
 		if (page.hasClass('feindura_editPage'))
 			savePage(page, 'content');
 		else if (page.hasClass('feindura_editTitle'))
@@ -438,7 +438,7 @@ window.addEvent('domready',function(){
                                   'justifyleft','justifycenter','justifyright','justifyfull',
                                   'outdent','indent','superscript','subscript',
                                   'insertorderedlist','insertunorderedlist','blockquote','inserthorizontalrule',
-                                  'decreasefontsize','increasefontsize'//,'hyperlink'
+                                  'decreasefontsize','increasefontsize','hyperlink'
                                   ]};
                                           
     // -> create editor instance to edit all divs which have the class "feindura_editPage"
